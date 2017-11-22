@@ -1,0 +1,953 @@
+﻿
+@model IEnumerable<Rooms.Models.ApplicationData>
+@{
+    ViewBag.Title = "statistics";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<html>
+<head>
+
+    <title></title>
+    <script src="~/Scripts/jquery-1.10.2.min.js"></script>
+    <script src="~/Scripts/CustomJS/jquery.min.js"></script>
+    <script src="~/lib/moment.min.js"></script>
+    <script src="~/lib/fullcalendar.min.js"></script>
+    <link href="~/lib/fullcalendar.min.css" rel="stylesheet" />
+    <link href="~/lib/fullcalendar.print.min.css" rel="stylesheet" media="print" />
+    <style>
+        body {
+            margin: 40px 10px;
+            padding: 0;
+            font-family: "Lucida Grande",Helvetica,Arial,Verdana,sans-serif;
+            font-size: 14px;
+            height: 100px;
+        }
+
+        #calendar {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .fc-time {
+            display: none;
+        }
+
+        .fc-event-container {
+            color: black !important;
+            font-size: 30px !important;
+            text-align: center !important;
+        }
+
+        .fc-event, .fc-event:hover, .ui-widget .fc-event {
+            color: red !important;
+        }
+
+        .fc-event, .fc-event-dot {
+            background-color: white !important;
+        }
+
+        .fc-row .fc-content-skeleton td, .fc-row .fc-helper-skeleton td {
+            cursor: pointer !important;
+        }
+    </style>
+
+
+    <script type="text/javascript">
+        function RefreshPage() {
+            location.reload();
+        }
+
+        $(document).ready(function () {
+            var date = new Date();
+            var today = moment().format("YYYY-MM-DD");
+            $("#dates").val('month : ' + moment().format("MMM YYYY"));
+            totalcount(today, 'Month');
+            Maintianencecount(today, 'Month');
+            vacentscount(today, 'Month');
+            Occupiedcount(today, 'Month');
+            status = "304";
+
+            //$('#calendar').fullCalendar({
+            //    header: {
+            //        //left: 'prev,next today',
+            //        //center: 'title',
+            //        //right: 'month,basicWeek,basicDay'
+            //    },
+            //    navLinks: true, // can click day/week names to navigate views
+            //    editable: true,
+            //    eventLimit: true, // allow "more" link when too many events
+            //    events: '/Home/calendarrooomslist'
+            //});
+            $('#calendar').fullCalendar({
+
+                dayClick: function (date, jsEvent, view) {
+                    debugger;
+                    totalcount(moment(date).format("YYYY-MM-DD"), 'Day');
+                    Maintianencecount(moment(date).format("YYYY-MM-DD"), 'Day');
+                    vacentscount(moment(date).format("YYYY-MM-DD"), 'Day');
+                    Occupiedcount(moment(date).format("YYYY-MM-DD"), 'Day');
+                    $("#dates").val('day : ' + moment(date).format("DD MMM YYYY"));
+                    $('#calendar').fullCalendar('clientEvents', function (event) {
+
+                        if (moment(date).format('YYYY-MM-DD') == moment(event._start).format('YYYY-MM-DD'))//match the event date with clicked date if true render clicked date events{
+                            deptlist(moment(event._start).format('YYYY-MM-DD'));
+                    });
+                },
+                events: '/Home/calendarSoldRooms'
+            });
+            $('.fc-day').css('cursor', 'pointer');
+            //ShowTime();
+            $(".fc-prev-button").click(function () {
+                debugger;
+                var date = new Date($("#calendar").fullCalendar('getDate'));
+                var month_int = date.getMonth();
+                var dated = $("#calendar").fullCalendar('getDate');
+                //alert("The current date of the calendar is " + (month_int+1));
+                totalcount(moment(dated).format("YYYY-MM-DD"), 'Month');
+
+                Maintianencecount(moment(dated).format("YYYY-MM-DD"), 'Month');
+                vacentscount(moment(dated).format("YYYY-MM-DD"), 'Month');;
+                Occupiedcount(moment(dated).format("YYYY-MM-DD"), 'Month');
+                $("#dates").val('month : ' + moment(dated).format("MMM YYYY"), 'Month');
+            });
+            $(".fc-next-button").click(function () {
+                var date = new Date($("#calendar").fullCalendar('getDate'));
+                var month_int = date.getMonth();
+                var dated = $("#calendar").fullCalendar('getDate');
+                //alert("The current date of the calendar is " + (month_int + 1));
+                totalcount(moment(dated).format("YYYY-MM-DD"), 'Month');
+                Maintianencecount(moment(dated).format("YYYY-MM-DD"), 'Month');
+                vacentscount(moment(dated).format("YYYY-MM-DD"), 'Month');;
+                Occupiedcount(moment(dated).format("YYYY-MM-DD"), 'Month');
+                $("#dates").val('month : ' + moment(dated).format("MMM YYYY"), 'Month');
+                //Maintianencecount(((month_int + 1)));
+                //vacentscount((month_int + 1));
+                //Occupiedcount(((month_int + 1)));
+            });
+            function getcaldata(status) {
+                debugger
+                $('#calendar').fullCalendar('destroy');
+                $('#calendar').fullCalendar({
+                    events: '/Home/RoomWiseList?roomno=' + status
+                });
+
+            }
+            function deptlist(name) {
+                debugger;
+                var wallcode = name;
+                var postData = {
+                    roomno: wallcode
+                }
+                debugger;
+                $.ajax({
+                    type: "POST",
+                    data: postData,
+                    url: "/Home/guestdetailsByDate",
+                    //data: "id=",
+                    success: function (result) {
+                        debugger;
+                        var locdata = new Array();
+                        for (var i = 0; i < result.length; i++) {
+                            locdata.push({
+                                title: result[i].title,
+                                start: result[i].start,
+                                drilldown: false
+                            });
+                        }
+                        var sttt = "Employees with Designation are";
+                        $(".tbb").remove();
+                        var $table = $('<table/>');
+                        $table.addClass("table table-bordered table-hover table-striped tbb");
+                        $table.append(' <th style="text-align:center!important;">Room No</th><th style="text-align:center!important;">Guest Name</th>');
+                        for (var i = 0; i < locdata.length; i++) {
+                            //debugger;
+
+                            $table.append('<tr><td>' + locdata[i].title + '</td><td>' + locdata[i].start + '</td></tr>');
+                            $('#emplist').append($table);
+
+                        }
+                        $('#emplist').show();
+                    }
+                });
+            }
+        });
+        function ShowTime() {
+            debugger;
+            var dt = new Date();
+            document.getElementById("lblTime").innerHTML = dt.toLocaleTimeString();
+            window.setTimeout("ShowTime()", 1000); // Here 1000(milliseconds) means one 1 Sec
+        }
+        function totalcount(date, wise) {
+            debugger;
+            $.ajax({
+                type: "POST",
+                url: "/Home/Gettotalcount?dtmnt=" + date + "&param=" + wise,
+                success: function (data) {
+                    debugger;
+                    if (data != "0") {
+                        $("#totalcount").text(data);
+                    }
+                    else {
+                        $("#totalcount").text("0");
+                    }
+                },
+                error: function () {
+
+                }
+            });
+        }
+        function vacentscount(date, wise) {
+            debugger;
+            $.ajax({
+                type: "POST",
+                url: "/Home/Getvacentcount?dtmnt=" + date + "&param=" + wise,
+                success: function (data) {
+                    debugger;
+                    if (data != "0") {
+                        $("#vacentcount").text(data);
+                        vacancy(data, $("#totalcount").text());
+                    }
+                    else {
+                        $("#vacentcount").text("0");
+                    }
+                },
+                error: function () {
+
+                }
+            });
+        }
+        function Occupiedcount(date, wise) {
+            debugger;
+            $.ajax({
+                type: "POST",
+                url: "/Home/GetOccupiedcount?dtmnt=" + date + "&param=" + wise,
+                success: function (data) {
+                    debugger;
+                    if (data != "0") {
+                        $("#Occupiedcount").text(data);
+                        occupied(data, $("#totalcount").text());
+                        //alert(data1);
+                        //chartSpeed.series[0].update({
+                        //    data: [parseInt(data1)]
+                        //});
+
+                    }
+                    else {
+                        $("#Occupiedcount").text("0");
+                        occupied(0, $("#totalcount").text());
+                    }
+                },
+                error: function () {
+
+                }
+            });
+        }
+        function Maintianencecount(date, wise) {
+            debugger;
+            $.ajax({
+                type: "POST",
+                url: "/Home/GetMaintianencecount?dtmnt=" + date + "&param=" + wise,
+                success: function (data) {
+                    debugger;
+                    if (data != "0") {
+                        $("#Maintianencecount").text(data);
+                    }
+                    else {
+                        $("#Maintianencecount").text("0");
+                    }
+                },
+                error: function () {
+
+                }
+            });
+        }
+        // occupied guage
+        function occupied(data, te) {
+            debugger;
+            //alert(te);
+            Highcharts.chart('container-occupied', Highcharts.merge(gaugeOptions, {
+                yAxis: {
+                    min: 0,
+                    max: parseInt(te),
+                    title: {
+                        text: 'Occupied'
+                    }
+                },
+
+                credits: {
+                    enabled: false
+                },
+
+                series: [{
+                    name: 'Occupied',
+                    data: [parseInt(data)],
+                    dataLabels: {
+                        format: '<div style="text-align:center"><span style="font-size:25px;color:' +
+                            ((Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black') + '">{y}</span><br/>' +
+                               '<span style="font-size:12px;color:silver">Rooms/Month</span></div>'
+                    },
+
+                }]
+
+            }));
+        }
+        // vacant gauge
+        function vacancy(data, te) {
+            //alert(te);
+            Highcharts.chart('container-vacant', Highcharts.merge(gaugeOptions, {
+                yAxis: {
+                    min: 0,
+                    max: parseInt(te),
+                    title: {
+                        text: 'Vacant'
+                    }
+                },
+
+                credits: {
+                    enabled: false
+                },
+
+                series: [{
+                    name: 'Vacant',
+                    data: [parseInt(data)],
+                    dataLabels: {
+                        format: '<div style="text-align:center"><span style="font-size:25px;color:' +
+                            ((Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black') + '">{y}</span><br/>' +
+                               '<span style="font-size:12px;color:silver">Rooms/Month</span></div>'
+                    },
+
+                }]
+
+            }));
+        }
+    </script>
+    <style>
+        .room_db {
+            float: left;
+            background: #4b72b8;
+        }
+
+            .room_db sup {
+                font-size: 11px;
+                font-weight: normal;
+            }
+
+            .room_db th {
+                background: #FD6F6F;
+                color: #fff;
+                font-size: 14px;
+                border-bottom: 1px solid #f8f8f8;
+                padding: 5px;
+                text-align: center;
+            }
+
+            .room_db td {
+                padding: 5px;
+                color: #fff;
+                font-size: 10px;
+                text-align: center;
+                border-bottom: 1px solid #f8f8f8;
+                border-right: 1px solid #f8f8f8;
+            }
+
+                .room_db td:hover {
+                    background: #008E6B;
+                }
+
+        .room_colors {
+            float: right;
+            width: 130px;
+            height: 190px;
+            /* border: 3px solid #CCC;*/
+        }
+
+            .room_colors div {
+                width: 18px;
+                height: 18px;
+                text-align: center;
+                border: 1px solid #CCC;
+            }
+
+            .room_colors td {
+                width: 155px;
+                height: 40px;
+            }
+            /*color 1 means vaccant*/
+            .room_colors .color1 {
+                background: #0099CC;
+            }
+            /*color2 occupied */
+            .room_colors .color2 {
+                background: #00ff1f;
+            }
+            /*color3 Blocked */
+            .room_colors .color3 {
+                background: #FF3366;
+            }
+            /*color4 TBC */
+            .room_colors .color4 {
+                background: #CC9900;
+            }
+            /*color4 TBC */
+            .room_colors .color5 {
+                background: #FFD700;
+            }
+
+            .room_colors .colors1 {
+                background: palegreen;
+            }
+
+            .room_colors .colors2 {
+                background: darkgreen;
+            }
+
+            .room_colors .colors3 {
+                background: red;
+            }
+
+        .navbar-default .navbar-nav > .dropdown > a .caret {
+            border-top-color: white;
+            border-bottom-color: white;
+        }
+    </style>
+
+</head>
+<body>
+
+    <div class="form_pema">
+        <div class="form-group">
+            <div class="col-md-6">
+                <h2 style="font:normal 30.73px/40px 'QuicksandBold';padding-left:103px;">Month/Day Wise Statistics</h2>
+                <h2 style="font:normal 30.73px/40px 'QuicksandBold';padding-left:130px;">Sold Room Nights</h2>
+            </div>
+            <div class="col-md-6">
+                Statistics for the  <input type="text" id="dates" style="border:none!important;background-color:#f8f8f8;font:normal 16.73px/40px 'QuicksandBold';" readonly="readonly"></input>
+            </div>
+        </div>
+        <br />
+        <div class="form_content">
+            <div class="form-group" id="calendar-control" style="padding-left:40px;">
+                <div class="row">
+                    <div class="col-md-12">
+                        @*<div class="col-md-3"></div>*@
+                        <div class="col-md-6" style="width:500px;">
+                            <div id="calendar" style="background-color:white!important;"></div>
+                            <input type="hidden" id="status" value="status" />
+                        </div>
+                        <div class="col-md-6" style="text-align:center;">
+                            <div class="col-lg-6 col-md-6">
+                                <div class="panel panel-primary" style="border-color:#FD6F6F;">
+                                    <div class="panel-heading" style="background-color:#FD6F6F;">
+                                        <div class="row">
+                                            <div class="col-xs-12">
+                                                <div class="huge">
+                                                    <span id="totalcount"></span>
+                                                    <input type="hidden" id="totalcountnew" />
+                                                </div>
+                                                <div>
+                                                    Total room nights
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-6 col-md-6">
+                                <div class="panel panel-primary" style="border-color:#0099CC;">
+                                    <div class="panel-heading" style="background-color:#0099CC;">
+                                        <div class="row">
+
+                                            <div class="col-xs-12">
+                                                <div class="huge">
+                                                    <span id="vacentcount"></span>
+                                                </div>
+                                                <div>
+                                                    Available room nights
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-6 col-md-6">
+                                <div class="panel panel-green" style="border-color:Red;">
+                                    <div class="panel-heading" style="background-color: Red!important;">
+                                        <div class="row">
+                                            <div class="col-xs-12">
+                                                <div class="huge">
+                                                    <span id="Occupiedcount"></span>
+                                                </div>
+                                                <div>
+                                                    Sold room nights
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-6 col-md-6">
+                                <div class="panel panel-yellow" style="border-color:brown;">
+                                    <div class="panel-heading" style="background-color:brown;">
+                                        <div class="row">
+                                            <div class="col-xs-12">
+                                                <div class="huge">
+                                                    <span id="Maintianencecount"></span>
+                                                </div>
+                                                <div>
+                                                    Under Maintenance
+                                                    @*Total  Rooms under Maintenence*@
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-6 col-md-6">
+                                <div class="panel panel-primary" style="border-color:#FD6F6F;">
+                                    <div class="panel-heading" style="background-color:#FD6F6F;">
+                                        <div class="row">
+
+                                            <div class="col-xs-12">
+                                                <div class="huge">
+                                                    <span id="luxurusuitecount"></span>
+                                                </div>
+                                                <div>
+                                                    Total Luxury Suite Rooms
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-6 col-md-6">
+                                <div class="panel panel-green" style="border-color:#0099CC;">
+                                    <div class="panel-heading" style="background-color: #0099CC;">
+                                        <div class="row">
+                                            <div class="col-xs-12">
+                                                <div class="huge">
+                                                    <span id="luxurusuitevavantcount"></span>
+                                                </div>
+                                                <div>
+                                                    Vacant Suite Rooms
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-6 col-md-6">
+                                <div class="panel panel-primary" style="border-color:#FD6F6F;">
+                                    <div class="panel-heading" style="background-color:#FD6F6F;">
+                                        <div class="row">
+
+                                            <div class="col-xs-12">
+                                                <div class="huge">
+                                                    <span id="luxurycount"></span>
+                                                </div>
+                                                <div>
+                                                    Total Luxury Rooms
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-6 col-md-6">
+                                <div class="panel panel-green" style="border-color:#0099CC;">
+                                    <div class="panel-heading" style="background-color: #0099CC;">
+                                        <div class="row">
+                                            <div class="col-xs-12">
+                                                <div class="huge">
+                                                    <span id="luxuryvacantcount"></span>
+                                                </div>
+                                                <div>
+                                                    Vacant Luxury Rooms
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            @*<div style="height: 400px; margin: 0 auto">
+                                    <div id="container-vacant" style="width: 300px; height: 200px; float: left"></div>
+                                    <div id="container-occupied" style="width: 300px; height: 200px; float: left"></div>
+
+                                </div>*@
+                        </div>
+                    </div>
+                </div><br />
+                <div>
+                            <div class="empllist" id="emplist" style="text-align:center;">
+                    </div>
+                </div>
+
+
+                @*<div class="row">
+                        <div class="col-md-12">
+
+                                    <div class="row" style="text-align:center;">
+                                        <div class="col-lg-3 col-md-6">
+                                            <div class="panel panel-primary" style="border-color:#FD6F6F;">
+                                                <div class="panel-heading" style="background-color:#FD6F6F;">
+                                                    <div class="row">
+                                                        <div class="col-xs-12">
+                                                            <div class="huge">
+                                                                <span id="totalcount"></span>
+                                                                <input type="hidden" id="totalcountnew" />
+                                                            </div>
+                                                            <div>
+                                                                Total room nights
+                                                                <br />
+                                                                &nbsp;
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-3 col-md-6">
+                                            <div class="panel panel-primary" style="border-color:#0099CC;">
+                                                <div class="panel-heading" style="background-color:#0099CC;">
+                                                    <div class="row">
+
+                                                        <div class="col-xs-12">
+                                                            <div class="huge">
+                                                                <span id="vacentcount"></span>
+                                                            </div>
+                                                            <div>
+                                                                Available room nights
+                                                                <br />
+                                                                &nbsp;
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-3 col-md-6">
+                                            <div class="panel panel-green" style="border-color:Red;">
+                                                <div class="panel-heading" style="background-color: Red!important;">
+                                                    <div class="row">
+                                                        <div class="col-xs-12">
+                                                            <div class="huge">
+                                                                <span id="Occupiedcount"></span>
+                                                            </div>
+                                                            <div>
+                                                                Sold room nights
+                                                                <br />
+                                                                &nbsp;
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-3 col-md-6">
+                                            <div class="panel panel-yellow" style="border-color:#00ff1f;">
+                                                <div class="panel-heading" style="background-color:#00ff1f;">
+                                                    <div class="row">
+                                                        <div class="col-xs-12">
+                                                            <div class="huge">
+                                                                <span id="Maintianencecount"></span>
+                                                            </div>
+                                                            <div>
+                                                                Total  Rooms under Maintianence
+                                                                <br />
+                                                                &nbsp;
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div style="height: 400px; margin: 0 auto">
+                                        <div id="container-vacant" style="width: 300px; height: 200px; float: left"></div>
+                                        <div id="container-occupied" style="width: 300px; height: 200px; float: left"></div>
+
+                                    </div>
+
+
+                        </div>
+                    </div>*@
+
+            </div>
+        </div>
+    </div>
+
+    <!--Css Links For Layout -->
+    <link href="~/Newlayout/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="~/Newlayout/vendor/metisMenu/metisMenu.min.css" rel="stylesheet" />
+    <link href="~/Newlayout/dist/css/sb-admin-2.css" rel="stylesheet" />
+    <link href="~/Newlayout/vendor/morrisjs/morris.css" rel="stylesheet" />
+    <link href="~/Newlayout/vendor/font-awesome/css/font-awesome.min.css" rel="stylesheet" />
+    <!-- End -->
+</body>
+</html>
+<script src="https://code.highcharts.com/highcharts.js"></script>
+<script src="https://code.highcharts.com/highcharts-more.js"></script>
+
+<script src="https://code.highcharts.com/modules/solid-gauge.js"></script>
+
+
+
+
+<style>
+    .highcharts-yaxis-grid .highcharts-grid-line {
+        display: none;
+    }
+</style>
+<script>
+
+    var gaugeOptions = {
+
+        chart: {
+            type: 'solidgauge'
+        },
+
+        title: null,
+
+        pane: {
+            center: ['50%', '85%'],
+            size: '140%',
+            startAngle: -90,
+            endAngle: 90,
+            background: {
+                backgroundColor: (Highcharts.theme && Highcharts.theme.background2) || '#EEE',
+                innerRadius: '60%',
+                outerRadius: '100%',
+                shape: 'arc'
+            }
+        },
+
+        tooltip: {
+            enabled: false
+        },
+
+        // the value axis
+        yAxis: {
+            stops: [
+                [0.1, '#55BF3B'], // green
+                [0.5, '#DDDF0D'], // yellow
+                [0.9, '#DF5353'] // red
+            ],
+            lineWidth: 0,
+            minorTickInterval: null,
+            tickAmount: 2,
+            title: {
+                y: -70
+            },
+            labels: {
+                y: 16
+            }
+        },
+
+        plotOptions: {
+            solidgauge: {
+                dataLabels: {
+                    y: 5,
+                    borderWidth: 0,
+                    useHTML: true
+                }
+            }
+        }
+    };
+
+    // The speed gauge
+    function guage(guagedata) {
+        Highcharts.chart('container-speed', Highcharts.merge(gaugeOptions, {
+            yAxis: {
+                min: 0,
+                max: 1056,
+                title: {
+                    text: 'Occupied Rooms'
+                }
+            },
+
+            credits: {
+                enabled: false
+            },
+
+            series: [{
+                name: 'Speed',
+                data: [guagedata],
+                dataLabels: {
+                    format: '<div style="text-align:center"><span style="font-size:25px;color:' +
+                        ((Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black') + '">{y}</span><br/>' +
+                           '<span style="font-size:12px;color:silver"></span></div>'
+                },
+                tooltip: {
+                    valueSuffix: ' km/h'
+                }
+            }]
+
+        }));
+    }
+
+    // The RPM gauge
+    var chartRpm = Highcharts.chart('container-rpm', Highcharts.merge(gaugeOptions, {
+        yAxis: {
+            min: 0,
+            max: 1056,
+            title: {
+                text: 'Vecant Rooms'
+            }
+        },
+
+        series: [{
+            name: 'RPM',
+            data: [1],
+            dataLabels: {
+                format: '<div style="text-align:center"><span style="font-size:25px;color:' +
+                    ((Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black') + '">{y:.1f}</span><br/>' +
+                       '<span style="font-size:12px;color:silver"></span></div>'
+            },
+            tooltip: {
+                valueSuffix: ' revolutions/min'
+            }
+        }]
+
+    }));
+    function GetTodayRoomStatus() {
+        $.ajax({
+            type: "POST",
+            url: "/Home/Gettotalcount",
+            success: function (data) {
+                debugger;
+                if (data.length > 0) {
+
+                    Session["newVal"] = data;
+                }
+            },
+            error: function () {
+
+            }
+        });
+    };
+    // Bring life to the dials
+    setInterval(function () {
+        // Speed
+        var point,
+            newVal,
+            inc;
+
+        if (!chart.renderer.forExport) {
+            setInterval(function () {
+                var point = chart.series[0].points[0],
+                    newVal,
+                    inc = Math.round(1);
+                $.ajax({
+                    url: '/Home/Gettotalcount',
+                    data: { fd: "" },
+                    type: 'POST',
+                    success: function (data) {
+
+                        if (data.length > 0) {
+
+                            newval = data;
+                        }
+                    }
+                })
+                point.update(newVal);
+
+            }, 3000);
+        }
+        // RPM
+        if (chartRpm) {
+            point = chartRpm.series[0].points[0];
+            inc = Math.random() - 0.5;
+            //newVal = point.y + inc;
+
+            //if (newVal < 0 || newVal > 5) {
+            //    newVal = point.y - inc;
+            //}
+            newVal = 264;
+            point.update(newVal);
+        }
+    }, 2000);
+
+
+
+</script>
+@*<script>
+        Highcharts.chart('container', {
+
+            chart: {
+                type: 'gauge',
+                plotBackgroundImage: null,
+                height: 200
+            },
+
+            title: {
+                text: 'Rooms Filled'
+            },
+
+            pane: [{
+                startAngle: -45,
+                endAngle: 45,
+                background: null,
+                center: ['50%', '145%'],
+                size: 300
+            }],
+
+            tooltip: {
+                enabled: false
+            },
+
+            yAxis: [{
+                min: 0,
+                max: 60,
+                minorTickPosition: 'outside',
+                tickPosition: 'outside',
+                labels: {
+
+                    distance: 20
+                },
+                plotBands: [{
+                    from: 0,
+                    to: 6,
+                    color: '#C02316',
+                    innerRadius: '100%',
+                    outerRadius: '105%'
+                }],
+                pane: 0,
+                title: {
+                    //text: 'VU<br/><span style="font-size:8px">Channel A</span>',
+                    y: -40
+                }
+            }],
+
+            plotOptions: {
+                gauge: {
+                    dataLabels: {
+                        enabled: false
+                    },
+                    dial: {
+                        radius: '100%'
+                    }
+                }
+            },
+
+
+            series: [{
+                data: [20],
+                yAxis: 0
+            }]
+
+        },
+        // Let the music play
+        function (chart) {
+            setInterval(function () {
+                if (chart.series) { // the chart may be destroyed
+                    var left = chart.series[0].points[0],
+                        leftVal,
+                        inc = (Math.random() - 0.5) * 3;
+                    left.update(leftVal, false);
+                    chart.redraw();
+                }
+            }, 500);
+
+        });
+    </script>*@
+
+<!-- End -->

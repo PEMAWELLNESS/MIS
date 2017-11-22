@@ -1,0 +1,107 @@
+﻿@model IEnumerable<Rooms.Models.TBL_DateofBirths>
+
+@{
+    ViewBag.Title = "HealerAttendance";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<head>
+    <script src="~/Scripts/jquery-1.12.4.js"></script>
+<link href="~/Content/bootstrap.css" rel="stylesheet" />
+ <style>
+        html{
+            background-color:white!important;
+        }
+    </style>
+    <script>
+        $(document).ready(function () {
+            $.ajax({
+                url: "/Attendance/GetAttendanceStatus/",
+                cache: false,
+                async: false,
+                type: "GET",
+                success: function (data) {
+                    if (data == 0) {
+                        alert("No Employees are Available in master");
+                    }
+                    else {
+                        debugger;
+                        $(".attendance").empty();
+                        //$(".attendance").append('<option value="-1">Select Status</option>');
+                        $.each(data, function (i, x) {
+                            $(".attendance").append('<option value="' + x.Id + '">' + x.Status + '</option>');
+                        });
+                    }
+                },
+                error: function (response) {
+                    alert("error : " + response);
+                }
+            });
+        });
+    </script>
+</head>
+<body>
+    <div class="container">
+        <div class="form-group">
+            <div class="col-md-12">
+                <div class="col-md-1"></div>
+                <div class="col-md-10" style="text-align:center;color:green">
+                    <h3><u>Attendance Log for : @DateTime.Today.ToString("dd-MM-yyyy")</u></h3>
+                </div>
+                <div class="col-md-1"></div>
+            </div>
+        </div><br />
+        <form method="post">
+            @{ int i = 0;}
+            <table class="table">
+                <tr>
+                    <th>
+                        Employee Code
+                    </th>
+                    <th>
+                        Employee Name
+                    </th>
+                    <th>
+                        Designation
+                    </th>
+                    <th>
+                        Attendance Status
+                    </th>
+                </tr>
+                @foreach (var item in Model)
+            {
+                    <tr>
+                        <td>
+                            <input type="hidden" name="emps @i" value="@item.Id" />
+                            <span name="empcode+@i">@Html.DisplayFor(modelItem => item.Ecno)</span>
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Emp_name)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Emp_designation)
+                        </td>
+                        <td>
+                            <select style="width: 194px;" id="attendance" class="attendance" name="attendance @i">
+                                <option value="0">Select</option>
+                            </select>
+                            <span style="visibility:hidden">@(i++);</span>
+                        </td>
+                    </tr>
+
+                }
+            </table>
+            <input type="hidden" name="count" value="@i" />
+            <div class="form-group col-sm-12 col-lg-12 col-md-12">
+                <div class="col-lg-3 col-md-3 col-sm-3">
+
+                </div>
+                <div class="col-lg-3 col-md-3 col-sm-3" style="text-align:center">
+                    <button style="text-align:center;" type="submit">Submit Attendance</button>
+                </div>
+                <div class="col-lg-3 col-md-3 col-sm-3">
+
+                </div>
+            </div>
+        </form>
+    </div>
+</body>

@@ -1,0 +1,439 @@
+﻿
+@{
+    ViewBag.Title = "UHIDRegistrationForm";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Registation</title>
+    <script src="https://code.jquery.com/jquery-3.2.1.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <script src="~/Scripts/jquery.validate.js"></script>
+    <script src="~/Scripts/jquery.validate.unobtrusive.min.js"></script>
+    <link href="~/Content/bootstrap.css" rel="stylesheet" />
+    <link href="~/Content/jquery-ui.min.css" rel="stylesheet" />
+    @*<link rel="stylesheet" type="text/css" href="/code_examples/tutorial.css">
+    <script type="text/javascript" src="/code_examples/passtest.js"></script>*@
+
+    <script>
+        var isvalidmail = true;
+        $(document).ready(function ()
+        {
+            debugger;
+            $("#email").change(function () {
+                debugger;
+                var inputvalue = $(this).val();
+                var re = /^[_a-z0-9-A-Z-]+(\.[_a-z0-9-A-Z-]+)*@@[a-z0-9-A-Z-]+(\.[a-z0-9-A-Z-]+)*(\.[a-z]{2,4})$/;
+                if (!re.test(inputvalue)) {
+                    //alert("!Please enter valid email address");
+                    $("#email").addClass("error");
+                    $("#email").focus();
+                    isvalidmail = false;
+                }
+                else {
+                    $.ajax({
+                        type: "POST",
+                        url: "../Index/CheckEmail",
+                        data: { username: $("#email").val() },
+                        dataType: "json",
+                        async: true,
+                        success: function (message) {
+                            switch (message) {
+                                case "Success":
+                                    $("#disply").fadeOut(5000);
+                                    $("#email").removeClass("error");
+                                    isvalidmail = true;
+                                    break;
+                                case "fail":
+                                    alert("Someone already Registered with this EmailId. Try another?");
+                                    $("#email").addClass("error");
+                                    $("#email").focus();
+                                    $("#email").val('');
+                                    isvalidmail = false;
+                                    break;
+                            }
+                        },
+                        failure: function (response) {
+                            alert(response);
+                        }
+                    });
+                }
+            })
+            $.validator.methods.date = function (value, element)
+            {
+                return this.optional(element) || $.datepicker.parseDate('dd/mm/yy', value);
+            }
+            $("#mobile").keypress(function (e) {
+                debugger
+                if ((e.which < 48 || e.which > 57) && e.which != 43) {
+                    //$("#errmsg4").html("Digits Only").show().fadeOut("slow");
+                    alert('Digits Only');
+                    return false;
+                }
+            });
+            if ('@TempData["message"]' != "")
+            {
+                $("#LoadingImage").show();
+                var res = '@TempData["message"]';
+                if (res == "Registation NOT Completed")
+                {
+
+                    alert(res);
+                    $("#LoadingImage").fadeOut(500);
+
+                }
+                else {
+
+                    $("#LoadingImage").show();
+                    alert(res);
+                    $("#LoadingImage").fadeOut(500);
+                    window.location.href = '@Url.Action("Solution1", "LoginPage")';
+                }
+            }
+            $("#date_of_birth").datepicker({
+                dateFormat: 'dd/mm/yy',
+                changeMonth: true,
+                changeYear: true,
+                yearRange: "-100:+0",
+            });
+        });
+        function checkvalid(event) {
+            if (isvalidmail == true) {
+                //var date = $("#date_of_birth").val().split("/");
+                //var date1 = new Date(date[2], date[1] - 1, date[0]);
+                ////var date = $("#date_of_birth").val();
+                //$("#date_of_birth").val(date1);
+                $("#LoadingImage").show();
+                $("form").submit();
+                $("#LoadingImage").fadeOut(500);
+
+            }
+            else {
+                alert("Someone already has that username. Try another? ")
+                event.preventDefault();
+            }
+        }
+
+        function checkPass() {
+            debugger;
+            //Store the password field objects into variables ...
+            var pass1 = document.getElementById("pwd");
+            var pass2 = document.getElementById("CPWD");
+            //Store the Confimation Message Object ...
+            var message = document.getElementById('confirmMessage');
+            //Set the colors we will be using ...
+            var goodColor = "#66cc66";
+            var badColor = "#ff6666";
+            //Compare the values in the password field
+            //and the confirmation field
+            if (pass1.value == pass2.value) {
+                //The passwords match.
+                //Set the color to the good color and inform
+                //the user that they have entered the correct password
+                pass2.style.backgroundColor = goodColor;
+                message.style.color = goodColor;
+                message.innerHTML = "Passwords Match!"
+                $("#confirmMessage").fadeOut(5000);
+            }
+            else {
+                //The passwords do not match.
+                //Set the color to the bad color and
+                //notify the user.
+                pass2.style.backgroundColor = badColor;
+                message.style.color = badColor;
+                message.innerHTML = "Passwords Do Not Match!"
+
+            }
+        }
+        function Mobile(mobile) {
+            var res = document.getElementById('mobile_no').value;
+            if (isNaN(res)) {
+                alert("should be only numbers");
+                //document.getElementById("mobile_no").focus();
+            }
+        }
+
+
+    </script>
+
+    <style>
+        #form_global label{
+                float: right;
+    line-height: 16px;
+    padding: 0 5px;
+    width: 185px;
+    font-size: 13px;
+    margin: 3px 20px;
+        }
+        #form_global input[type="radio"]{
+            width: 20px;
+    margin-top: 0;
+        }
+        #form_global input.submit:hover{
+                background: #2fc4c4!important;
+    transition: none;
+    -webkit-transition: none;
+        }
+        #form_global input.submit{
+                width: auto;
+    min-width: 85px;
+    cursor: pointer;
+    position: relative;
+    border: 1px solid #299e9e;
+    color: #fff;
+    padding: 6px 16px;
+    text-decoration: none;
+    font-size: 14px;
+    background: #3cb6b6;
+    box-shadow: 0 2px 3px rgba(0,0,0,.25);
+    -moz-box-shadow: 0 1px 3px rgba(0,0,0,.25);
+    -webkit-box-shadow: 0 1px 3px rgba(0,0,0,.25);
+        }
+        #form_global input, #form_global textarea, #form_global select{
+                background: #f6fdfd;
+    width: 185px;
+    padding: 3px 5px;
+    color: #666;
+    border: 1px solid #ccc;
+    margin: 3px 0 3px 0;
+    font-size: 13px;
+    -webkit-border-radius: 2px;
+    -moz-border-radius: 2px;
+    border-radius: 2px;
+    transition: all .25s ease-in-out;
+    -webkit-transition: all .25s ease-in-out;
+    -moz-transition: all .25s ease-in-out;
+    box-shadow: 0 0 5px rgba(81,203,238,0);
+    -webkit-box-shadow: 0 0 5px rgba(81,203,238,0);
+    -moz-box-shadow: 0 0 5px rgba(81,203,238,0);
+    vertical-align: middle;
+
+        }
+        .form_pema .form_content{
+            background: #fafafa;
+    height: auto;
+    border-left: 1px solid #dedede;
+    border-right: 1px solid #dedede;
+    border-bottom: 1px solid #dedede;
+    padding: 10px;
+    color: #666;
+    font-size: 13px;
+    margin-bottom: 10px;
+        }
+        .form_pema h2{
+                background-image: url(images/head_bg.png);
+    line-height: 35px;
+    color: #27a09b;
+    font-size: 18px;
+    text-align: center;
+    padding: 0 10px;
+    border: 1px solid #dedede;
+        }
+        #LoadingImage {
+            display: none;
+            margin: 0px 0px 0px -50px;
+            padding: 30px 10px 10px 10px;
+            position: absolute;
+            left: 40%;
+            top: 225px;
+            width: 300px;
+            height: 150px;
+            text-align: center;
+            background: #e8e8e8 url(Content/ajax-loader-load.gif) no-repeat center center;
+            border: 1px solid #000;
+        }
+    </style>
+
+</head>
+
+<body>
+    <div class="form_pema">
+        <h2> UHID Registration Form</h2>
+        <div class="form_content">
+            <!--Form Global starts here-->
+            <div id="form_global">
+
+
+                @*@using (Html.BeginForm("Index", "Register", new { @class = "frmreg", onclick = "checkvalidations();" }))
+                    {*@
+                <div id="LoadingImage"><img src="@Url.Content("~/Content/ajax-loader-load.gif")" alt="Loading..." />  </div>
+                @*<div id="dialog-alert" style="display: none">
+                        <p>
+                            @TempData["message"]!
+                        </p>
+                    </div>*@
+                @*@Html.AntiForgeryToken()
+                    @Html.ValidationSummary(true)*@
+
+
+                <fieldset>
+
+                    <table style="width:100%;">
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td><label>Email ID</label></td>
+
+                            <td>
+                                @*@Html.EditorFor(model => model.user_id, new { @onchange = "UserOrEmailAvailability()" })*@
+                                <input type="text" id="email" />
+                            </td>
+                        </tr>
+                        @*<tr>
+                                <td>&nbsp;</td>
+                                <td>
+                                    @Html.ValidationMessageFor(model => model.user_id)
+
+                                    <label id="disply"></label>
+                                </td>
+                            </tr>*@
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td><label>Password</label></td>
+                            <td>
+                                @*@Html.EditorFor(model => model.password)*@
+                                <input type="text" id="pwd" name="pwd" />
+                            </td>
+                        </tr>
+                        @*<tr>
+                                <td>&nbsp;</td>
+                                <td>
+                                    @Html.ValidationMessageFor(model => model.password)
+                                </td>
+                            </tr>*@
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td><label>Confirm Password</label></td>
+                            <td>
+                                <input type="password" id="CPWD" onkeyup="checkPass(); return false;" name="CPWD" />
+                            </td>
+                            <td><span id="confirmMessage" class="confirmMessage"></span></td>
+                        </tr>
+
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td><label>First Name</label></td>
+                            <td>
+                                @*@Html.EditorFor(model => model.first_name)*@
+                                <input type="text" id="fname" />
+                            </td>
+                        </tr>
+                        @*<tr>
+                                <td>&nbsp;</td>
+                                <td>
+
+                                    @Html.ValidationMessageFor(model => model.first_name)
+                                </td>
+                            </tr>*@
+                        @*<tr style="display:none">
+                                <td>
+                                    @Html.ValidationMessageFor(model => model.middle_name)
+                                </td>
+                            </tr>*@
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td><label>Last Name</label></td>
+                            <td>
+                                @*@Html.EditorFor(model => model.last_name)*@
+                                <input type="text" id="lname" />
+                            </td>
+                        </tr>
+                        @*<tr>
+                                <td>&nbsp;</td>
+                                <td>
+
+                                    @Html.ValidationMessageFor(model => model.last_name)
+                                </td>
+                            </tr>*@
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td><label>Gender</label></td>
+                            <td>
+                                &nbsp;&nbsp;&nbsp;&nbsp;
+                                <input type="radio" name="gender" value="Male" id="gender" checked="checked" style="vertical-align:initial">Male
+                                <input type="radio" name="gender" value="Female" id="gender" style="vertical-align:initial">Female
+                            </td>
+                        </tr>
+                        <tr style="display:none">
+                            <td></td>
+                            <td></td>
+                            <td><label>Father/husband Name</label></td>
+                            <td>
+                                @* @Html.EditorFor(model => model.father_husband_name)*@
+                                <input type="text" id="fathername" />
+                            </td>
+                        </tr>
+                        @*<tr style="display:none">
+                                <td>&nbsp;</td>
+                                <td>
+                                    @Html.ValidationMessageFor(model => model.father_husband_name)
+                                </td>
+                            </tr>*@
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td><label>Date of Birth</label></td>
+
+                            <td>
+                                @*@Html.TextBoxFor(model => model.date_of_birth, new { @placeholder = "dd/mm/yyyy", @style = "height:20px;", @readonly = "readonly" })*@
+                                <input type="date" id="dob" />
+                            </td>
+                        </tr>
+                        @*<tr>
+                                <td>&nbsp;</td>
+                                <td>
+                                    @Html.ValidationMessageFor(model => model.date_of_birth)
+                                </td>
+                            </tr>*@
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td><label>Mobile No</label></td>
+                            <td>
+                                <input type="text" id="mobile" name="mobile" />
+                                @*@Html.TextBoxFor(model => model.mobile_no, new { @onkeypress = "Mobile(this)" })*@
+                            </td>
+                        </tr>
+                        @*<tr>
+                                <td>&nbsp;</td>
+                                <td>
+                                    @Html.ValidationMessageFor(model => model.mobile_no)
+                                </td>
+                            </tr>*@
+
+
+
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td>&nbsp;</td>
+                            <td>
+                                <input type="button" value="Register" onclick="checkvalid(event)" class="submit" />
+                            </td>
+                        </tr>
+
+
+                    </table>
+
+                </fieldset>
+                @*}*@
+            </div>
+        </div>
+    </div>
+
+</body>
+
+
+
+
+
+
+
+</html>

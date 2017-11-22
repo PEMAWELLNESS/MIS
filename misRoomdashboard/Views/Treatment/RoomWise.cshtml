@@ -1,0 +1,386 @@
+﻿
+@{
+    ViewBag.Title = "RoomWise";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+<link rel="stylesheet" href="/resources/demos/style.css">
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+<link href="~/Content/bootstrap.css" rel="stylesheet" />
+<script src="~/Scripts/moment.js"></script>
+<script src="https://cdn.datatables.net/1.10.15/js/jquery.dataTables.min.js"></script>
+<link href="https://cdn.datatables.net/1.10.15/css/jquery.dataTables.min.css" rel="stylesheet" />
+<script>
+    $(document).ready(function () {
+        $("#scheduledate").datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", new Date());;
+        getdetails($("#scheduledate").val());
+        $("#scheduledate").change(function () {
+            getdetails($("#scheduledate").val());
+            LoadData($("#scheduledate").val());
+            Getroomsoccupiedcount($("#scheduledate").val());
+            Getroomsvacanrcount($("#scheduledate").val());
+        });
+    });
+    function getdetails(dated) {
+        debugger;
+        var url = '@Url.Action("GuestWiseReport", "Treatment")';
+        $.ajax({
+            data: { dated },
+            url: url,
+            type: 'POST',
+            success: function (result) {
+                debugger;
+                var data = new Array();
+                for (var i = 0; i < result.length; i++) {
+                    data.push({
+                        PRNO: result[i].PRNO,
+                        GuestName: result[i].GuestName,
+                        RoomNo: result[i].RoomNo,
+                        HealerName: result[i].HealerName,
+                        TreatmentName: result[i].TreatmentName,
+                        ScheduleTime: moment(result[i].ScheduleTime).format("HH:mm")
+                    })
+                }
+                var table=$('#treatmentmaster').DataTable({
+                    data: data,
+                    destroy: true,
+                    "order": [[0, "asc"], [5, "asc"]],
+                    columns: [
+                        { "data": "RoomNo" },
+                        { "data": "TreatmentName" },
+                        { "data": "HealerName" },
+                        { "data": "PRNO" },
+                        { "data": "GuestName" },
+                        { "data": "ScheduleTime" }
+                    ],
+                });
+            }
+        });
+    }
+</script>
+<script>
+    $(document).ready(function () {
+        Getroomscount();
+        Gettreatmentcount();
+        Getroomsoccupiedcount($("#scheduledate").val());
+        Getroomsvacanrcount($("#scheduledate").val());
+        //LoadData();
+        LoadData($("#scheduledate").val());
+    });
+    function Getroomscount() {
+        $.ajax({
+            type: "post",
+            url: "/Treatment/gettotalroomsscount/",
+            success: function (data) {
+                if(data!="0")
+                {
+                    $("#totalrooms").text(data);
+                }
+                else {
+                    $("#totalrooms").text("0");
+                }
+            },
+        });
+    }
+    function Gettreatmentcount() {
+        $.ajax({
+            type: "post",
+            url: "/Treatment/Gettreatmentscount/",
+            success: function (data) {
+                if (data != "0") {
+                    $("#totaltreatments").text(data);
+                }
+                else {
+                    $("#totaltreatments").text("0");
+                }
+            },
+        });
+    }
+    function Getroomsoccupiedcount(dated) {
+        $.ajax({
+            type: "post",
+            data: { dated },
+            url: "/Treatment/Getroomsoccupiedcount/",
+            success: function (data) {
+                if (data != "0") {
+                    $("#roomsoccupied").text(data);
+                }
+                else {
+                    $("#roomsoccupied").text("0");
+                }
+            },
+        });
+    }
+    function Getroomsvacanrcount(dated) {
+        $.ajax({
+            type: "post",
+            data: { dated },
+            url: "/Treatment/Getroomsvacantcount/",
+            success: function (data) {
+                if (data != "0") {
+                    $("#vacantrooms").text(data);
+                }
+                else {
+                    $("#vacantrooms").text("0");
+                }
+            },
+        });
+    }
+    function LoadData(dated) {
+        debugger;
+        $.ajax({
+            type: "POST",
+            data: { dated },
+            url: "/Treatment/Roomwisegraph",
+            //data: "id=",
+            success: function (data) {
+                debugger;
+                var locdata = new Array();
+                for (var i = 0; i < data.length; i++) {
+                    locdata.push({
+                        name: data[i].Key,
+                        y: data[i].Value,
+                        drilldown: false
+                    });
+                }
+                BindData(locdata);
+
+            },
+            error: function () {
+                // alert("error")
+            }
+        });
+    }
+    function BindData(locations) {
+        $('#container').highcharts({
+            chart: {
+                type: 'column',
+                events: {
+                    drilldown: function (e) {
+                        if (!e.seriesOptions) {
+
+                            var chart = this;
+                            chart.showLoading('Simulating Ajax ...');
+                            var series = Getseries(e.point.name, chart, e.point);
+                            // Show the loading label
+
+                        }
+                    }
+                }
+            },
+            title: {
+                text: 'Room Wise Graph'
+            },
+            xAxis: {
+                type: 'category'
+            },
+            yAxis: {
+                title: {
+                    text: 'Treatments'
+                }
+
+            },
+            legend: {
+                enabled: false
+            },
+            plotOptions: {
+                series: {
+                    borderWidth: 0,
+                    dataLabels: {
+                        enabled: true
+                    }
+                }
+            },
+            credits: {
+                enabled: false
+            },
+            series: [{
+                cursor: 'pointer',
+                point: {
+                    events: {
+                        click: function () {
+                            roomlist(this.name, $("#scheduledate").val());
+                            $('#room').val(this.name);
+                            // alert(this.name)
+                        }
+                    },
+                },
+                name: 'Count',
+                colorByPoint: true,
+                data: locations
+            }],
+            drilldown: {
+                series: []
+            }
+        });
+    }
+    function roomlist(name,Date) {
+        debugger;
+        $('#room').val(name);
+        var wallcode = name;
+        var postData = {
+            roomname: wallcode,
+            datenew: Date,
+        }
+        //debugger;
+        $.ajax({
+            type: "POST",
+            data: postData,
+            url: "/Treatment/Getroomlist",
+            //data: "id=",
+            success: function (result) {
+                debugger;
+                var locdata = new Array();
+                for (var i = 0; i < result.length; i++) {
+                    locdata.push({
+                        PRNO: result[i].PRNO,
+                        RoomName: result[i].RoomName,
+                        GuestName: result[i].GuestName,
+                        drilldown: false
+                    });
+                }
+                var sttt = "Employees with Designation are";
+                $(".tbb").remove();
+                var $table = $('<table/>');
+                $table.addClass("table table-bordered table-hover table-striped tbb");
+                $table.append('<th style="text-align:center!important;">PRNO</th> <th style="text-align:center!important;">Room Name</th><th style="text-align:center!important;">Guest Name</th>');
+                for (var i = 0; i < locdata.length; i++) {
+                    //debugger;
+
+                    $table.append('<tr><td>' + locdata[i].PRNO + '</td><td>' + locdata[i].RoomName + '</td><td>' + locdata[i].GuestName + '</td></tr>');
+                    $('#emplist').append($table);
+
+                }
+                $('#emplist').show();
+            }
+        });
+    }
+</script>
+<script src="https://code.highcharts.com/highcharts.js"></script>
+<script src="https://code.highcharts.com/modules/exporting.js"></script>
+<div class="row" style="text-align:center;margin-top: 10px;">
+    <div class="col-lg-3 col-md-6">
+        <div class="panel panel-primary">
+            <div class="panel-heading">
+                <div class="row">
+                    <div class="col-xs-3">
+                    </div>
+                    <div class="col-xs-9 text-right">
+                        <div class="huge">
+                            <span id="totalrooms"></span>
+                        </div><br />
+                        <div style="width:216px;">TOTAL TREATMENT ROOMS</div>
+                    </div>
+                </div>
+            </div>
+            <div class="panel-footer">
+                <span class="pull-left">View Details</span>
+                <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
+                <div class="clearfix"></div>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-3 col-md-6">
+        <div class="panel panel-green">
+            <div class="panel-heading">
+                <div class="row">
+                    <div class="col-xs-3">
+                        @*<i class="fa fa-wheelchair fa-5x"></i>*@
+                        @*<img src="~/fonts/patientpng.png" style="height:77px;"/>*@
+                    </div>
+                    <div class="col-xs-9 text-right">
+                        <div class="huge">
+                            <span id="totaltreatments"></span>
+                        </div><br />
+                        <div>TOTAL TREATMENTS</div>
+                    </div>
+                </div>
+            </div>
+            <div class="panel-footer">
+                <span class="pull-left">View Details</span>
+                <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
+                <div class="clearfix"></div>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-3 col-md-6">
+        <div class="panel panel-yellow">
+            <div class="panel-heading">
+                <div class="row">
+                    <div class="col-xs-3">
+                        @*<i class="fa fa-user-md fa-5x"></i>*@
+                    </div>
+                    <div class="col-xs-9 text-right">
+                        <div class="huge">
+                            <span id="roomsoccupied"></span>
+                        </div><br />
+                        <div>ROOMS OCCUPIED</div>
+                    </div>
+                </div>
+            </div>
+            <div class="panel-footer">
+                <span class="pull-left">View Details</span>
+                <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
+                <div class="clearfix"></div>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-3 col-md-6">
+        <div class="panel panel-red">
+            <div class="panel-heading">
+                <div class="row">
+                    <div class="col-xs-3">
+                        @*<i class="fa fa-user fa-5x"></i>*@
+                        @*<img src="~/fonts/1495211194_doctor.ico" style="height:77px;"/>*@
+                    </div>
+                    <div class="col-xs-9 text-right">
+                        <div class="huge">
+                            <span id="vacantrooms"></span>
+                        </div><br />
+                        <div>ROOMS VACANT</div>
+                    </div>
+                </div>
+            </div>
+            <div class="panel-footer">
+                <span class="pull-left">View Details</span>
+                <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
+                <div class="clearfix"></div>
+            </div>
+        </div>
+    </div>
+</div>
+<center style="color:red;font-size:25px;">Room Wise Treatments &nbsp;&nbsp;&nbsp; <label style="color:#333;font-size:20px;">Date:<input type="text" id="scheduledate" style="width: 272px;"></label></center>
+<div class="modal-body" style="width:90%;margin-left:78px;">
+    @*Date: <input type="text" id="scheduledate">*@
+    <table id="treatmentmaster" class="display" cellspacing="0" width="100%">
+        <thead>
+            <tr>
+                <th>RoomNo</th>
+                <th>HealerName</th>
+                <th>TreatmentName</th>
+                <th>PRNO</th>
+                <th>GuestName</th>
+                <th>ScheduleTime</th>
+            </tr>
+        </thead>
+    </table>
+</div>
+<div class="row">
+    <div class="col-md-2"></div>
+    <div id="container" class="col-md-8" style="float:left;height: 400px; margin: 0 auto"></div>
+</div><br />
+<div class="content-holder">
+    <a href="#" class="expand-content-link">Room Wise treatments:<input type="text" id="room" name="room" style="border:none;" readonly="readonly" /></a>
+    <div class="hidden-content" id="container"></div>
+    <br />
+    <div class="empllist" id="emplist" style="text-align:center;">
+    </div>
+</div>
+<link href="~/Newlayout/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
+<link href="~/Newlayout/vendor/metisMenu/metisMenu.min.css" rel="stylesheet" />
+<link href="~/Newlayout/dist/css/sb-admin-2.css" rel="stylesheet" />
+<link href="~/Newlayout/vendor/morrisjs/morris.css" rel="stylesheet" />
+<link href="~/Newlayout/vendor/font-awesome/css/font-awesome.min.css" rel="stylesheet" />
+
+

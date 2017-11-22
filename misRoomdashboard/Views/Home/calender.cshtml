@@ -1,0 +1,1153 @@
+﻿@model IEnumerable<Rooms.Models.ApplicationData>
+@{
+    ViewBag.Title = "Application";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<html>
+<head>
+
+    <title></title>
+    <script src="~/Scripts/jquery-1.10.2.min.js"></script>
+    <script src="~/Scripts/CustomJS/jquery.min.js"></script>
+    <script src="~/lib/moment.min.js"></script>
+    <script src="~/lib/fullcalendar.min.js"></script>
+    <link href="~/lib/fullcalendar.min.css" rel="stylesheet" />
+    <link href="~/lib/fullcalendar.print.min.css" rel="stylesheet" media="print" />
+    <style>
+        body {
+            margin: 40px 10px;
+            padding: 0;
+            font-family: "Lucida Grande",Helvetica,Arial,Verdana,sans-serif;
+            font-size: 14px;
+        }
+.fc-day-top fc-sun fc-other-month fc-past{
+cursor: pointer;
+}
+
+        #calendar {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        .fc-bgevent{
+            opacity:2.3!important;
+        }
+        #guestname{
+             width:auto;
+            max-width:inherit!important;
+        }
+    </style>
+
+
+    <script type="text/javascript">
+        function RefreshPage() {
+            location.reload();
+        }
+
+        $(document).ready(function () {
+            //GetDateTime();
+            //ShowTime();
+            var gaugeOptions = {
+
+                chart: {
+                    type: 'solidgauge'
+                },
+
+                title: null,
+
+                pane: {
+                    center: ['50%', '85%'],
+                    size: '140%',
+                    startAngle: -90,
+                    endAngle: 90,
+                    background: {
+                        backgroundColor: (Highcharts.theme && Highcharts.theme.background2) || '#EEE',
+                        innerRadius: '60%',
+                        outerRadius: '100%',
+                        shape: 'arc'
+                    }
+                },
+
+                tooltip: {
+                    enabled: false
+                },
+
+                // the value axis
+                yAxis: {
+                    stops: [
+                        [0.1, '#55BF3B'], // green
+                        [0.5, '#DDDF0D'], // yellow
+                        [0.9, '#DF5353'] // red
+                    ],
+                    lineWidth: 0,
+                    minorTickInterval: null,
+                    tickAmount: 2,
+                    title: {
+                        y: -70
+                    },
+                    labels: {
+                        y: 16
+                    }
+                },
+
+                plotOptions: {
+                    solidgauge: {
+                        dataLabels: {
+                            y: 5,
+                            borderWidth: 0,
+                            useHTML: true
+                        }
+                    }
+                }
+            };
+
+
+            //totalcount();
+            //vacentscount();
+            //Occupiedcount();
+            //Maintianencecount();
+            //status = "113";
+            //document.getElementById("myField").value = status;
+            $('#calendar').fullCalendar({
+            
+                //events: '/Home/RoomWiseList?roomno=' + status
+            });
+            var table = document.getElementById('tblRoom'),
+            cells = table.getElementsByTagName('td');
+            //function GetDateTime() {
+            //    var param1 = new Date();
+            //    var param2 = param1.getDate() + '/' + (param1.getMonth()+1) + '/' + param1.getFullYear();
+            //    document.getElementById('lbldate').innerHTML = param2;
+            //}
+
+            function getcaldata(status) {
+                debugger
+                $('#calendar').fullCalendar('destroy');
+                $('#calendar').fullCalendar({
+                    dayClick: function (date, jsEvent, view) {
+                        debugger;
+                        $.ajax({
+                            type: "POST",
+                            url: "/Home/getdaywisedetails?roomno=" + document.getElementById("myField").value+"&date="+date.format(),
+                            success: function (data) {
+                                debugger;
+                                if (data != "0") {
+                                    $("#guestname").val(data);
+                                    $("#guestname").attr('size', $("#guestname").val().length);
+                                }
+                                else {
+                                    $("#guestname").text("0");
+                                }
+                            },
+                            error: function () {
+
+                            }
+                        });
+                    },
+                    events: '/Home/RoomWiseList?roomno=' + status
+                });
+
+
+
+            }
+            for (var i = 0, len = cells.length; i < len; i++) {
+                //debugger;
+                var a = document.getElementById('calendar-control');
+                a.style.display = 'block';
+                var status;
+                cells[i].onclick = function () {
+                    debugger;
+                    //alert(this.innerHTML);
+                    data: {
+                        if (this.innerHTML != "") {
+
+                            a.style.display = 'block';
+                            status = this.innerHTML;
+
+                        }
+                        document.getElementById("myField").value = status;
+                        getcaldata(status);
+                        document.getElementById("guestname").value = "";
+                    }
+                }
+            }
+        });
+        function ShowTime() {
+            debugger;
+            var dt = new Date();
+            document.getElementById("lblTime").innerHTML = dt.toLocaleTimeString();
+            window.setTimeout("ShowTime()", 1000); // Here 1000(milliseconds) means one 1 Sec
+        }
+        function vacentscount() {
+            $.ajax({
+                type: "POST",
+                url: "/Home/Getvacentcount",
+                success: function (data) {
+                    debugger;
+                    if (data != "0") {
+                        $("#vacentcount").text(data);
+                        vacancy(data);
+                    }
+                    else {
+                        $("#vacentcount").text("0");
+                    }
+                },
+                error: function () {
+
+                }
+            });
+        }
+        function Occupiedcount() {
+            debugger;
+            $.ajax({
+                type: "POST",
+                url: "/Home/GetOccupiedcount",
+                success: function (data) {
+                    debugger;
+                    if (data != "0") {
+                        $("#Occupiedcount").text(data);
+                        occupied(data);
+                        //alert(data1);
+                        //chartSpeed.series[0].update({
+                        //    data: [parseInt(data1)]
+                        //});
+
+                    }
+                    else {
+                        $("#Occupiedcount").text("0");
+                    }
+                },
+                error: function () {
+
+                }
+            });
+        }
+        function Maintianencecount() {
+            debugger;
+            $.ajax({
+                type: "POST",
+                url: "/Home/GetMaintianencecount",
+                success: function (data) {
+                    debugger;
+                    if (data != "0") {
+                        $("#Maintianencecount").text(data);
+                    }
+                    else {
+                        $("#Maintianencecount").text("0");
+                    }
+                },
+                error: function () {
+
+                }
+            });
+        }
+        function totalcount() {
+            debugger;
+            $.ajax({
+                type: "POST",
+                url: "/Home/Gettotalcount",
+                success: function (data) {
+                    debugger;
+                    if (data != "0") {
+                        $("#totalcount").text(data);
+                    }
+                    else {
+                        $("#totalcount").text("0");
+                    }
+                },
+                error: function () {
+
+                }
+            });
+        }
+        // occupied guage
+        function occupied(data) {
+            debugger;
+            Highcharts.chart('container-occupied', Highcharts.merge(gaugeOptions, {
+                yAxis: {
+                    min: 0,
+                    max: 2000,
+                    title: {
+                        text: 'Occupied'
+                    }
+                },
+
+                credits: {
+                    enabled: false
+                },
+
+                series: [{
+                    name: 'Occupied',
+                    data: [parseInt(data)],
+                    dataLabels: {
+                        format: '<div style="text-align:center"><span style="font-size:25px;color:' +
+                            ((Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black') + '">{y}</span><br/>' +
+                               '<span style="font-size:12px;color:silver">Rooms/Month</span></div>'
+                    },
+
+                }]
+
+            }));
+        }
+        // vacant gauge
+        function vacancy(data) {
+            Highcharts.chart('container-vacant', Highcharts.merge(gaugeOptions, {
+                yAxis: {
+                    min: 0,
+                    max: 2000,
+                    title: {
+                        text: 'Vacant'
+                    }
+                },
+
+                credits: {
+                    enabled: false
+                },
+
+                series: [{
+                    name: 'Vacant',
+                    data: [parseInt(data)],
+                    dataLabels: {
+                        format: '<div style="text-align:center"><span style="font-size:25px;color:' +
+                            ((Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black') + '">{y}</span><br/>' +
+                               '<span style="font-size:12px;color:silver">Rooms/Month</span></div>'
+                    },
+
+                }]
+
+            }));
+        }
+    </script>
+    <style>
+        .room_db {
+            float: left;
+            background: #4b72b8;
+        }
+
+            .room_db sup {
+                font-size: 11px;
+                font-weight: normal;
+            }
+
+            .room_db th {
+                background: #FD6F6F;
+                color: #fff;
+                font-size: 14px;
+                border-bottom: 1px solid #f8f8f8;
+                padding: 5px;
+                text-align: center;
+            }
+
+            .room_db td {
+                padding: 5px;
+                color: #fff;
+                font-size: 14px;
+                text-align: center;
+                border-bottom: 1px solid #f8f8f8;
+                border-right: 1px solid #f8f8f8;
+            }
+
+                .room_db td:hover {
+                    background: #008E6B;
+                }
+
+        .room_colors {
+            float: right;
+            width: 130px;
+            height: 110px;
+            /* border: 3px solid #CCC;*/
+        }
+
+            .room_colors div {
+                width: 18px;
+                height: 18px;
+                text-align: center;
+                border: 1px solid #CCC;
+            }
+
+            .room_colors td {
+                width: 155px;
+                height: 40px;
+            }
+            /*color 1 means vaccant*/
+            .room_colors .color1 {
+                background: #0099CC;
+            }
+            /*color2 occupied */
+            .room_colors .color2 {
+                background: #00ff1f;
+            }
+            /*color3 Blocked */
+            .room_colors .color3 {
+                background: #FF3366;
+            }
+            /*color4 TBC */
+            .room_colors .color4 {
+                background: #CC9900;
+            }
+            /*color4 TBC */
+            .room_colors .color5 {
+                background: #FFD700;
+            }
+
+            .room_colors .colors1 {
+                background: palegreen;
+            }
+
+            .room_colors .colors2 {
+                background: darkgreen;
+            }
+
+            .room_colors .colors3 {
+                background: red;
+            }
+
+        .navbar-default .navbar-nav > .dropdown > a .caret {
+            border-top-color: white;
+            border-bottom-color: white;
+        }
+    </style>
+
+</head>
+<body style="font:normal 16px/22px 'QuicksandRegular';">
+
+    <div class="form_pema">
+        <h2 style="text-align:center;font:normal 30.73px/40px 'QuicksandBold';">3 Months Calendar Update</h2>
+        <br />
+        @*<div style="text-align:center;color:deepskyblue;font: normal 37px/22px 'QuicksandRegular';">
+                <div id="lbldate"></div><br />
+
+            </div>*@
+        <div class="form_content">
+            <!--Form Global starts here-->
+            <div id="form_global">
+                <!--Form Global starts here-->
+                @using (Html.BeginForm())
+                {
+                    int fblockedCount = 0; int fvacantCount = 0; int inhouseCount = 0; int funderCount = 0; int focuCount = 0; int ffunderCount = 0; int fdouCount = 0; int ftriCount = 0;
+                    <fieldset style="width:100%;padding-left:55px;">
+                        <table style="width:100%;">
+                            <tr>
+                                <td>
+                                    <!--left td with rooms and their colors-->
+                                    <table style="width:95%;" id="tblRoom" class="room_db">
+                                        @{
+                                            //var grpitem1 = Model.GroupBy(u => u.FLOOR).ToList();
+                                            var grpitem1 = Model.GroupBy(u => u.FLOOR);
+                                            var grpitem = grpitem1.ToList();
+                                        }
+                                        @foreach (var item1 in grpitem1)
+                                        {
+                                            var item = from i in item1.OrderByDescending(r => r.Room_no).ToList() select i;
+                                            <tr>
+                                                <th scope="row" width="6%">@item.FirstOrDefault().FLOOR</th>
+                                                @foreach (var newItem in item)
+                                                {
+                                                    //if (newItem.NewRoomDashboard != null)
+                                                    //{
+                                                    if (newItem.Status == "Blocked")
+                                                    {
+
+                                                        if (newItem.Room_no == "113")
+                                                        {
+                                                            <td colspan="2" style="width: 100px; height: 40px;color:black;background-color:#4b72b8;border-bottom:#4b72b8;border-color: black;"></td>
+                                                            <td id="Blocked" colspan="2" style="width: 100px; height: 40px; cursor: pointer; background-color: #FF3366; border-color: black">@newItem.Room_no</td>
+                                                            fblockedCount += 1;
+                                                        }
+                                                        else if (newItem.Room_no == "215")
+                                                        {
+                                                            <td colspan="2" style="width: 100px; height: 40px;color:black;background-color:#4b72b8;border-color: black;"></td>
+                                                            <td id="Blocked" style="width: 100px; height: 40px; cursor: pointer; background-color: #FF3366; border-color: black">@newItem.Room_no</td>
+                                                            fblockedCount += 1;
+                                                        }
+                                                        else if (newItem.Room_no == "110")
+                                                        {
+                                                            <td id="Blocked" colspan="2" style="width: 100px; height: 40px; cursor: pointer; background-color: #FF3366; border-color: black">@newItem.Room_no</td>
+                                                            fblockedCount += 1;
+                                                        }
+                                                        else if (newItem.Room_no == "109" || newItem.Room_no == "209" || newItem.Room_no == "311" || newItem.Room_no == "411")
+                                                        {
+                                                            <td id="Blocked" style="width: 100px; height: 40px; cursor: pointer; background-color: #FF3366; border-color: black">@newItem.Room_no</td>
+                                                            <td style="width: 200px; height: 40px;color:black; cursor: pointer; background-color: #C8C8FF; border-color: black">LOBBY</td>
+
+                                                            fblockedCount += 1;
+                                                        }
+                                                        else
+                                                        {
+                                                            <td id="Blocked" style="width: 100px; height: 40px; cursor: pointer; background-color: #FF3366; border-color: black">@newItem.Room_no</td>
+                                                            fblockedCount += 1;
+                                                        }
+                                                    }
+                                                    else if (newItem.Status == "Single")
+                                                    {
+                                                        @*if (newItem.Room_no == "113" || newItem.Room_no == "110")
+                                                            {
+                                                                <td id="Occupied" colspan="2" style="width: 100px; height: 40px; cursor: pointer; background-color: #00ff1f; border-color: black">@newItem.Room_no</td>
+                                                                focuCount += 1;
+                                                            }*@
+                                                if (newItem.Room_no == "113")
+                                                {
+                                                    <td colspan="2" style="width: 100px; height: 40px;color:black;background-color:#4b72b8;border-bottom:#4b72b8;border-color: black;"></td>
+                                                    <td id="Occupied" colspan="2" style="width: 100px; height: 40px; cursor: pointer; background-color: #00ff1f; border-color: black">@newItem.Room_no</td>
+                                                    focuCount += 1;
+                                                }
+                                                else if (newItem.Room_no == "215")
+                                                {
+                                                    <td colspan="2" style="width: 100px; height: 40px;color:black;background-color:#4b72b8;border-color: black;"></td>
+                                                    <td id="Occupied" style="width: 100px; height: 40px; cursor: pointer; background-color: #00ff1f; border-color: black">@newItem.Room_no</td>
+                                                    focuCount += 1;
+                                                }
+                                                else if (newItem.Room_no == "110")
+                                                {
+                                                    <td id="Occupied" colspan="2" style="width: 100px; height: 40px; cursor: pointer; background-color: #00ff1f; border-color: black">@newItem.Room_no</td>
+                                                    focuCount += 1;
+                                                }
+                                                else if (newItem.Room_no == "109" || newItem.Room_no == "209" || newItem.Room_no == "311" || newItem.Room_no == "411")
+                                                {
+                                                    <td id="Occupied" style="width: 100px; height: 40px; cursor: pointer; background-color: #00ff1f; border-color: black">@newItem.Room_no</td>
+                                                    <td style="width: 200px; height: 40px; cursor: pointer;color:black; background-color: #C8C8FF; border-color: black">LOBBY</td>
+
+                                                    focuCount += 1;
+                                                }
+                                                else
+                                                {
+                                                    <td id="Occupied" style="width: 100px; height: 40px; cursor: pointer; background-color: #00ff1f; border-color: black; ">@newItem.Room_no</td>
+                                                        focuCount += 1;
+                                                    }
+                                                }
+                                                else if (newItem.Status == "Double")
+                                                {
+                                                    @*if (newItem.Room_no == "113" || newItem.Room_no == "110")
+                                                        {
+                                                            <td id="Occupied" colspan="2" style="width: 100px; height: 40px; cursor: pointer; background-color: darkgreen; border-color: black">@newItem.Room_no</td>
+                                                            fdouCount += 1;
+                                                        }*@
+                                                if (newItem.Room_no == "113")
+                                                {
+                                                    <td colspan="2" style="width: 100px; height: 40px;color:black;background-color:#4b72b8;border-bottom:#4b72b8;border-color: black;"></td>
+                                                    <td id="Blocked" style="width: 100px; height: 40px; cursor: pointer; background-color: darkgreen; border-color: black">@newItem.Room_no</td>
+                                                    fdouCount += 1;
+                                                }
+                                                else if (newItem.Room_no == "215")
+                                                {
+                                                    <td colspan="2" style="width: 100px; height: 40px;color:black;background-color:#4b72b8;border-color: black;"></td>
+                                                    <td id="Blocked" style="width: 100px; height: 40px; cursor: pointer; background-color: darkgreen; border-color: black">@newItem.Room_no</td>
+                                                    fdouCount += 1;
+                                                }
+                                                else if (newItem.Room_no == "110")
+                                                {
+                                                    <td id="Blocked" colspan="2" style="width: 100px; height: 40px; cursor: pointer; background-color: darkgreen; border-color: black">@newItem.Room_no</td>
+                                                    fdouCount += 1;
+                                                }
+                                                else if (newItem.Room_no == "109" || newItem.Room_no == "209" || newItem.Room_no == "311" || newItem.Room_no == "411")
+                                                {
+                                                    <td id="Occupied" style="width: 100px; height: 40px; cursor: pointer; background-color: darkgreen; border-color: black">@newItem.Room_no</td>
+                                                    <td style="width: 200px; height: 40px; cursor: pointer;color:black; background-color: #C8C8FF; border-color: black">LOBBY</td>
+
+                                                    fdouCount += 1;
+                                                }
+                                                else
+                                                {
+                                                    <td id="Occupied" style="width: 100px; height: 40px; cursor: pointer; background-color: darkgreen; border-color: black; ">@newItem.Room_no</td>
+                                                        fdouCount += 1;
+                                                    }
+                                                }
+                                                else if (newItem.Status == "Triple")
+                                                {
+                                                    @*if (newItem.Room_no == "113" || newItem.Room_no == "110")
+                                                        {
+                                                            <td id="Occupied" colspan="2" style="width: 100px; height: 40px; cursor: pointer; background-color: palegreen; border-color: black">@newItem.Room_no</td>
+                                                            ftriCount += 1;
+                                                        }*@
+                                                if (newItem.Room_no == "113")
+                                                {
+                                                    <td colspan="2" style="width: 100px; height: 40px;color:black;background-color:#4b72b8;border-bottom:#4b72b8;border-color: black;"></td>
+                                                    <td id="Blocked" colspan="2" style="width: 100px; height: 40px; cursor: pointer; background-color: palegreen; border-color: black">@newItem.Room_no</td>
+                                                    ftriCount += 1;
+                                                }
+                                                else if (newItem.Room_no == "215")
+                                                {
+                                                    <td colspan="2" style="width: 100px; height: 40px;color:black;background-color:#4b72b8;border-color: black;"></td>
+                                                    <td id="Blocked" style="width: 100px; height: 40px; cursor: pointer; background-color: palegreen; border-color: black">@newItem.Room_no</td>
+                                                    ftriCount += 1;
+                                                }
+                                                else if (newItem.Room_no == "110")
+                                                {
+                                                    <td id="Blocked" colspan="2" style="width: 100px; height: 40px; cursor: pointer; background-color: palegreen; border-color: black">@newItem.Room_no</td>
+                                                    ftriCount += 1;
+                                                }
+                                                else if (newItem.Room_no == "109" || newItem.Room_no == "209" || newItem.Room_no == "311" || newItem.Room_no == "411")
+                                                {
+                                                    <td id="Occupied" style="width: 100px; height: 40px; cursor: pointer; background-color: palegreen; border-color: black">@newItem.Room_no</td>
+                                                    <td style="width: 200px; height: 40px; cursor: pointer;color:black; background-color: #C8C8FF; border-color: black">LOBBY</td>
+
+                                                    ftriCount += 1;
+                                                }
+                                                else
+                                                {
+                                                    <td id="Occupied" style="width: 100px; height: 40px; cursor: pointer; background-color: palegreen; border-color: black; ">@newItem.Room_no</td>
+                                                        ftriCount += 1;
+                                                    }
+                                                }
+                                                else if (newItem.Status == "Checkout")
+                                                {
+                                                    @*if (newItem.Room_no == "113" || newItem.Room_no == "110")
+                                                        {
+                                                            <td colspan="2" style="width: 100px; height: 40px; cursor: pointer; background-color: #CC9900; border-color: black">@newItem.Room_no</td>
+                                                            funderCount += 1;
+                                                        }*@
+                                                if (newItem.Room_no == "113")
+                                                {
+                                                    <td colspan="2" style="width: 100px; height: 40px;color:black;background-color:#4b72b8;border-bottom:#4b72b8;border-color: black;"></td>
+                                                    <td id="Blocked" colspan="2" style="width: 100px; height: 40px; cursor: pointer; background-color: #CC9900; border-color: black">@newItem.Room_no</td>
+                                                    funderCount += 1;
+                                                }
+                                                if (newItem.Room_no == "215")
+                                                {
+                                                    <td colspan="2" style="width: 100px; height: 40px;color:black;background-color:#4b72b8;border-color: black;"></td>
+                                                    <td id="Blocked" style="width: 100px; height: 40px; cursor: pointer; background-color: #CC9900; border-color: black">@newItem.Room_no</td>
+                                                            funderCount += 1;
+                                                        }
+                                                        else if (newItem.Room_no == "110")
+                                                        {
+                                                            <td id="Blocked" colspan="2" style="width: 100px; height: 40px; cursor: pointer; background-color: #CC9900; border-color: black">@newItem.Room_no</td>
+                                                            funderCount += 1;
+                                                        }
+                                                        else if (newItem.Room_no == "109" || newItem.Room_no == "209" || newItem.Room_no == "311" || newItem.Room_no == "411")
+                                                        {
+                                                            <td style="width: 100px; height: 40px; cursor: pointer; background-color: #CC9900; border-color: black">@newItem.Room_no</td>
+                                                            <td style="width: 200px; height: 40px; cursor: pointer;color:black; background-color: #C8C8FF; border-color: black">LOBBY</td>
+
+                                                            funderCount += 1;
+                                                        }
+                                                        else
+                                                        {
+                                                            <td style="width: 100px; height: 40px; background-color: #CC9900; cursor: pointer; border-color: black; ">@newItem.Room_no</td>
+                                                            funderCount += 1;
+                                                        }
+                                                    }
+                                                    else if (newItem.Status == "Inhouse")
+                                                    {
+                                                        @*if (newItem.Room_no == "113" || newItem.Room_no == "110")
+                                                            {
+                                                                <td id="Occupied" colspan="2" style="width: 100px; height: 40px; cursor: pointer; background-color: red; border-color: black">@newItem.Room_no</td>
+                                                                inhouseCount += 1;
+                                                            }*@
+                                                if (newItem.Room_no == "113")
+                                                {
+                                                    <td colspan="2" style="width: 100px; height: 40px;color:black;background-color:#4b72b8;border-bottom:#4b72b8;border-color: black;"></td>
+                                                    <td id="Blocked" colspan="2" style="width: 100px; height: 40px; cursor: pointer; background-color: red; border-color: black">@newItem.Room_no</td>
+                                                    inhouseCount += 1;
+                                                }
+                                                else if (newItem.Room_no == "215")
+                                                {
+                                                    <td colspan="2" style="width: 100px; height: 40px;color:black;background-color:#4b72b8;border-color: black;"></td>
+                                                    <td id="Blocked" style="width: 100px; height: 40px; cursor: pointer; background-color: red; border-color: black">@newItem.Room_no</td>
+                                                    inhouseCount += 1;
+                                                }
+                                                else if (newItem.Room_no == "110")
+                                                {
+                                                    <td id="Blocked" colspan="2" style="width: 100px; height: 40px; cursor: pointer; background-color: red; border-color: black">@newItem.Room_no</td>
+                                                    inhouseCount += 1;
+                                                }
+                                                else if (newItem.Room_no == "109" || newItem.Room_no == "209" || newItem.Room_no == "311" || newItem.Room_no == "411")
+                                                {
+                                                    <td id="Occupied" style="width: 100px; height: 40px; cursor: pointer; background-color: red; border-color: black">@newItem.Room_no</td>
+                                                    <td style="width: 200px; height: 40px; cursor: pointer;color:black; background-color: #C8C8FF; border-color: black">LOBBY</td>
+
+                                                    inhouseCount += 1;
+                                                }
+                                                else
+                                                {
+                                                    <td id="Occupied" style="width: 100px; height: 40px; cursor: pointer; background-color: red; border-color: black; ">@newItem.Room_no</td>
+                                                        inhouseCount += 1;
+                                                    }
+                                                }
+
+                                                else if (newItem.Status == "Maintenance")
+                                                {
+                                                    @*if (newItem.Room_no == "113" || newItem.Room_no == "110")
+                                                        {
+                                                            <td colspan="2" style="width: 100px; height: 40px; cursor: pointer; background-color: #FFD700; border-color: black">@newItem.Room_no</td>
+                                                            ffunderCount += 1;
+                                                        }*@
+                                                if (newItem.Room_no == "113")
+                                                {
+                                                    <td colspan="2" style="width: 100px; height: 40px;color:black;background-color:#4b72b8;border-bottom:#4b72b8;border-color: black;"></td>
+                                                    <td id="Blocked" colspan="2" style="width: 100px; height: 40px; cursor: pointer; background-color: #FFD700; border-color: black">@newItem.Room_no</td>
+                                                    ffunderCount += 1;
+                                                }
+                                                else if (newItem.Room_no == "215")
+                                                {
+                                                    <td colspan="2" style="width: 100px; height: 40px;color:black;background-color:#4b72b8;border-color: black;"></td>
+                                                    <td id="Blocked" style="width: 100px; height: 40px; cursor: pointer; background-color: #FFD700; border-color: black">@newItem.Room_no</td>
+                                                    ffunderCount += 1;
+                                                }
+                                                else if (newItem.Room_no == "110")
+                                                {
+                                                    <td id="Blocked" colspan="2" style="width: 100px; height: 40px; cursor: pointer; background-color: #FFD700; border-color: black">@newItem.Room_no</td>
+                                                    ffunderCount += 1;
+                                                }
+                                                else if (newItem.Room_no == "109" || newItem.Room_no == "209" || newItem.Room_no == "311" || newItem.Room_no == "411")
+                                                {
+                                                    <td style="width: 100px; height: 40px; cursor: pointer; background-color: #FFD700; border-color: black">@newItem.Room_no</td>
+                                                    <td style="width: 200px; height: 40px; cursor: pointer;color:black; background-color: #C8C8FF; border-color: black">LOBBY</td>
+
+                                                    ffunderCount += 1;
+                                                }
+                                                else
+                                                {
+                                                    <td style="width: 100px; height: 40px; background-color: #FFD700; cursor: pointer; border-color: black; ">@newItem.Room_no</td>
+                                                        ffunderCount += 1;
+                                                    }
+                                                }
+                                                else if (newItem.Status == "Vacant" || newItem.Status == "Cleaned")
+                                                {
+                                                    @*if (newItem.Room_no == "113" || newItem.Room_no == "110")
+                                                        {
+                                                            <td id="Cleaned" colspan="2" style="width: 100px; height: 40px; cursor: pointer; background-color: #0099CC; border-color: black">@newItem.Room_no</td>
+                                                            fvacantCount += 1;
+                                                        }*@
+                                                if (newItem.Room_no == "113")
+                                                {
+                                                    <td colspan="2" style="width: 100px; height: 40px;color:black;background-color:#4b72b8;border-bottom:#4b72b8;border-color: black;"></td>
+                                                    <td id="Blocked" colspan="2" style="width: 100px; height: 40px; cursor: pointer; background-color: #0099CC; border-color: black">@newItem.Room_no</td>
+                                                    fvacantCount += 1;
+                                                }
+                                                else if (newItem.Room_no == "215")
+                                                {
+                                                    <td colspan="2" style="width: 100px; height: 40px;color:black;background-color:#4b72b8;border-color: black;"></td>
+                                                    <td id="Blocked" style="width: 100px; height: 40px; cursor: pointer; background-color: #0099CC; border-color: black">@newItem.Room_no</td>
+                                                    fvacantCount += 1;
+                                                }
+                                                else if (newItem.Room_no == "110")
+                                                {
+                                                    <td id="Blocked" colspan="2" style="width: 100px; height: 40px; cursor: pointer; background-color: #0099CC; border-color: black">@newItem.Room_no</td>
+                                                    fvacantCount += 1;
+                                                }
+                                                else if (newItem.Room_no == "109" || newItem.Room_no == "209" || newItem.Room_no == "311" || newItem.Room_no == "411")
+                                                {
+                                                    <td id="Cleaned" style="width: 100px; height: 40px; cursor: pointer; background-color: #0099CC; border-color: black">@newItem.Room_no</td>
+                                                    <td style="width: 200px; height: 40px; cursor: pointer;color:black; background-color: #C8C8FF; border-color: black">LOBBY</td>
+
+                                                    fvacantCount += 1;
+                                                }
+                                                else
+                                                {
+
+                                                    <td id="Cleaned" style="width: 100px; height: 40px; background-color: #0099CC; border-color: black; ">@newItem.Room_no</td>
+                                                            fvacantCount += 1;
+                                                        }
+                                                    }
+
+                                                }
+
+                                            </tr>
+                                        }
+
+
+                                    </table>
+                                </td>
+
+                                <!--Right TD> with count and status-->
+                                @*<td>
+
+                                        <table class="room_colors">
+                                            <tr>
+                                                <td><div class="color1"></div></td>
+                                                <td>Vacant</td>
+                                                <td>@fvacantCount</td>
+                                            </tr>
+                                            <tr>
+                                                <td><div class="color2"></div></td>
+                                                <td>Single</td>
+                                                <td>@focuCount</td>
+                                            </tr>
+                                            <tr>
+                                                <td><div class="colors1"></div></td>
+                                                <td>Double</td>
+                                                <td>@fdouCount</td>
+                                            </tr>
+                                            <tr>
+                                                <td><div class="colors2"></div></td>
+                                                <td>Triple</td>
+                                                <td>@ftriCount</td>
+                                            </tr>
+                                            <tr>
+                                                <td><div class="color3"></div></td>
+                                                <td>Blocked</td>
+                                                <td>@fblockedCount</td>
+                                            </tr>
+                                            <tr>
+                                                <td><div class="color4"></div></td>
+                                                <td>Checkout</td>
+                                                <td>@funderCount</td>
+                                            </tr>
+                                            <tr>
+                                                <td><div class="colors3"></div></td>
+                                                <td>TBC</td>
+                                                <td>@inhouseCount</td>
+                                            </tr>
+
+                                            <tr>
+                                                <td><div class="colors3"></div></td>
+                                                <td>Inhouse</td>
+                                                <td>@inhouseCount</td>
+                                            </tr>
+                                            <tr>
+                                                <td><div class="color5"></div></td>
+                                                <td>Maintenance</td>
+                                                <td>@ffunderCount</td>
+                                            </tr>
+                                        </table>
+                                    </td>*@
+
+                            </tr>
+                        </table>
+                    </fieldset>
+                    <br />
+
+
+                                            }
+            </div>
+            <div>
+                <div class="form-group">
+                    <p id="errmsg" style="color:red"></p>
+                </div>
+                <div class="form-group" style="padding-left:55px;">
+                    <div class="row guestname">
+                        <div class="col-md-12" style="font:normal 19.73px/40px 'QuicksandBold'!important">
+                            <div class="col-md-1"></div>
+                            <div class="col-md-3">
+                                Room No : <input id="myField" type="text" value="" style="width: 75px;text-align:center;font-size:14px;height:30px;" readonly="readonly" />
+                            </div>
+                            <div class="col-md-8">
+                                Guest Name : <input id="guestname" type="text" value="" style="text-align:center;height:30px;" readonly="readonly" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                @*<div class="form-group" style="padding-left:55px;">
+
+                        Room No :
+                        <input id="myField" type="text" value="" style="text-align:center;" readonly="readonly" />
+                    </div><br />*@
+                <div class="form-group" id="calendar-control" style="padding-left:40px;">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="col-md-3" style="width:400px;">
+                                <div id="calendar" style="background-color:white!important;"></div>
+                                <input type="hidden" id="status" value="status" />
+                            </div>
+                            <div class="col-md-2">
+                                    <fieldset style="width:100%;">
+                                        <table style="width:100%;">
+                                            <tr>
+                                                <td>
+
+                                                    <table class="room_colors">
+                                                        <tr>
+                                                            <td><div class="color1"></div></td>
+                                                            <td>Vacant</td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td><div class="color2"></div></td>
+                                                            <td>Occupied</td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td><div class="color5"></div></td>
+                                                            <td>Maintenance</td>
+                                                        </tr>
+                                                    </table>
+                                                </td>
+
+                                            </tr>
+                                        </table>
+                                    </fieldset>
+                                    <br />
+                            </div>
+
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+        </div>
+        <!--Css Links For Layout -->
+        <link href="~/Newlayout/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
+        <link href="~/Newlayout/vendor/metisMenu/metisMenu.min.css" rel="stylesheet" />
+        <link href="~/Newlayout/dist/css/sb-admin-2.css" rel="stylesheet" />
+        <link href="~/Newlayout/vendor/morrisjs/morris.css" rel="stylesheet" />
+        <link href="~/Newlayout/vendor/font-awesome/css/font-awesome.min.css" rel="stylesheet" />
+        <!-- End -->
+</body>
+</html>
+<script src="https://code.highcharts.com/highcharts.js"></script>
+<script src="https://code.highcharts.com/highcharts-more.js"></script>
+
+<script src="https://code.highcharts.com/modules/solid-gauge.js"></script>
+
+
+
+
+<style>
+    .highcharts-yaxis-grid .highcharts-grid-line {
+        display: none;
+    }
+</style>
+<script>
+
+    var gaugeOptions = {
+
+        chart: {
+            type: 'solidgauge'
+        },
+
+        title: null,
+
+        pane: {
+            center: ['50%', '85%'],
+            size: '140%',
+            startAngle: -90,
+            endAngle: 90,
+            background: {
+                backgroundColor: (Highcharts.theme && Highcharts.theme.background2) || '#EEE',
+                innerRadius: '60%',
+                outerRadius: '100%',
+                shape: 'arc'
+            }
+        },
+
+        tooltip: {
+            enabled: false
+        },
+
+        // the value axis
+        yAxis: {
+            stops: [
+                [0.1, '#55BF3B'], // green
+                [0.5, '#DDDF0D'], // yellow
+                [0.9, '#DF5353'] // red
+            ],
+            lineWidth: 0,
+            minorTickInterval: null,
+            tickAmount: 2,
+            title: {
+                y: -70
+            },
+            labels: {
+                y: 16
+            }
+        },
+
+        plotOptions: {
+            solidgauge: {
+                dataLabels: {
+                    y: 5,
+                    borderWidth: 0,
+                    useHTML: true
+                }
+            }
+        }
+    };
+
+    // The speed gauge
+    function guage(guagedata) {
+        Highcharts.chart('container-speed', Highcharts.merge(gaugeOptions, {
+            yAxis: {
+                min: 0,
+                max: 1056,
+                title: {
+                    text: 'Occupied Rooms'
+                }
+            },
+
+            credits: {
+                enabled: false
+            },
+
+            series: [{
+                name: 'Speed',
+                data: [guagedata],
+                dataLabels: {
+                    format: '<div style="text-align:center"><span style="font-size:25px;color:' +
+                        ((Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black') + '">{y}</span><br/>' +
+                           '<span style="font-size:12px;color:silver"></span></div>'
+                },
+                tooltip: {
+                    valueSuffix: ' km/h'
+                }
+            }]
+
+        }));
+    }
+
+    // The RPM gauge
+    var chartRpm = Highcharts.chart('container-rpm', Highcharts.merge(gaugeOptions, {
+        yAxis: {
+            min: 0,
+            max: 1056,
+            title: {
+                text: 'Vecant Rooms'
+            }
+        },
+
+        series: [{
+            name: 'RPM',
+            data: [1],
+            dataLabels: {
+                format: '<div style="text-align:center"><span style="font-size:25px;color:' +
+                    ((Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black') + '">{y:.1f}</span><br/>' +
+                       '<span style="font-size:12px;color:silver"></span></div>'
+            },
+            tooltip: {
+                valueSuffix: ' revolutions/min'
+            }
+        }]
+
+    }));
+    function GetTodayRoomStatus() {
+        $.ajax({
+            type: "POST",
+            url: "/Home/Gettotalcount",
+            success: function (data) {
+                debugger;
+                if (data.length > 0) {
+
+                    Session["newVal"] = data;
+                }
+            },
+            error: function () {
+
+            }
+        });
+    };
+    // Bring life to the dials
+    setInterval(function () {
+        // Speed
+        var point,
+            newVal,
+            inc;
+
+        if (!chart.renderer.forExport) {
+            setInterval(function () {
+                var point = chart.series[0].points[0],
+                    newVal,
+                    inc = Math.round(1);
+                $.ajax({
+                    url: '/Home/Gettotalcount',
+                    data: { fd: "" },
+                    type: 'POST',
+                    success: function (data) {
+
+                        if (data.length > 0) {
+
+                            newval = data;
+                        }
+                    }
+                })
+                point.update(newVal);
+
+            }, 3000);
+        }
+        // RPM
+        if (chartRpm) {
+            point = chartRpm.series[0].points[0];
+            inc = Math.random() - 0.5;
+            //newVal = point.y + inc;
+
+            //if (newVal < 0 || newVal > 5) {
+            //    newVal = point.y - inc;
+            //}
+            newVal = 264;
+            point.update(newVal);
+        }
+    }, 2000);
+
+
+
+</script>
+@*<script>
+        Highcharts.chart('container', {
+
+            chart: {
+                type: 'gauge',
+                plotBackgroundImage: null,
+                height: 200
+            },
+
+            title: {
+                text: 'Rooms Filled'
+            },
+
+            pane: [{
+                startAngle: -45,
+                endAngle: 45,
+                background: null,
+                center: ['50%', '145%'],
+                size: 300
+            }],
+
+            tooltip: {
+                enabled: false
+            },
+
+            yAxis: [{
+                min: 0,
+                max: 60,
+                minorTickPosition: 'outside',
+                tickPosition: 'outside',
+                labels: {
+
+                    distance: 20
+                },
+                plotBands: [{
+                    from: 0,
+                    to: 6,
+                    color: '#C02316',
+                    innerRadius: '100%',
+                    outerRadius: '105%'
+                }],
+                pane: 0,
+                title: {
+                    //text: 'VU<br/><span style="font-size:8px">Channel A</span>',
+                    y: -40
+                }
+            }],
+
+            plotOptions: {
+                gauge: {
+                    dataLabels: {
+                        enabled: false
+                    },
+                    dial: {
+                        radius: '100%'
+                    }
+                }
+            },
+
+
+            series: [{
+                data: [20],
+                yAxis: 0
+            }]
+
+        },
+        // Let the music play
+        function (chart) {
+            setInterval(function () {
+                if (chart.series) { // the chart may be destroyed
+                    var left = chart.series[0].points[0],
+                        leftVal,
+                        inc = (Math.random() - 0.5) * 3;
+                    left.update(leftVal, false);
+                    chart.redraw();
+                }
+            }, 500);
+
+        });
+    </script>*@
+
+<!-- End -->

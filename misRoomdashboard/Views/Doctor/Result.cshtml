@@ -1,0 +1,350 @@
+﻿
+@{
+    ViewBag.Title= "Result";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<html>
+<head>
+    <script src="https://code.jquery.com/jquery-3.2.1.js"></script>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" />
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script src="http://static.fusioncharts.com/code/latest/fusioncharts.js"></script>
+    <script src="http://static.fusioncharts.com/code/latest/fusioncharts.charts.js"></script>
+    <script src="http://static.fusioncharts.com/code/latest/fusioncharts.widgets.js"></script>
+    <script src="~/Scripts/moment.js"></script>
+    <style>
+        @@media screen {
+            .btn {
+                display: block;
+            }
+
+            .pageCenter {
+                align-items: center;
+                width: 80% !important;
+                margin-top: 5%;
+                margin-left: auto;
+                margin-right: auto;
+                max-width: 1000px;
+                float: none;
+            }
+        }
+        @@media print {
+            .result {
+                margin: 0 auto;
+                display: block;
+            }
+            table {
+                position: relative;
+            }
+            title {
+                display: none !important;
+            }
+            /*.pageCenter{
+                display:block;
+            }*/
+            .btn {
+                display: none;
+            }
+            .logo {
+                display: none !important;
+            }
+            .top_header{
+                display:none!important;
+            }
+        }
+    </style>
+    <script>
+        $.ajax({
+            type: "GET",
+            //data: postData,
+            url: "/DOCTOR/GR",
+            //data: "id=",
+            success: function (result) {
+                if (result != "000") {
+                debugger;
+                $("#guestname").text(result.RS.Guest_Name);
+                $('#gender').text(result.RS.Gender);
+                $('#checkinDate').text(moment(result.RS.Date_From).format('DD-MM-YYYY HH:mm'));
+                $('#checkoutDate').text(moment(result.RS.Date_To).format('DD-MM-YYYY HH:mm'));
+                $('#aweight').text(result.DS.A_Weight);
+                $('#aheight').text(result.DS.A_Height);
+                $('#dweight').text(result.DS.D_Weight);
+                $('#dheight').text(result.DS.D_Height);
+                $('#abmi').text(result.DS.A_BMI);
+                $('#dbmi').text(result.DS.D_BMI);
+                $('#afm').text(result.DS.A_FatMass);
+                $('#dfm').text(result.DS.D_FatMass);
+                $('#afmi').text(result.DS.A_FatMassIndex);
+                $('#dfmi').text(result.DS.D_FatMassIndex);
+                $('#atbw').text(result.DS.A_TotalBodyWater);
+                $('#dtbw').text(result.DS.D_TotalBodyWater);
+                BMIchart('Body Mass Index', 'BMI-Admission', result.DS.A_BMI);
+                BMIchart('Body Mass Index', 'BMI-Discharge', result.DS.D_BMI);
+                FatMassIndex('Fat Mass Index', 'FMI-Admission', result.DS.A_FatMassIndex);
+                FatMassIndex('Fat Mass Index', 'FMI-Discharge', result.DS.D_FatMassIndex);
+                }
+                else {
+                    window.location.href = "./Create";
+                }
+            },
+            error:function(response){
+
+            }
+        });
+        function BMIchart(caption, containername, value) {
+            debugger;
+            FusionCharts.ready(function () {
+                var ccChart = new FusionCharts({
+                    type: 'hlineargauge',
+                    renderAt: containername,
+                    id: 'cs-linear-gauge',
+                    width: '400',
+                    height: '140',
+                    dataFormat: 'json',
+                    dataSource: {
+                        "chart": {
+                            "theme": "fint",
+                            "caption": caption,
+                            "captionFontColor": "#000000",
+                            "bgColor": "#ffffff",
+                            "showBorder": "0",
+                            "lowerLimit": "0",
+                            "upperLimit": "40",
+                            "numberSuffix": "%",
+                            "valueAbovePointer": "1",
+                            "showShadow": "0",
+                            "showTickValues": "1",
+                            "gaugeFillMix": "{light}",
+                            "valueBgColor": "#ffffff",
+                            "valueBgAlpha": "60",
+                            "valueFontColor": "#000000",
+                            "pointerBgColor": "#ffffff",
+                            "pointerBgAlpha": "50",
+                            "baseFontColor": "#000000",
+                            "majorTMNumber": "9",
+                            "minorTMNumber": "5",
+                            "adjustTM": "1"
+                        },
+                        "colorRange": {
+                            "color": [
+                                {
+                                    "maxValue": "18.5",
+                                    "label": "Under-Weight",
+                                    "code": "#1aaf5d"
+                                },
+                                {
+                                    "minValue": "18.5",
+                                    "maxValue": "25.0",
+                                    "label": "Normal-Weight",
+                                    "code": "#f2c500"
+                                },
+                                {
+                                    "minValue": "25.0",
+                                    "maxValue": "30.0",
+                                    "label": "Over-Weight",
+                                    "code": "#E84855"
+                                },
+                                {
+                                    "minValue": "30.0",
+                                    "label": "Obesity",
+                                    "code": "#c02d00"
+                                }
+                            ]
+                        },
+                        "pointers": {
+                            "pointer": [
+                                {
+                                    "value": value
+                                }
+                            ]
+                        }
+                    }
+                })
+                .render();
+            });
+        }
+        function FatMassIndex(caption, containername, value) {
+            FusionCharts.ready(function () {
+                var ccChart = new FusionCharts({
+                    type: 'hlineargauge',
+                    renderAt: containername,
+                    id: 'cs-linear-gauge',
+                    width: '400',
+                    height: '140',
+                    dataFormat: 'json',
+                    dataSource: {
+                        "chart": {
+                            "theme": "fint",
+                            "caption": caption,
+                            "captionFontColor": "#000000",
+                            "bgColor": "#ffffff",
+                            "showBorder": "0",
+                            "lowerLimit": "0",
+                            "upperLimit": "16",
+                            "numberSuffix": "%",
+                            "valueAbovePointer": "1",
+                            "showShadow": "0",
+                            "showTickValues": "1",
+                            "gaugeFillMix": "{light}",
+                            "valueBgColor": "#ffffff",
+                            "valueBgAlpha": "60",
+                            "valueFontColor": "#000000",
+                            "pointerBgColor": "#ffffff",
+                            "pointerBgAlpha": "50",
+                            "baseFontColor": "#000000",
+                            "majorTMNumber": "9",
+                            "minorTMNumber": "5",
+                            "adjustTM": "1"
+                        },
+                        "colorRange": {
+                            "color": [
+                                {
+                                    "maxValue": "1.5",
+                                    "label": "Low",
+                                    "code": "#1aaf5d"
+                                },
+                                {
+                                    "minValue": "1.5",
+                                    "maxValue": "5.7",
+                                    "label": "Normal",
+                                    "code": "#f2c500"
+                                },
+                                {
+                                    "minValue": "5.7",
+                                    "maxValue": "9.0",
+                                    "label": "Increased",
+                                    "code": "#E84855"
+                                },
+                                {
+                                    "minValue": "9.0",
+                                    "maxValue": "16.0",
+                                    "label": "High",
+                                    "code": "#c02d00"
+                                }
+                            ]
+                        },
+                        "pointers": {
+                            "pointer": [
+                                {
+                                    "value": value
+                                }
+                            ]
+                        }
+                    }
+                })
+                .render();
+            });
+        }
+        function Popup() {
+            window.print();
+            //window.location.href = "./Create"
+        }
+    </script>
+</head>
+<body>
+    <div class="col-md-12 pageCenter">
+        <table class="table table-bordered">
+            <tr>
+                <td colspan="2">
+                    <img src="http://pemawellness.co/images/logo1.png" style="margin:0 auto;display:block" />
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2">
+                    <center>
+                        <span style="margin:0 auto;display:block"><b><u>Discharge Summary</u></b></span>
+                    </center>
+                </td>
+            </tr>
+            <tr>
+                <td >
+                    Guest Name : <span id="guestname"></span>
+                </td>
+                <td >
+                    Age : <span id="age"></span><br />
+                    Gender : <span id="gender"></span>
+                </td>
+            </tr>
+            <tr>
+                <td >Check-in Date: <span id="checkinDate"></span></td>
+                <td >Check-Out Date: <span id="checkoutDate"></span></td>
+            </tr>
+        </table>
+        <table class="table table-bordered result">
+            <tr>
+                <th>
+                    Admission
+                </th>
+                <th>
+                    Discharge
+                </th>
+            </tr>
+            <tr>
+                <td >
+                <div>
+                        <b>Weight (Kgs)</b> : <span id="aweight"></span> ||
+                        <b>Height (cms)</b> : <span id="aheight"></span>
+                    </div>
+                    <b>BMI (Kg/m<sup>2</sup>)</b> : <span id="abmi"></span><br />
+                    <div id="BMI-Admission"></div></td>
+                <td>
+                    <div>
+                            <b>Weight (Kgs)</b> : <span id="dweight"></span> ||
+                            <b>Height (cms)</b> : <span id="dheight"></span>
+                    </div>
+                    <b>BMI (Kg/m<sup>2</sup>)</b> : <span id="dbmi"></span><br />
+                    <div id="BMI-Discharge"></div>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2">
+                    <p style="text-align:justify;">A person's state of nutrition is initially assessed by measuring and weighing the subject. The ratio between weight and height is indicated by the Body Mass Index (BMI). The more accurately weight and height are measured, the more accurate the BMI will be. According to the World Health Organization (WHO) an adult is considered to be overweight from a BMI of 25 kg/m², and obese from 30 kg/m². A person with a BMI of below 18.5 kg/m² is considered to be underweight. The BMI does not allow any conclusions to be drawn about body composition or the proportions of body weight accounted for by muscle, fat and water. Athletes, in particular, are often categorized as overweight due to high muscle mass, which increases their weight</p>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <div>
+                        <b>Fat Mass (Kg)</b> : <span id="afm"></span>||
+                        <b>Fat Mass Index (Kg/m<sup>2</sup>)</b> : <span id="afmi"></span>
+                    </div><br />
+                    <div id="FMI-Admission"></div>
+                </td>
+                <td>
+                    <div>
+                        <b>Fat Mass (Kg)</b> : <span id="dfm"></span>||
+                        <b>Fat Mass Index (Kg/m<sup>2</sup>)</b> : <span id="dfmi"></span>
+                    </div><br />
+                    <div id="FMI-Discharge"></div>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2">
+                    <p style="text-align:justify;">The Fat Mass (FM) is the total amount of fat in the body. In addition to storage or depot fat, it also includes structural fat. The depot fat stores energy and heat for the body. The structural fat is vital for life and plays a role in various locations in the body. For example, it helps in the development of somatic cells and protects the organs. But the risk of diabetes and cardiovascular disease increases when there is a sustained increase in the FM. The individual FM is interpreted in the graphical representation with the help of the BMI. Unlike the classic BMI graph, the FM is used instead of the weight.
+</p>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <div>
+                        <b>Total Body Water (Ltrs)</b> : <span id="atbw"></span>
+                    </div>
+                </td>
+                <td>
+                    <div>
+                        <b>Total Body Water (Ltrs)</b> : <span id="dtbw"></span>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2">
+                    <p style="text-align:justify">Total Body Water (TBW) constitutes around 60 % of a healthy adult's body. The proportion of body water decreases from birth to old age. In a healthy person, twothirds of Total Body Water is found within the somatic cells (technical term: Intracellular Water (ICW)), while a third of Total Body Water is found outside the cells (technical term: Extracellular Water (ECW)).The distribution of Total Body Water in percent is indicated by the ratio of ECW to TBW.</p>
+                </td>
+            </tr>
+        </table>
+        <div class="btn">
+                <button style="margin:0 auto;display:block;" type="button" onclick="Popup()">Print</button>
+        </div>
+    </div>
+    
+</body>
+</html>

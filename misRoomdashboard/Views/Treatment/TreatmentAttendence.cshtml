@@ -1,0 +1,1040 @@
+﻿
+@{
+    ViewBag.Title = "TreatmentAttendence";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<html>
+<head>
+    <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <link href="~/Content/bootstrap.css" rel="stylesheet" />
+    <script src="~/Scripts/bootstrap.min.js"></script>
+    <script src="https://code.highcharts.com/highcharts.js"></script>
+    <script src="https://code.highcharts.com/highcharts-more.js"></script>
+    <script src="https://code.highcharts.com/modules/exporting.js"></script>
+    <script src="https://cdn.datatables.net/1.10.15/js/jquery.dataTables.min.js"></script>
+    <link href="https://cdn.datatables.net/1.10.15/css/jquery.dataTables.min.css" rel="stylesheet" />
+    <script>
+        $(document).ready(function () {
+            $("#scheduledate").datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", new Date());
+            LoadData1($("#scheduledate").val());
+            LoadData2($("#scheduledate").val());
+            LoadData3($("#scheduledate").val());
+            LoadData4($("#scheduledate").val());
+            $(".treatmentmaster").css("display", "none");
+            $(".treatmentmaster1").css("display", "none");
+            $(".Healermaster").css("display", "none");
+            $(".Healermaster1").css("display", "none");
+            $(".notattend").css("display", "none");
+            $(".notattend1").css("display", "none");
+            $(".timedelay").css("display", "none");
+            $(".timedelay1").css("display", "none");
+            $("#scheduledate").change(function () {
+                LoadData1($("#scheduledate").val());
+                LoadData2($("#scheduledate").val());
+                LoadData3($("#scheduledate").val());
+                LoadData4($("#scheduledate").val());
+                $(".treatmentmaster").css("display", "none");
+                $(".treatmentmaster1").css("display", "none");
+                $(".Healermaster").css("display", "none");
+                $(".Healermaster1").css("display", "none");
+                $(".notattend").css("display", "none");
+                $(".notattend1").css("display", "none");
+                $(".timedelay").css("display", "none");
+                $(".timedelay1").css("display", "none");
+            });
+        });
+        function LoadData1(dated) {
+            $.ajax({
+
+                type: "POST",
+                url: "/Treatment/gettotalguesttreatmentattendgraph",
+                //data: "id=",
+                data: { dated: dated },
+                success: function (data) {
+                    debugger;
+                    var ds = data.indexOf(':');
+                    var sd = data.length - 1
+                    var getColor = {
+                        'AB': '#C6F9D2',
+                        'BC': '#CECEFF',
+                        'CL': '#390040',
+                        'CI': '#FFCAFF',
+                        'HB': '#D0CCCD',
+                        'ON': '#FFCC99',
+                        'PM': '#FFCBB9',
+                        'SR': '#EAEC93',
+                        'TS': '#D7FBE6',
+                        'IS': '#FFCACA',
+                        'FREE': '#00FF00'
+                    };
+                    debugger;
+                    var Occupied = data.substr(0, data.indexOf(':'));
+                    var locdata = new Array();
+                    locdata.push({
+                        name: 'Schduled Guests' + '(' + +(data.substr(0, data.indexOf(':'))) + ')',
+                        y: +(data.substr(0, data.indexOf(':'))),
+                        drilldown: false,
+                        color: '#00ff1f'
+                    });
+                    locdata.push({
+                        name: 'Attended/Notattended' + '(' + +(data.substr(data.indexOf(':') + 1, data.length - 1)) + ')',
+                        y: +(data.substr(data.indexOf(':') + 1, data.length - 1)),
+                        drilldown: false,
+                        color: '#0099CC'
+                    });
+
+                    BindData1(locdata);
+
+                },
+                error: function () {
+                }
+            });
+        }
+        function BindData1(locations) {
+            $('#container1').highcharts({
+                chart: {
+                    type: 'pie',
+                    innerSize: '50%',
+                    events: {
+                        drilldown: function (e) {
+                            if (!e.seriesOptions) {
+
+                                var chart = this;
+                                chart.showLoading('Simulating Ajax ...');
+                                var series = Getseries(e.point.name, chart, e.point);
+                            }
+                        }
+                    }
+                },
+                title: {
+                    text: 'Schduled guests'
+                },
+                xAxis: {
+                    type: 'category'
+                },
+
+                legend: {
+                    enabled: false
+                },
+                plotOptions: {
+                    pie: {
+                        dataLabels: {
+                            enabled: true,
+                            distance: -50,
+                            style: {
+                                fontWeight: 'bold',
+                                color: 'white'
+                            }
+                        },
+                        startAngle: -90,
+                        endAngle: 90,
+                        center: ['50%', '75%']
+                    }
+                },
+                credits: {
+                    enabled: false
+                },
+                series: [{
+                    cursor: 'pointer',
+                    innerSize: '50%',
+                    point: {
+                        events: {
+                            click: function () {
+                                deptlist1(this.name, $("#scheduledate").val());
+                                $('#gender1').val(this.name);
+                            }
+                        },
+                    },
+                    name: 'Count',
+                    colorByPoint: true,
+                    data: locations
+                }],
+
+                drilldown: {
+                    series: []
+                }
+            });
+        }
+        function LoadData2(dated) {
+            $.ajax({
+
+                type: "POST",
+                url: "/Treatment/gettotalguestattendgraph",
+                //data: "id=",
+                data: { dated: dated },
+                success: function (data) {
+                    debugger;
+                    var ds = data.indexOf(':');
+                    var sd = data.length - 1
+                    var getColor = {
+                        'AB': '#C6F9D2',
+                        'BC': '#CECEFF',
+                        'CL': '#390040',
+                        'CI': '#FFCAFF',
+                        'HB': '#D0CCCD',
+                        'ON': '#FFCC99',
+                        'PM': '#FFCBB9',
+                        'SR': '#EAEC93',
+                        'TS': '#D7FBE6',
+                        'IS': '#FFCACA',
+                        'FREE': '#00FF00'
+                    };
+                    debugger;
+                    var Occupied = data.substr(0, data.indexOf(':'));
+                    var locdata = new Array();
+                    locdata.push({
+                        name: 'Attended' + '(' + +(data.substr(0, data.indexOf(':'))) + ')',
+                        y: +(data.substr(0, data.indexOf(':'))),
+                        drilldown: false,
+                        color: '#00ff1f'
+                    });
+                    locdata.push({
+                        name: 'Schduled/Notattended' + '(' + +(data.substr(data.indexOf(':') + 1, data.length - 1)) + ')',
+                        y: +(data.substr(data.indexOf(':') + 1, data.length - 1)),
+                        drilldown: false,
+                        color: '#0099CC'
+                    });
+
+                    BindData2(locdata);
+
+                },
+                error: function () {
+                }
+            });
+        }
+        function BindData2(locations) {
+            $('#container2').highcharts({
+                chart: {
+                    type: 'pie',
+                    innerSize: '50%',
+                    events: {
+                        drilldown: function (e) {
+                            if (!e.seriesOptions) {
+
+                                var chart = this;
+                                chart.showLoading('Simulating Ajax ...');
+                                var series = Getseries(e.point.name, chart, e.point);
+                            }
+                        }
+                    }
+                },
+                title: {
+                    text: 'Attended guests'
+                },
+                xAxis: {
+                    type: 'category'
+                },
+
+                legend: {
+                    enabled: false
+                },
+                plotOptions: {
+                    pie: {
+                        dataLabels: {
+                            enabled: true,
+                            distance: -50,
+                            style: {
+                                fontWeight: 'bold',
+                                color: 'white'
+                            }
+                        },
+                        startAngle: -90,
+                        endAngle: 90,
+                        center: ['50%', '75%']
+                    }
+                },
+                credits: {
+                    enabled: false
+                },
+                series: [{
+                    cursor: 'pointer',
+                    innerSize: '50%',
+                    point: {
+                        events: {
+                            click: function () {
+                                deptlist2(this.name, $("#scheduledate").val());
+                                $('#gender2').val(this.name);
+                            }
+                        },
+                    },
+                    name: 'Count',
+                    colorByPoint: true,
+                    data: locations
+                }],
+
+                drilldown: {
+                    series: []
+                }
+            });
+        }
+        function LoadData3(dated) {
+            $.ajax({
+
+                type: "POST",
+                url: "/Treatment/gettotalguestnotattendgraph",
+                //data: "id=",
+                data: { dated: dated },
+                success: function (data) {
+                    debugger;
+                    var ds = data.indexOf(':');
+                    var sd = data.length - 1
+                    var getColor = {
+                        'AB': '#C6F9D2',
+                        'BC': '#CECEFF',
+                        'CL': '#390040',
+                        'CI': '#FFCAFF',
+                        'HB': '#D0CCCD',
+                        'ON': '#FFCC99',
+                        'PM': '#FFCBB9',
+                        'SR': '#EAEC93',
+                        'TS': '#D7FBE6',
+                        'IS': '#FFCACA',
+                        'FREE': '#00FF00'
+                    };
+                    debugger;
+                    var Occupied = data.substr(0, data.indexOf(':'));
+                    var locdata = new Array();
+                    locdata.push({
+                        name: 'Not Attended' + '(' + +(data.substr(0, data.indexOf(':'))) + ')',
+                        y: +(data.substr(0, data.indexOf(':'))),
+                        drilldown: false,
+                        color: '#00ff1f'
+                    });
+                    locdata.push({
+                        name: 'Schduled/Attended' + '(' + +(data.substr(data.indexOf(':') + 1, data.length - 1)) + ')',
+                        y: +(data.substr(data.indexOf(':') + 1, data.length - 1)),
+                        drilldown: false,
+                        color: '#0099CC'
+                    });
+
+                    BindData3(locdata);
+
+                },
+                error: function () {
+                }
+            });
+        }
+        function BindData3(locations) {
+            $('#container3').highcharts({
+                chart: {
+                    type: 'pie',
+                    innerSize: '50%',
+                    events: {
+                        drilldown: function (e) {
+                            if (!e.seriesOptions) {
+
+                                var chart = this;
+                                chart.showLoading('Simulating Ajax ...');
+                                var series = Getseries(e.point.name, chart, e.point);
+                            }
+                        }
+                    }
+                },
+                title: {
+                    text: 'Not attended guests'
+                },
+                xAxis: {
+                    type: 'category'
+                },
+
+                legend: {
+                    enabled: false
+                },
+                plotOptions: {
+                    pie: {
+                        dataLabels: {
+                            enabled: true,
+                            distance: -50,
+                            style: {
+                                fontWeight: 'bold',
+                                color: 'white'
+                            }
+                        },
+                        startAngle: -90,
+                        endAngle: 90,
+                        center: ['50%', '75%']
+                    }
+                },
+                credits: {
+                    enabled: false
+                },
+                series: [{
+                    cursor: 'pointer',
+                    innerSize: '50%',
+                    point: {
+                        events: {
+                            click: function () {
+                                deptlist3(this.name, $("#scheduledate").val());
+                                $('#gender3').val(this.name);
+                            }
+                        },
+                    },
+                    name: 'Count',
+                    colorByPoint: true,
+                    data: locations
+                }],
+
+                drilldown: {
+                    series: []
+                }
+            });
+        }
+        function deptlist1(name, date) {
+            //debugger;
+            var wallcode = date;
+            var namenew = name;
+            var postData = {
+                dated: wallcode,
+                Name: namenew,
+            }
+            debugger;
+            var Namenew1 = name.substr(0, name.indexOf('('))
+            if (Namenew1 == "Occupied") {
+                $(".treatmentmaster1").css("display", "none");
+                $(".treatmentmaster").css("display", "block");
+                $(".Healermaster").css("display", "none");
+                $(".Healermaster1").css("display", "none");
+                $(".notattend").css("display", "none");
+                $(".notattend1").css("display", "none");
+                $(".timedelay").css("display", "none");
+                $(".timedelay1").css("display", "none");
+                $.ajax({
+                    type: "POST",
+                    data: postData,
+                    url: "/Treatment/TreatmentGraphDet1",
+                    //data: "id=",
+                    success: function (result) {
+                        debugger;
+                        var data = new Array();
+                        for (var i = 0; i < result.length; i++) {
+                            data.push({
+                                PRNO: result[i].PRNO,
+                                GuestName: result[i].GuestName,
+                                RoomNo: result[i].RoomNo,
+                                HealerName: result[i].HealerName,
+                                TreatmentName: result[i].TreatmentName,
+                                ScheduleTime: moment(result[i].ScheduleTime).format("HH:mm"),
+                                TreatmentStatus: result[i].TreatmentStatus
+                            })
+                        }
+
+                        var table = $('#treatmentmaster').DataTable({
+                            data: data,
+                            destroy: true,
+                            "order": [[1, "asc"], [5, "asc"]],
+                            columns: [
+                                { "data": "PRNO" },
+                                { "data": "GuestName" },
+                                { "data": "RoomNo" },
+                                { "data": "HealerName" },
+                                { "data": "TreatmentName" },
+                                { "data": "ScheduleTime" },
+                                { "data": "TreatmentStatus" }
+                            ],
+                        });
+                    }
+                });
+            }
+            else {
+                $(".treatmentmaster").css("display", "none");
+                $(".treatmentmaster1").css("display", "block");
+                $(".Healermaster").css("display", "none");
+                $(".Healermaster1").css("display", "none");
+                $(".notattend").css("display", "none");
+                $(".notattend1").css("display", "none");
+                $(".timedelay").css("display", "none");
+                $(".timedelay1").css("display", "none");
+                //$('.treatmentmaster').empty();
+                $.ajax({
+                    type: "POST",
+                    data: postData,
+                    url: "/Treatment/TreatmentGraphDet1",
+                    //data: "id=",
+                    success: function (result) {
+                        debugger;
+                        var data1 = new Array();
+                        for (var i = 0; i < result.length; i++) {
+                            data1.push({
+                                PRNO: result[i].PRNO,
+                                GuestName: result[i].GuestName,
+                                RoomNo: result[i].RoomNo,
+                                HealerName: result[i].HealerName,
+                                TreatmentName: result[i].TreatmentName,
+                                ScheduleTime: moment(result[i].ScheduleTime).format("HH:mm"),
+                                TreatmentStatus: result[i].TreatmentStatus
+                            })
+                        }
+
+                        var table1 = $('#treatmentmaster1').DataTable({
+                            data: data1,
+                            destroy: true,
+                            //"order": [[1, "asc"], [5, "asc"]],
+                            columns: [
+                                  { "data": "PRNO" },
+                                { "data": "GuestName" },
+                                { "data": "RoomNo" },
+                                { "data": "HealerName" },
+                                { "data": "TreatmentName" },
+                                { "data": "ScheduleTime" },
+                                { "data": "TreatmentStatus" }
+                            ],
+                        });
+                    }
+                });
+            }
+        }
+        function deptlist2(name, date) {
+            debugger;
+            var wallcode = date;
+            var namenew = name;
+            var postData = {
+                dated: wallcode,
+                Name: namenew,
+            }
+            debugger;
+            var Namenew2 = name.substr(0, name.indexOf('('))
+            if (Namenew2 == "Attended") {
+                $(".Healermaster1").css("display", "none");
+                $(".Healermaster").css("display", "block");
+                $(".treatmentmaster").css("display", "none");
+                $(".treatmentmaster1").css("display", "none");
+                $(".notattend").css("display", "none");
+                $(".notattend1").css("display", "none");
+                $(".timedelay").css("display", "none");
+                $(".timedelay1").css("display", "none");
+                $.ajax({
+                    type: "POST",
+                    data: postData,
+                    url: "/Treatment/cgettreatmentattend",
+                    //data: "id=",
+                    success: function (result) {
+                        debugger;
+                        var data = new Array();
+                        for (var i = 0; i < result.length; i++) {
+                            data.push({
+                                PRNO: result[i].PRNO,
+                                GuestName: result[i].GuestName,
+                                RoomNo: result[i].RoomNo,
+                                HealerName: result[i].HealerName,
+                                TreatmentName: result[i].TreatmentName,
+                                ScheduleTime: moment(result[i].ScheduleTime).format("HH:mm")
+                            })
+                        }
+
+                        var table = $('#Healermaster').DataTable({
+                            data: data,
+                            destroy: true,
+                            "order": [[1, "asc"], [5, "asc"]],
+                            columns: [
+                                 { "data": "PRNO" },
+                                { "data": "GuestName" },
+                                { "data": "RoomNo" },
+                                { "data": "HealerName" },
+                                { "data": "TreatmentName" },
+                                { "data": "ScheduleTime" }
+                            ],
+                        });
+                    }
+                });
+            }
+            else {
+                $(".Healermaster").css("display", "none");
+                $(".Healermaster1").css("display", "block");
+                $(".treatmentmaster").css("display", "none");
+                $(".treatmentmaster1").css("display", "none");
+                $(".notattend").css("display", "none");
+                $(".notattend1").css("display", "none");
+                $(".timedelay").css("display", "none");
+                $(".timedelay1").css("display", "none");
+                //$('.treatmentmaster').empty();
+                $.ajax({
+                    type: "POST",
+                    data: postData,
+                    url: "/Treatment/cgettreatmentattend",
+                    //data: "id=",
+                    success: function (result) {
+                        debugger;
+                        var data1 = new Array();
+                        for (var i = 0; i < result.length; i++) {
+                            data1.push({
+                                PRNO: result[i].PRNO,
+                                GuestName: result[i].GuestName,
+                                RoomNo: result[i].RoomNo,
+                                HealerName: result[i].HealerName,
+                                TreatmentName: result[i].TreatmentName,
+                                ScheduleTime: moment(result[i].ScheduleTime).format("HH:mm")
+                            })
+                        }
+
+                        var table1 = $('#Healermaster1').DataTable({
+                            data: data1,
+                            destroy: true,
+                            //"order": [[1, "asc"], [5, "asc"]],
+                            columns: [
+                                   { "data": "PRNO" },
+                                { "data": "GuestName" },
+                                { "data": "RoomNo" },
+                                { "data": "HealerName" },
+                                { "data": "TreatmentName" },
+                                { "data": "ScheduleTime" }
+                            ],
+                        });
+                    }
+                });
+            }
+        }
+        function deptlist3(name, date) {
+            debugger;
+            var wallcode = date;
+            var namenew = name;
+            var postData = {
+                dated: wallcode,
+                Name: namenew,
+            }
+            debugger;
+            var Namenew2 = name.substr(0, name.indexOf('('))
+            if (Namenew2 == "Not Attended") {
+                $(".Healermaster1").css("display", "none");
+                $(".Healermaster").css("display", "none");
+                $(".treatmentmaster").css("display", "none");
+                $(".treatmentmaster1").css("display", "none");
+                $(".notattend1").css("display", "none");
+                $(".notattend").css("display", "block");
+                $(".timedelay").css("display", "none");
+                $(".timedelay1").css("display", "none");
+                $.ajax({
+                    type: "POST",
+                    data: postData,
+                    url: "/Treatment/cgettreatmentattend1",
+                    //data: "id=",
+                    success: function (result) {
+                        debugger;
+                        var data = new Array();
+                        for (var i = 0; i < result.length; i++) {
+                            data.push({
+                                PRNO: result[i].PRNO,
+                                GuestName: result[i].GuestName,
+                                RoomNo: result[i].RoomNo,
+                                HealerName: result[i].HealerName,
+                                TreatmentName: result[i].TreatmentName,
+                                ScheduleTime: moment(result[i].ScheduleTime).format("HH:mm")
+                            })
+                        }
+
+                        var table = $('#notattend').DataTable({
+                            data: data,
+                            destroy: true,
+                            "order": [[1, "asc"], [5, "asc"]],
+                            columns: [
+                                 { "data": "PRNO" },
+                                { "data": "GuestName" },
+                                { "data": "RoomNo" },
+                                { "data": "HealerName" },
+                                { "data": "TreatmentName" },
+                                { "data": "ScheduleTime" }
+                            ],
+                        });
+                    }
+                });
+            }
+            else {
+                $(".Healermaster").css("display", "none");
+                $(".Healermaster1").css("display", "none");
+                $(".treatmentmaster").css("display", "none");
+                $(".treatmentmaster1").css("display", "none");
+                $(".notattend1").css("display", "block");
+                $(".notattend").css("display", "none");
+                $(".timedelay").css("display", "none");
+                $(".timedelay1").css("display", "none");
+                //$('.treatmentmaster').empty();
+                $.ajax({
+                    type: "POST",
+                    data: postData,
+                    url: "/Treatment/cgettreatmentattend1",
+                    //data: "id=",
+                    success: function (result) {
+                        debugger;
+                        var data1 = new Array();
+                        for (var i = 0; i < result.length; i++) {
+                            data1.push({
+                                PRNO: result[i].PRNO,
+                                GuestName: result[i].GuestName,
+                                RoomNo: result[i].RoomNo,
+                                HealerName: result[i].HealerName,
+                                TreatmentName: result[i].TreatmentName,
+                                ScheduleTime: moment(result[i].ScheduleTime).format("HH:mm")
+                            })
+                        }
+
+                        var table1 = $('#notattend1').DataTable({
+                            data: data1,
+                            destroy: true,
+                            //"order": [[1, "asc"], [5, "asc"]],
+                            columns: [
+                                   { "data": "PRNO" },
+                                { "data": "GuestName" },
+                                { "data": "RoomNo" },
+                                { "data": "HealerName" },
+                                { "data": "TreatmentName" },
+                                { "data": "ScheduleTime" }
+                            ],
+                        });
+                    }
+                });
+            }
+        }
+        function LoadData4(dated) {
+            $.ajax({
+
+                type: "POST",
+                url: "/Treatment/timediffgraph",
+                //data: "id=",
+                data: { dated: dated },
+                success: function (data) {
+                    debugger;
+                    var ds = data.indexOf(':');
+                    var sd = data.length - 1
+                    var getColor = {
+                        'AB': '#C6F9D2',
+                        'BC': '#CECEFF',
+                        'CL': '#390040',
+                        'CI': '#FFCAFF',
+                        'HB': '#D0CCCD',
+                        'ON': '#FFCC99',
+                        'PM': '#FFCBB9',
+                        'SR': '#EAEC93',
+                        'TS': '#D7FBE6',
+                        'IS': '#FFCACA',
+                        'FREE': '#00FF00'
+                    };
+                    debugger;
+                    var Occupied = data.substr(0, data.indexOf(':'));
+                    var locdata = new Array();
+                    locdata.push({
+                        name: 'Time Delay' + '(' + +(data.substr(0, data.indexOf(':'))) + ')',
+                        y: +(data.substr(0, data.indexOf(':'))),
+                        drilldown: false,
+                        color: '#00ff1f'
+                    });
+                    locdata.push({
+                        name: 'Not Delay' + '(' + +(data.substr(data.indexOf(':') + 1, data.length - 1)) + ')',
+                        y: +(data.substr(data.indexOf(':') + 1, data.length - 1)),
+                        drilldown: false,
+                        color: '#0099CC'
+                    });
+
+                    BindData4(locdata);
+
+                },
+                error: function () {
+                }
+            });
+        }
+        function BindData4(locations) {
+            $('#container4').highcharts({
+                chart: {
+                    type: 'pie',
+                    innerSize: '50%',
+                    events: {
+                        drilldown: function (e) {
+                            if (!e.seriesOptions) {
+
+                                var chart = this;
+                                chart.showLoading('Simulating Ajax ...');
+                                var series = Getseries(e.point.name, chart, e.point);
+                            }
+                        }
+                    }
+                },
+                title: {
+                    text: 'Time delay guests'
+                },
+                xAxis: {
+                    type: 'category'
+                },
+
+                legend: {
+                    enabled: false
+                },
+                plotOptions: {
+                    pie: {
+                        dataLabels: {
+                            enabled: true,
+                            distance: -50,
+                            style: {
+                                fontWeight: 'bold',
+                                color: 'white'
+                            }
+                        },
+                        startAngle: -90,
+                        endAngle: 90,
+                        center: ['50%', '75%']
+                    }
+                },
+                credits: {
+                    enabled: false
+                },
+                series: [{
+                    cursor: 'pointer',
+                    innerSize: '50%',
+                    point: {
+                        events: {
+                            click: function () {
+                                deptlist4(this.name, $("#scheduledate").val());
+                                $('#gender4').val(this.name);
+                            }
+                        },
+                    },
+                    name: 'Count',
+                    colorByPoint: true,
+                    data: locations
+                }],
+
+                drilldown: {
+                    series: []
+                }
+            });
+        }
+        function deptlist4(name, date) {
+            debugger;
+            var wallcode = date;
+            var namenew = name;
+            var postData = {
+                dated: wallcode,
+                Name: namenew,
+            }
+            debugger;
+            var Namenew2 = name.substr(0, name.indexOf('('))
+            if (Namenew2 == "Time Delay") {
+                $(".Healermaster1").css("display", "none");
+                $(".Healermaster").css("display", "none");
+                $(".treatmentmaster").css("display", "none");
+                $(".treatmentmaster1").css("display", "none");
+                $(".notattend1").css("display", "none");
+                $(".notattend").css("display", "none");
+                $(".timedelay").css("display", "block");
+                $(".timedelay1").css("display", "none");
+                $.ajax({
+                    type: "POST",
+                    data: postData,
+                    url: "/Treatment/timedelayguestlist",
+                    //data: "id=",
+                    success: function (result) {
+                        debugger;
+                        var data = new Array();
+                        for (var i = 0; i < result.length; i++) {
+                            data.push({
+                                PRNO: result[i].PRNO,
+                                GuestName: result[i].GuestName,
+                                RoomNo: result[i].RoomNo,
+                                HealerName: result[i].HealerName,
+                                TreatmentName: result[i].TreatmentName,
+                                //ScheduleTime: moment(result[i].ScheduleTime).format("HH:mm")
+                                StartTime: moment(result[i].StartTime).format("HH:mm"),
+                                ActualStartTime: moment(result[i].ActualStartTime).format("HH:mm")
+                            })
+                        }
+
+                        var table = $('#timedelay').DataTable({
+                            data: data,
+                            destroy: true,
+                            "order": [[1, "asc"], [5, "asc"]],
+                            columns: [
+                                 { "data": "PRNO" },
+                                { "data": "GuestName" },
+                                { "data": "RoomNo" },
+                                { "data": "HealerName" },
+                                { "data": "TreatmentName" },
+                               // { "data": "ScheduleTime" },
+                            { "data": "StartTime" },
+                             { "data": "ActualStartTime" }
+                            ],
+                        });
+                    }
+                });
+            }
+            else {
+                $(".Healermaster").css("display", "none");
+                $(".Healermaster1").css("display", "none");
+                $(".treatmentmaster").css("display", "none");
+                $(".treatmentmaster1").css("display", "none");
+                $(".notattend1").css("display", "none");
+                $(".notattend").css("display", "none");
+                $(".timedelay").css("display", "none");
+                $(".timedelay1").css("display", "block");
+                //$('.treatmentmaster').empty();
+                $.ajax({
+                    type: "POST",
+                    data: postData,
+                    url: "/Treatment/timedelayguestlist",
+                    //data: "id=",
+                    success: function (result) {
+                        debugger;
+                        var data1 = new Array();
+                        for (var i = 0; i < result.length; i++) {
+                            data1.push({
+                                PRNO: result[i].PRNO,
+                                GuestName: result[i].GuestName,
+                                RoomNo: result[i].RoomNo,
+                                HealerName: result[i].HealerName,
+                                TreatmentName: result[i].TreatmentName,
+                                //ScheduleTime: moment(result[i].ScheduleTime).format("HH:mm")
+                                StartTime: moment(result[i].StartTime).format("HH:mm"),
+                                ActualStartTime: moment(result[i].ActualStartTime).format("HH:mm")
+                            })
+                        }
+
+                        var table1 = $('#timedelay1').DataTable({
+                            data: data1,
+                            destroy: true,
+                            //"order": [[1, "asc"], [5, "asc"]],
+                            columns: [
+                                   { "data": "PRNO" },
+                                { "data": "GuestName" },
+                                { "data": "RoomNo" },
+                                { "data": "HealerName" },
+                                { "data": "TreatmentName" },
+                                //{ "data": "ScheduleTime" },
+                                  { "data": "StartTime" },
+                             { "data": "ActualStartTime" }
+                            ],
+                        });
+                    }
+                });
+            }
+        }
+    </script>
+</head>
+<body>
+    <center style="color:red;font-size:25px;"><label style="color:#333;font-size:20px;">Date:<input type="text" id="scheduledate" style="width: 272px;"></label></center>
+    <div class="form-group">
+        <div class="row">
+            <div class="col-md-12">
+                <div div class="col-md-6" id="container1"></div>
+                <div div class="col-md-6" id="container2"></div>
+                <div div class="col-md-6" id="container3"></div>
+                <div div class="col-md-6" id="container4"></div>
+            </div>
+        </div>
+    </div>
+    <div class="modal-body treatmentmaster" style="width:90%;margin-left:78px;">
+        <table id="treatmentmaster" class="display" cellspacing="0" width="100%">
+            <thead>
+                <tr>
+                    <th>PRNO</th>
+                    <th>GuestName</th>
+                    <th>RoomNo</th>
+                    <th>HealerName</th>
+                    <th>TreatmentName</th>
+                    <th>ScheduleTime</th>
+                    <th>TreatmentStatus</th>
+                </tr>
+            </thead>
+        </table>
+    </div>
+    <div class="modal-body treatmentmaster1" style="width:90%;margin-left:78px;">
+        <table id="treatmentmaster1" class="display" cellspacing="0" width="100%">
+            <thead>
+                <tr>
+                    <th>PRNO</th>
+                    <th>GuestName</th>
+                    <th>RoomNo</th>
+                    <th>HealerName</th>
+                    <th>TreatmentName</th>
+                    <th>ScheduleTime</th>
+                    <th>TreatmentStatus</th>
+                </tr>
+            </thead>
+        </table>
+    </div>
+    <div class="modal-body Healermaster" style="width:90%;margin-left:78px;">
+        <table id="Healermaster" class="display" cellspacing="0" width="100%">
+            <thead>
+                <tr>
+                    <th>PRNO</th>
+                    <th>GuestName</th>
+                    <th>RoomNo</th>
+                    <th>HealerName</th>
+                    <th>TreatmentName</th>
+                    <th>ScheduleTime</th>
+                </tr>
+            </thead>
+        </table>
+    </div>
+    <div class="modal-body Healermaster1" style="width:90%;margin-left:78px;">
+        <table id="Healermaster1" class="display" cellspacing="0" width="100%">
+            <thead>
+                <tr>
+                    <th>PRNO</th>
+                    <th>GuestName</th>
+                    <th>RoomNo</th>
+                    <th>HealerName</th>
+                    <th>TreatmentName</th>
+                    <th>ScheduleTime</th>
+                </tr>
+            </thead>
+        </table>
+    </div>
+    <div class="modal-body notattend" style="width:90%;margin-left:78px;">
+        <table id="notattend" class="display" cellspacing="0" width="100%">
+            <thead>
+                <tr>
+                    <th>PRNO</th>
+                    <th>GuestName</th>
+                    <th>RoomNo</th>
+                    <th>HealerName</th>
+                    <th>TreatmentName</th>
+                    <th>ScheduleTime</th>
+                </tr>
+            </thead>
+        </table>
+    </div>
+    <div class="modal-body notattend1" style="width:90%;margin-left:78px;">
+        <table id="notattend1" class="display" cellspacing="0" width="100%">
+            <thead>
+                <tr>
+                    <th>PRNO</th>
+                    <th>GuestName</th>
+                    <th>RoomNo</th>
+                    <th>HealerName</th>
+                    <th>TreatmentName</th>
+                    <th>ScheduleTime</th>
+                </tr>
+            </thead>
+        </table>
+    </div>
+    <div class="modal-body timedelay" style="width:90%;margin-left:78px;">
+        <table id="timedelay" class="display" cellspacing="0" width="100%">
+            <thead>
+                <tr>
+                    <th>PRNO</th>
+                    <th>GuestName</th>
+                    <th>RoomNo</th>
+                    <th>HealerName</th>
+                    <th>TreatmentName</th>
+                    <th>StartTime</th>
+                    <th>ActualStartTime</th>
+                </tr>
+            </thead>
+        </table>
+    </div>
+    <div class="modal-body timedelay1" style="width:90%;margin-left:78px;">
+        <table id="timedelay1" class="display" cellspacing="0" width="100%">
+            <thead>
+                <tr>
+                    <th>PRNO</th>
+                    <th>GuestName</th>
+                    <th>RoomNo</th>
+                    <th>HealerName</th>
+                    <th>TreatmentName</th>
+                    <th>StartTime</th>
+                    <th>ActualStartTime</th>
+                </tr>
+            </thead>
+        </table>
+    </div>
+</body>
+</html>
+

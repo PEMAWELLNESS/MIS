@@ -1,0 +1,157 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<html>
+<head>
+    <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <link href="~/Content/bootstrap.css" rel="stylesheet" />
+    <script src="~/Scripts/bootstrap.min.js"></script>
+    <script src="https://code.highcharts.com/highcharts.js"></script>
+    <script src="https://code.highcharts.com/highcharts-more.js"></script>
+    <script src="https://code.highcharts.com/modules/exporting.js"></script>
+    <script src="https://cdn.datatables.net/1.10.15/js/jquery.dataTables.min.js"></script>
+    <link href="https://cdn.datatables.net/1.10.15/css/jquery.dataTables.min.css" rel="stylesheet" />
+    <script>
+        $(document).ready(function () {
+            Roomstatusdetails();
+            Maintianencecount();
+            Roomcleaningcount();
+        });
+        function Roomstatusdetails() {
+            debugger;
+            $.ajax({
+                type: "GET",
+                //data: {
+                //    dated: dated
+                //},
+                url: "/HouseKeeping/Getroomstatusdetails",
+                success: function (result) {
+                    var data = new Array();
+                    for (var i = 0; i < result.length; i++) {
+                        data.push({
+                            RoomNo: result[i].RoomNo,
+                            Status: result[i].Staus
+                        })
+                    }
+                    var table = $('#treatments').DataTable({
+                        dom: 'Bfrtip',
+                        //buttons: [
+                        //    'excel', 'pdf'
+                        //],
+                        data: data,
+                        destroy: true,
+                        columns: [
+                            { "data": "RoomNo" },
+                            { "data": "Status" }
+                        ],
+                    });
+                },
+                error: function (data) {
+
+                },
+            });
+        }
+        function Maintianencecount() {
+            debugger;
+            $.ajax({
+                type: "POST",
+                url: "/HouseKeeping/GetMaintianencecount",
+                success: function (data) {
+                    debugger;
+                    if (data != "0") {
+                        $("#totalMaintenancerooms").text(data);
+                    }
+                    else {
+                        $("#totalMaintenancerooms").text("0");
+                    }
+                },
+                error: function () {
+
+                }
+            });
+        }
+        function Roomcleaningcount() {
+            debugger;
+            $.ajax({
+                type: "POST",
+                url: "/HouseKeeping/Getroomcleaningcount",
+                success: function (data) {
+                    debugger;
+                    if (data != "0") {
+                        $("#totalroomcleaningrooms").text(data);
+                    }
+                    else {
+                        $("#totalroomcleaningrooms").text("0");
+                    }
+                },
+                error: function () {
+
+                }
+            });
+        }
+    </script>
+</head>
+<body>
+
+    <center style="font-size:25px;color:red;">Room Status</center><br>
+
+    <center>
+        <div class="row">
+            <div class="col-md-3"></div>
+            <div class="col-lg-3 col-md-6">
+                <div class="panel" style="background-color: green;">
+                    <div class="panel-heading">
+                        <div class="row">
+                            <div class="col-xs-12">
+                                <div class="huge">
+                                    <span id="totalMaintenancerooms" style="color:white;font-size:40px;"></span>
+                                </div><br />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="panel-footer">
+                        <span class="pull-left">TOTAL MAINTENANCE ROOMS</span>
+                        <div class="clearfix"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6">
+                <div class="panel panel-primary">
+                    <div class="panel-heading">
+                        <div class="row">
+                            <div class="col-xs-12">
+                                <div class="huge">
+                                    <span id="totalroomcleaningrooms" style="color:white;font-size:40px;"></span>
+                                </div><br />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="panel-footer">
+                        <span class="pull-left">TOTAL ROOM CLEANING ROOMS</span>
+                        @*<span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>*@
+                        <div class="clearfix"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </center>
+    <div class="from-group" style="margin-top:10px;text-align:center;">
+        <div class="modal-body" style="width:90%;margin-left:78px;">
+            <table id="treatments" class="display" cellspacing="0" width="100%">
+                <thead>
+                    <tr>
+                        <th style="text-align:center;">RoomNo</th>
+                        <th style="text-align:center;">Status</th>
+                    </tr>
+                </thead>
+            </table>
+        </div>
+    </div>
+</body>
+</html>
+

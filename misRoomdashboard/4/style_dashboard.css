@@ -1,0 +1,228 @@
+/**main style starts here**/
+/*body {
+	background: #d6dce0;
+	font-family: 'Helvetica', Arial, sans-serif;
+}
+.main_wrap {
+	width : 100%;
+}
+.wrap_in {
+	min-width : 960px;
+	max-width : 100%;
+	margin : auto;
+}
+header {
+	position : relative;
+}*/
+/**Top header**/
+/*.top_header {
+	background : #333333;
+	overflow : hidden;
+}
+.top_header .logo {
+	width: 162px;
+	height: 30px;
+	float : left;
+	padding : 3px 0;
+	margin-left: 10px
+}
+.top_header .logout {
+	float : right;
+	font-size : 12px;
+	margin-right: 10px
+}
+.top_header .logout img {
+	float : left;
+	padding-top : 8px;
+}
+.top_header .logout p {
+	font-size : 12px;
+	color : #dad7d7;
+	float : left;
+	padding : 12px 6px 0 6px;
+}*/
+/**END Top header**/
+
+/**Bottom header starts here***/
+.bottom_header {
+	width : 100%;
+	background : #00c8c0;
+}
+.bottom_header nav {
+	width : 970px;
+	margin : 0 auto;
+	position : relative;
+	z-index : 100;
+}
+.bottom_header nav ul li {
+	float : left;
+	position : relative;
+}
+.bottom_header nav ul li figure {
+	padding : 3px 0 5px 0;
+}
+.bottom_header nav ul li a {
+	font-weight : normal;
+	font-size : 12px;
+	line-height : 10px;
+	color : #ffffff;
+	display : block;
+	padding : 5px 27px;
+	text-align : center;
+	transition: all 0.3s ease 0s;
+}
+.bottom_header nav ul li a:hover {
+	background : #4dd0cb;
+	color : #ffffff;
+	transition: all 0.3s ease 0s;
+}
+.bottom_header nav ul li ul.sub_menu {
+	background : #4e8194;
+	min-width : 150px;
+	height : 0;
+	padding : 5px;
+	position : absolute;
+	top : 57px;
+	left : 0;
+	display : none;
+}
+.bottom_header nav ul li:hover ul.sub_menu {
+	display : block;
+	height : auto;
+}
+.bottom_header nav ul li ul.sub_menu li {
+	width : 100%;
+	position : relative;
+}
+.bottom_header nav ul li ul.sub_menu li a {
+	padding : 7px 5px;
+	color : #ffffff;
+	text-align : left;
+	display : block;
+    line-height:16px;
+	transition: all 0.3s ease 0s;
+}
+.bot_header nav ul li ul.sub_menu li:hover {
+	background : #4dd0cb;
+	color : #ffffff !important;
+}
+.bottom_header nav ul li ul.sub_menu li .sub_menu_sub {
+	background : #4e8194;
+	width : 150px;
+	height : auto;
+	display : none;
+	position : absolute;
+	top : -5px;
+	left : 150px;
+}
+.bottom_header nav ul li ul.sub_menu li:hover .sub_menu_sub {
+	width : 150px;
+	display : block;
+	padding : 5px;
+}
+/**END Bottom header**/
+
+/*Columns starts here*/
+.main_column {
+	width : 100%;
+	margin : auto;
+}
+.lt_column {
+	width : 18%;
+	float : left;
+}
+.lt_column_in {
+	width : 99%;
+	margin: 0 auto;
+}
+/**Left Menu starts here for Dash board**/
+.left_nav {
+	background: #fff;
+	width: 100%;
+	height: 500px;
+	float: left;
+	border-right: 1px solid #dedede;
+}
+.left_nav h2 {
+	background: #ffffff;
+	color: #27a09b;
+	font-size: 20px;
+	display: block;
+	padding: 10px 15px;
+	border-bottom: 3px solid #4dd0cb;
+}
+.left_nav ul {
+	width: 100%;
+	display: table;
+	list-style: none;
+	margin-bottom: 15px;
+	padding: 3px 0;
+}
+.left_nav ul li {
+	background-color: #f2f2f2;
+	border: solid 1px #cccccc;
+	margin: 2px 5px;
+}
+.left_nav ul li a {
+	font-size: 14px;
+	color: #666666;
+	display: block;
+	padding: 10px;
+	transition: all 0.3s ease 0s;
+}
+.left_nav ul li a:hover {
+	background: #4dd0cb;
+	color: #ffffff;
+	transition: all 0.3s ease 0s;
+}
+/**Left Menu Ends here**/
+
+/**Middle content starts here**/
+
+.rt_column {
+	width : 81.6%;
+	float : left;
+	margin-left: .4%;
+	margin-top: 5px;
+}
+.rt_column_in {
+    width: 99.3%;
+}
+/*Form Global*/
+
+.form_global {
+	background: #ffffff;
+	margin: auto;
+}
+.form_global h2 {
+	background: url(../images/head_bg.png) repeat;
+	line-height: 35px;
+	color: #27a09b;
+	font-size: 18px;
+	padding: 0 10px;
+	border: 1px solid #dedede;
+}
+.form_global .form_content {
+	background: #fafafa;
+	height: 250px;
+	border-left: 1px solid #dedede;
+	border-right: 1px solid #dedede;
+	border-bottom: 1px solid #dedede;
+	padding: 10px;
+	color: #666;
+	font-size: 13px;
+}
+/**End Right column**/
+/**Footer starts here**/
+.footer {
+	width : 100%;
+	background : #13938E;
+	padding : 20px 0;
+	font-size : 12px;
+	color : #f8f8f8;
+}
+.footer .wrap_in {
+	margin : 0 auto;
+	text-align : center;
+}
+/**End Footer**/

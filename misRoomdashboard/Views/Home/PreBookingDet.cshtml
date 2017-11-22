@@ -1,0 +1,852 @@
+﻿@*@model IEnumerable<Rooms.Models.PreBookingDet>*@
+@{
+    ViewBag.Title = "PreBookingDet";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<html>
+<head>
+
+    <title></title>
+    <script src="~/Scripts/jquery-1.10.2.min.js"></script>
+    <script src="~/Scripts/CustomJS/jquery.min.js"></script>
+    <script src="~/lib/moment.min.js"></script>
+    <script src="~/lib/fullcalendar.min.js"></script>
+    <link href="~/lib/fullcalendar.min.css" rel="stylesheet" />
+    <link href="~/lib/fullcalendar.print.min.css" rel="stylesheet" media="print" />
+    <style>
+        body {
+            margin: 40px 10px;
+            padding: 0;
+            font-family: "Lucida Grande",Helvetica,Arial,Verdana,sans-serif;
+            font-size: 14px;
+        }
+
+        .fc-day-top fc-sun fc-other-month fc-past {
+            cursor: pointer;
+        }
+
+        #calendar {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .fc-bgevent {
+            opacity: 2.3 !important;
+        }
+
+        #guestname {
+            width: auto;
+            max-width: inherit !important;
+        }
+
+        .Single {
+            background-color: #00ff1f !important;
+        }
+
+        .Double {
+            background-color: darkgreen;
+        }
+
+        .Maintenance {
+            background-color: yellow !important;
+        }
+
+        .Vacant {
+            background-color: #0099cc !important;
+        }
+
+        .Blocked {
+            background-color: #FF3366 !important;
+        }
+    </style>
+
+
+    <script type="text/javascript">
+        function RefreshPage() {
+            location.reload();
+        }
+
+        $(document).ready(function () {
+            //GetDateTime();
+            //ShowTime();
+            RoomStatusDetails();
+            var gaugeOptions = {
+
+                chart: {
+                    type: 'solidgauge'
+                },
+
+                title: null,
+
+                pane: {
+                    center: ['50%', '85%'],
+                    size: '140%',
+                    startAngle: -90,
+                    endAngle: 90,
+                    background: {
+                        backgroundColor: (Highcharts.theme && Highcharts.theme.background2) || '#EEE',
+                        innerRadius: '60%',
+                        outerRadius: '100%',
+                        shape: 'arc'
+                    }
+                },
+
+                tooltip: {
+                    enabled: false
+                },
+
+                // the value axis
+                yAxis: {
+                    stops: [
+                        [0.1, '#55BF3B'], // green
+                        [0.5, '#DDDF0D'], // yellow
+                        [0.9, '#DF5353'] // red
+                    ],
+                    lineWidth: 0,
+                    minorTickInterval: null,
+                    tickAmount: 2,
+                    title: {
+                        y: -70
+                    },
+                    labels: {
+                        y: 16
+                    }
+                },
+
+                plotOptions: {
+                    solidgauge: {
+                        dataLabels: {
+                            y: 5,
+                            borderWidth: 0,
+                            useHTML: true
+                        }
+                    }
+                }
+            };
+
+
+            //totalcount();
+            //vacentscount();
+            //Occupiedcount();
+            //Maintianencecount();
+            //status = "113";
+            //document.getElementById("myField").value = status;
+            $('#calendar').fullCalendar({
+
+                //events: '/Home/PreBookingRoomWiseList?roomno=' + status
+            });
+            var table = document.getElementById('tblRoom'),
+            cells = table.getElementsByTagName('td');
+            //function GetDateTime() {
+            //    var param1 = new Date();
+            //    var param2 = param1.getDate() + '/' + (param1.getMonth()+1) + '/' + param1.getFullYear();
+            //    document.getElementById('lbldate').innerHTML = param2;
+            //}
+
+            function getcaldata(status) {
+                debugger
+                $('#calendar').fullCalendar('destroy');
+                $('#calendar').fullCalendar({
+                    dayClick: function (date, jsEvent, view) {
+                        debugger;
+                        $.ajax({
+                            type: "POST",
+                            url: "/Home/getPredaywisedetails?roomno=" + document.getElementById("myField").value + "&date=" + date.format(),
+                            success: function (data) {
+                                debugger;
+                                if (data != "0") {
+                                    $("#guestname").val(data);
+                                    $("#guestname").attr('size', $("#guestname").val().length);
+                                }
+                                else {
+                                    $("#guestname").text("0");
+                                }
+                            },
+                            error: function () {
+
+                            }
+                        });
+                    },
+                    events: '/Home/PreBookingRoomWiseList?roomno=' + status
+                });
+
+
+
+            }
+            for (var i = 0, len = cells.length; i < len; i++) {
+                //debugger;
+                var a = document.getElementById('calendar-control');
+                a.style.display = 'block';
+                var status;
+                cells[i].onclick = function () {
+                    debugger;
+                    //alert(this.innerHTML);
+                    data: {
+                        if (this.innerHTML != "") {
+
+                            a.style.display = 'block';
+                            status = this.innerHTML;
+
+                        }
+                        document.getElementById("myField").value = status;
+                        getcaldata(status);
+                        document.getElementById("guestname").value = "";
+                    }
+                }
+            }
+        });
+        function RoomStatusDetails() {
+            debugger;
+            $.ajax({
+                type: "POST",
+                //data: { fd: $("#scheduledate").val() },
+                url: "/Home/RoomStatusDetailsForPreBook",
+                success: function (result) {
+                    debugger;
+                    var locdata = new Array();
+                    for (var i = 0; i < result.length; i++) {
+                        Room_No: result[i].Room_No;
+
+                        //if (result[i].Status == "Occupied") {
+                        //    if (result[i].Count == '1') {
+                        //        debugger;
+                        //        $('#' + result[i].Room_No).addClass('Single');
+                        //        // $("#singlecount").val(result[i].Room_No.Count());
+                        //    }
+                        //    if (result[i].Count == '2') {
+                        //        $('#' + result[i].Room_No).addClass('Double');
+                        //        $('#' + result[i].Room_No).css("cursor", "auto");
+                        //        $('#' + result[i].Room_No).prop('onclick', null).off('click');
+                        //    }
+                        //}
+                        //else
+                        if (result[i].Status == "Vacant") {
+                            $('#' + result[i].Room_No).addClass('Vacant');
+                        }
+                        else if (result[i].Status == "Blocked") {
+                            $('#' + result[i].Room_No).addClass('Blocked');
+
+                        }
+                        else if (result[i].Status == "Maintenance") {
+                            $('#' + result[i].Room_No).addClass('Maintenance');
+                            //$('#' + result[i].Room_No).css("cursor", "auto");
+                            //$('#' + result[i].Room_No).prop('onclick', null).off('click');
+                        }
+                    }
+                }
+            });
+        }
+        function ShowTime() {
+            debugger;
+            var dt = new Date();
+            document.getElementById("lblTime").innerHTML = dt.toLocaleTimeString();
+            window.setTimeout("ShowTime()", 1000); // Here 1000(milliseconds) means one 1 Sec
+        }
+        //function vacentscount() {
+        //    $.ajax({
+        //        type: "POST",
+        //        url: "/Home/Getvacentcount",
+        //        success: function (data) {
+        //            debugger;
+        //            if (data != "0") {
+        //                $("#vacentcount").text(data);
+        //                vacancy(data);
+        //            }
+        //            else {
+        //                $("#vacentcount").text("0");
+        //            }
+        //        },
+        //        error: function () {
+        //        }
+        //    });
+        //}
+        //function Occupiedcount() {
+        //    debugger;
+        //    $.ajax({
+        //        type: "POST",
+        //        url: "/Home/GetOccupiedcount",
+        //        success: function (data) {
+        //            debugger;
+        //            if (data != "0") {
+        //                $("#Occupiedcount").text(data);
+        //                occupied(data);
+        //                //alert(data1);
+        //                //chartSpeed.series[0].update({
+        //                //    data: [parseInt(data1)]
+        //                //});
+        //            }
+        //            else {
+        //                $("#Occupiedcount").text("0");
+        //            }
+        //        },
+        //        error: function () {
+        //        }
+        //    });
+        //}
+        //function Maintianencecount() {
+        //    debugger;
+        //    $.ajax({
+        //        type: "POST",
+        //        url: "/Home/GetMaintianencecount",
+        //        success: function (data) {
+        //            debugger;
+        //            if (data != "0") {
+        //                $("#Maintianencecount").text(data);
+        //            }
+        //            else {
+        //                $("#Maintianencecount").text("0");
+        //            }
+        //        },
+        //        error: function () {
+        //        }
+        //    });
+        //}
+        //function totalcount() {
+        //    debugger;
+        //    $.ajax({
+        //        type: "POST",
+        //        url: "/Home/Gettotalcount",
+        //        success: function (data) {
+        //            debugger;
+        //            if (data != "0") {
+        //                $("#totalcount").text(data);
+        //            }
+        //            else {
+        //                $("#totalcount").text("0");
+        //            }
+        //        },
+        //        error: function () {
+        //        }
+        //    });
+        //}
+        //// occupied guage
+        function occupied(data) {
+            debugger;
+            Highcharts.chart('container-occupied', Highcharts.merge(gaugeOptions, {
+                yAxis: {
+                    min: 0,
+                    max: 2000,
+                    title: {
+                        text: 'Occupied'
+                    }
+                },
+
+                credits: {
+                    enabled: false
+                },
+
+                series: [{
+                    name: 'Occupied',
+                    data: [parseInt(data)],
+                    dataLabels: {
+                        format: '<div style="text-align:center"><span style="font-size:25px;color:' +
+                            ((Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black') + '">{y}</span><br/>' +
+                               '<span style="font-size:12px;color:silver">Rooms/Month</span></div>'
+                    },
+
+                }]
+
+            }));
+        }
+        // vacant gauge
+        function vacancy(data) {
+            Highcharts.chart('container-vacant', Highcharts.merge(gaugeOptions, {
+                yAxis: {
+                    min: 0,
+                    max: 2000,
+                    title: {
+                        text: 'Vacant'
+                    }
+                },
+
+                credits: {
+                    enabled: false
+                },
+
+                series: [{
+                    name: 'Vacant',
+                    data: [parseInt(data)],
+                    dataLabels: {
+                        format: '<div style="text-align:center"><span style="font-size:25px;color:' +
+                            ((Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black') + '">{y}</span><br/>' +
+                               '<span style="font-size:12px;color:silver">Rooms/Month</span></div>'
+                    },
+
+                }]
+
+            }));
+        }
+    </script>
+    <style>
+        .Rooms {
+            background-color: #0099CC;
+        }
+
+        .room_db {
+            float: left;
+            background: #4b72b8;
+        }
+
+            .room_db sup {
+                font-size: 11px;
+                font-weight: normal;
+            }
+
+            .room_db th {
+                background: #FD6F6F;
+                color: #fff;
+                font-size: 14px;
+                border-bottom: 1px solid #f8f8f8;
+                padding: 5px;
+                text-align: center;
+            }
+
+            .room_db td {
+                padding: 5px;
+                color: #fff;
+                font-size: 14px;
+                text-align: center;
+                border-bottom: 1px solid #f8f8f8;
+                border-right: 1px solid #f8f8f8;
+            }
+
+                .room_db td:hover {
+                    background: #008E6B;
+                }
+
+        .room_colors {
+            float: right;
+            width: 130px;
+            height: 110px;
+            /* border: 3px solid #CCC;*/
+        }
+
+            .room_colors div {
+                width: 18px;
+                height: 18px;
+                text-align: center;
+                border: 1px solid #CCC;
+            }
+
+            .room_colors td {
+                width: 155px;
+                height: 40px;
+            }
+            /*color 1 means vaccant*/
+            .room_colors .color1 {
+                background: #0099CC;
+            }
+            /*color2 occupied */
+            .room_colors .color2 {
+                background: #00ff1f;
+            }
+            /*color3 Blocked */
+            .room_colors .color3 {
+                background: #FF3366;
+            }
+            /*color4 TBC */
+            .room_colors .color4 {
+                background: #CC9900;
+            }
+            /*color4 TBC */
+            .room_colors .color5 {
+                background: #FFD700;
+            }
+            .room_colors .color6 {
+                background: #FF3366 ;
+            }
+            .room_colors .colors1 {
+                background: palegreen;
+            }
+
+            .room_colors .colors2 {
+                background: darkgreen;
+            }
+
+            .room_colors .colors3 {
+                background: red;
+            }
+
+        .navbar-default .navbar-nav > .dropdown > a .caret {
+            border-top-color: white;
+            border-bottom-color: white;
+        }
+    </style>
+
+</head>
+<body style="font:normal 16px/22px 'QuicksandRegular';">
+
+    <div class="form_pema">
+       
+        <div class="form_content">
+            <!--Form Global starts here-->
+            <div id="form_global">
+                <!--Form Global starts here-->
+              
+                <fieldset>
+                    <center style="font-size:30px;color:red;margin-top:5px;">Pre-Booking Room Dashboard </center><br />
+                    @*<center><label style="color:#333;font-size:20px;">Date:<input type="text" id="scheduledate" style="width: 272px;"></label></center>*@
+                    <table style="width:100%;">
+                        <tr>
+                            <td style="width:100%;">
+                                <table id="tblRoom" style="width:94%;text-align:center;height:200px;border:1px solid;">
+                                    <tr style="border:1px solid;">
+                                        <td class="Rooms" style="width:10%;background-color:#FD6F6F;border:1px solid white;">L1</td>
+                                        <td class="Rooms" colspan="2" style="background-color:#4b72b8;border-bottom:1px solid #4b72b8!important;border-top:1px solid #4b72b8!important"></td>
+                                        <td class="Rooms" colspan="2" style="border:1px solid;border-left:1px solid blue;cursor:pointer;" id="113">113</td>
+                                        <td class="Rooms" style="border:1px solid;cursor:pointer;" id="112">112</td>
+                                        <td class="Rooms" style="border:1px solid;cursor:pointer;" id="111">111</td>
+                                        <td class="Rooms" colspan="2" style="border:1px solid;cursor:pointer;" id="110">110</td>
+                                        <td class="Rooms" style="border:1px solid;cursor:pointer;" id="109">109</td>
+                                        <td style="width:10%;background-color: #C8C8FF;">LOBBY</td>
+                                        <td class="Rooms" style="border:1px solid;cursor:pointer;" id="108">108</td>
+                                        <td class="Rooms" style="border:1px solid;cursor:pointer;" id="107">107</td>
+                                        <td class="Rooms" style="border:1px solid;cursor:pointer;" id="106">106</td>
+                                        <td class="Rooms" style="border:1px solid;cursor:pointer;" id="105">105</td>
+                                        <td class="Rooms" style="border:1px solid;cursor:pointer;" id="104">104</td>
+                                        <td class="Rooms" style="border:1px solid;cursor:pointer;" id="103">103</td>
+                                        <td class="Rooms" style="border:1px solid;cursor:pointer;" id="102">102</td>
+                                        <td class="Rooms" style="border:1px solid;cursor:pointer;" id="101">101</td>
+                                        <td colspan="2" style="background-color:#4b72b8;border-bottom:1px solid #4b72b8!important;border-top:1px solid #4b72b8!important;border-right:1px solid blue!important"></td>
+                                    </tr>
+                                    <tr style="border:1px solid;">
+                                        <td style="width:10%;background-color:#FD6F6F;border:1px solid white;">L2</td>
+                                        <td colspan="2" style="background-color:#4b72b8;"></td>
+                                        <td class="Rooms" style="border:1px solid;cursor:pointer;" id="215">215</td>
+                                        <td class="Rooms" style="border:1px solid;cursor:pointer;" id="214">214</td>
+                                        <td class="Rooms" style="border:1px solid;cursor:pointer;" id="213">213</td>
+                                        <td class="Rooms" style="border:1px solid;cursor:pointer;" id="212">212</td>
+                                        <td class="Rooms" style="border:1px solid;cursor:pointer;" id="211">211</td>
+                                        <td class="Rooms" style="border:1px solid;cursor:pointer;" id="210">210</td>
+                                        <td class="Rooms" style="border:1px solid;cursor:pointer;" id="209">209</td>
+                                        <td style="width:10%;background-color: #C8C8FF;">LOBBY</td>
+                                        <td class="Rooms" style="border:1px solid;cursor:pointer;" id="208">208</td>
+                                        <td class="Rooms" style="border:1px solid;cursor:pointer;" id="207">207</td>
+                                        <td class="Rooms" style="border:1px solid;cursor:pointer;" id="206">206</td>
+                                        <td class="Rooms" style="border:1px solid;cursor:pointer;" id="205">205</td>
+                                        <td class="Rooms" style="border:1px solid;cursor:pointer;" id="204">204</td>
+                                        <td class="Rooms" style="border:1px solid;cursor:pointer;" id="203">203</td>
+                                        <td class="Rooms" style="border:1px solid;cursor:pointer;" id="202">202</td>
+                                        <td class="Rooms" style="border:1px solid;cursor:pointer;" id="201">201</td>
+                                        <td colspan="2" style="background-color:#4b72b8;"></td>
+                                    </tr>
+                                    <tr style="border:1px solid;">
+                                        <td style="width:10%;background-color:#FD6F6F;border:1px solid white;">L3</td>
+                                        <td class="Rooms" style="border:1px solid;cursor:pointer;" id="319">319</td>
+                                        <td class="Rooms" style="border:1px solid;cursor:pointer;" id="318">318</td>
+                                        <td class="Rooms" style="border:1px solid;cursor:pointer;" id="317">317</td>
+                                        <td class="Rooms" style="border:1px solid;cursor:pointer;" id="316">316</td>
+                                        <td class="Rooms" style="border:1px solid;cursor:pointer;" id="315">315</td>
+                                        <td class="Rooms" style="border:1px solid;cursor:pointer;" id="314">314</td>
+                                        <td class="Rooms" style="border:1px solid;cursor:pointer;" id="313">313</td>
+                                        <td class="Rooms" style="border:1px solid;cursor:pointer;" id="312">312</td>
+                                        <td class="Rooms" style="border:1px solid;cursor:pointer;" id="311">311</td>
+                                        <td style="width:10%;background-color: #C8C8FF;">LOBBY</td>
+                                        <td class="Rooms" style="border:1px solid;cursor:pointer;" id="310">310</td>
+                                        <td class="Rooms" style="border:1px solid;cursor:pointer;" id="309">309</td>
+                                        <td class="Rooms" style="border:1px solid;cursor:pointer;" id="308">308</td>
+                                        <td class="Rooms" style="border:1px solid;cursor:pointer;" id="307">307</td>
+                                        <td class="Rooms" style="border:1px solid;cursor:pointer;" id="306">306</td>
+                                        <td class="Rooms" style="border:1px solid;cursor:pointer;" id="305">305</td>
+                                        <td class="Rooms" style="border:1px solid;cursor:pointer;" id="304">304</td>
+                                        <td class="Rooms" style="border:1px solid;cursor:pointer;" id="303">303</td>
+                                        <td class="Rooms" style="border:1px solid;cursor:pointer;" id="302">302</td>
+                                        <td class="Rooms" style="border:1px solid;cursor:pointer;" id="301">301</td>
+                                    </tr>
+                                    <tr style="border:1px solid;">
+                                        <td style="width:10%;background-color:#FD6F6F;border:1px solid white;">L4</td>
+                                        <td class="Rooms" style="border:1px solid;cursor:pointer;" id="419">419</td>
+                                        <td class="Rooms" style="border:1px solid;cursor:pointer;" id="418">418</td>
+                                        <td class="Rooms" style="border:1px solid;cursor:pointer;" id="417">417</td>
+                                        <td class="Rooms" style="border:1px solid;cursor:pointer;" id="416">416</td>
+                                        <td class="Rooms" style="border:1px solid;cursor:pointer;" id="415">415</td>
+                                        <td class="Rooms" style="border:1px solid;cursor:pointer;" id="414">414</td>
+                                        <td class="Rooms" style="border:1px solid;cursor:pointer;" id="413">413</td>
+                                        <td class="Rooms" style="border:1px solid;cursor:pointer;" id="412">412</td>
+                                        <td class="Rooms" style="border:1px solid;cursor:pointer;" id="411">411</td>
+                                        <td style="width:10%;background-color: #C8C8FF;">LOBBY</td>
+                                        <td class="Rooms" style="border:1px solid;cursor:pointer;" id="410">410</td>
+                                        <td class="Rooms" style="border:1px solid;cursor:pointer;" id="409">409</td>
+                                        <td class="Rooms" style="border:1px solid;cursor:pointer;" id="408">408</td>
+                                        <td class="Rooms" style="border:1px solid;cursor:pointer;" id="407">407</td>
+                                        <td class="Rooms" style="border:1px solid;cursor:pointer;" id="406">406</td>
+                                        <td class="Rooms" style="border:1px solid;cursor:pointer;" id="405">405</td>
+                                        <td class="Rooms" style="border:1px solid;cursor:pointer;" id="404">404</td>
+                                        <td class="Rooms" style="border:1px solid;cursor:pointer;" id="403">403</td>
+                                        <td class="Rooms" style="border:1px solid;cursor:pointer;" id="402">402</td>
+                                        <td class="Rooms" style="border:1px solid;cursor:pointer;" id="401">401</td>
+                                    </tr>
+
+                                </table>
+                            </td>
+                        </tr>
+                    </table>
+                </fieldset>
+
+                @*}*@
+            </div>
+            <div>
+                <div class="form-group">
+                    <p id="errmsg" style="color:red"></p>
+                </div>
+                <div class="form-group" style="padding-left:55px;">
+                    <div class="row guestname">
+                        <div class="col-md-12" style="font:normal 19.73px/40px 'QuicksandBold'!important">
+                            <div class="col-md-1"></div>
+                            <div class="col-md-3">
+                                Room No : <input id="myField" type="text" value="" style="width: 75px;text-align:center;font-size:14px;height:30px;" readonly="readonly" />
+                            </div>
+                            <div class="col-md-8">
+                                Guest Name : <input id="guestname" type="text" value="" style="text-align:center;height:30px;" readonly="readonly" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                @*<div class="form-group" style="padding-left:55px;">
+
+                        Room No :
+                        <input id="myField" type="text" value="" style="text-align:center;" readonly="readonly" />
+                    </div><br />*@
+                <div class="form-group" id="calendar-control" style="padding-left:40px;">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="col-md-3" style="width:400px;">
+                                <div id="calendar" style="background-color:white!important;"></div>
+                                <input type="hidden" id="status" value="status" />
+                            </div>
+                            <div class="col-md-2">
+                                <fieldset style="width:100%;">
+                                    <table style="width:100%;">
+                                        <tr>
+                                            <td>
+
+                                                <table class="room_colors">
+                                                    <tr>
+                                                        <td><div class="color1"></div></td>
+                                                        <td>Vacant</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td><div class="color2"></div></td>
+                                                        <td>Occupied</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td><div class="color5"></div></td>
+                                                        <td>Maintenance</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td><div class="color6"></div></td>
+                                                        <td>Blocked</td>
+                                                    </tr>
+                                                </table>
+                                            </td>
+
+                                        </tr>
+                                    </table>
+                                </fieldset>
+                                <br />
+                            </div>
+
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <!--Css Links For Layout -->
+    <link href="~/Newlayout/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="~/Newlayout/vendor/metisMenu/metisMenu.min.css" rel="stylesheet" />
+    <link href="~/Newlayout/dist/css/sb-admin-2.css" rel="stylesheet" />
+    <link href="~/Newlayout/vendor/morrisjs/morris.css" rel="stylesheet" />
+    <link href="~/Newlayout/vendor/font-awesome/css/font-awesome.min.css" rel="stylesheet" />
+    <!-- End -->
+</body>
+</html>
+<script src="https://code.highcharts.com/highcharts.js"></script>
+<script src="https://code.highcharts.com/highcharts-more.js"></script>
+
+<script src="https://code.highcharts.com/modules/solid-gauge.js"></script>
+
+
+
+
+<style>
+    .highcharts-yaxis-grid .highcharts-grid-line {
+        display: none;
+    }
+</style>
+<script>
+
+    var gaugeOptions = {
+
+        chart: {
+            type: 'solidgauge'
+        },
+
+        title: null,
+
+        pane: {
+            center: ['50%', '85%'],
+            size: '140%',
+            startAngle: -90,
+            endAngle: 90,
+            background: {
+                backgroundColor: (Highcharts.theme && Highcharts.theme.background2) || '#EEE',
+                innerRadius: '60%',
+                outerRadius: '100%',
+                shape: 'arc'
+            }
+        },
+
+        tooltip: {
+            enabled: false
+        },
+
+        // the value axis
+        yAxis: {
+            stops: [
+                [0.1, '#55BF3B'], // green
+                [0.5, '#DDDF0D'], // yellow
+                [0.9, '#DF5353'] // red
+            ],
+            lineWidth: 0,
+            minorTickInterval: null,
+            tickAmount: 2,
+            title: {
+                y: -70
+            },
+            labels: {
+                y: 16
+            }
+        },
+
+        plotOptions: {
+            solidgauge: {
+                dataLabels: {
+                    y: 5,
+                    borderWidth: 0,
+                    useHTML: true
+                }
+            }
+        }
+    };
+
+    // The speed gauge
+    function guage(guagedata) {
+        Highcharts.chart('container-speed', Highcharts.merge(gaugeOptions, {
+            yAxis: {
+                min: 0,
+                max: 1056,
+                title: {
+                    text: 'Occupied Rooms'
+                }
+            },
+
+            credits: {
+                enabled: false
+            },
+
+            series: [{
+                name: 'Speed',
+                data: [guagedata],
+                dataLabels: {
+                    format: '<div style="text-align:center"><span style="font-size:25px;color:' +
+                        ((Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black') + '">{y}</span><br/>' +
+                           '<span style="font-size:12px;color:silver"></span></div>'
+                },
+                tooltip: {
+                    valueSuffix: ' km/h'
+                }
+            }]
+
+        }));
+    }
+
+    // The RPM gauge
+    var chartRpm = Highcharts.chart('container-rpm', Highcharts.merge(gaugeOptions, {
+        yAxis: {
+            min: 0,
+            max: 1056,
+            title: {
+                text: 'Vecant Rooms'
+            }
+        },
+
+        series: [{
+            name: 'RPM',
+            data: [1],
+            dataLabels: {
+                format: '<div style="text-align:center"><span style="font-size:25px;color:' +
+                    ((Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black') + '">{y:.1f}</span><br/>' +
+                       '<span style="font-size:12px;color:silver"></span></div>'
+            },
+            tooltip: {
+                valueSuffix: ' revolutions/min'
+            }
+        }]
+
+    }));
+    function GetTodayRoomStatus() {
+        $.ajax({
+            type: "POST",
+            url: "/Home/Gettotalcount",
+            success: function (data) {
+                debugger;
+                if (data.length > 0) {
+
+                    Session["newVal"] = data;
+                }
+            },
+            error: function () {
+
+            }
+        });
+    };
+    // Bring life to the dials
+    setInterval(function () {
+        // Speed
+        var point,
+            newVal,
+            inc;
+
+        if (!chart.renderer.forExport) {
+            setInterval(function () {
+                var point = chart.series[0].points[0],
+                    newVal,
+                    inc = Math.round(1);
+                $.ajax({
+                    url: '/Home/Gettotalcount',
+                    data: { fd: "" },
+                    type: 'POST',
+                    success: function (data) {
+
+                        if (data.length > 0) {
+
+                            newval = data;
+                        }
+                    }
+                })
+                point.update(newVal);
+
+            }, 3000);
+        }
+        // RPM
+        if (chartRpm) {
+            point = chartRpm.series[0].points[0];
+            inc = Math.random() - 0.5;
+            //newVal = point.y + inc;
+
+            //if (newVal < 0 || newVal > 5) {
+            //    newVal = point.y - inc;
+            //}
+            newVal = 264;
+            point.update(newVal);
+        }
+    }, 2000);
+
+
+
+</script>

@@ -1,0 +1,179 @@
+﻿@model Rooms.Models.DischargeSummary
+
+@{
+    ViewBag.Title = "Details";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Details</h2>
+
+<div>
+    <h4>DischargeSummary</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.PRNO)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.PRNO)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.A_Weight)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.A_Weight)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.A_Height)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.A_Height)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.A_BMI)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.A_BMI)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.A_FatMass)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.A_FatMass)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.A_FatMassIndex)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.A_FatMassIndex)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.A_FatFreeMass)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.A_FatFreeMass)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.A_FatFreeMassIndex)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.A_FatFreeMassIndex)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.A_TotalBodyWater)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.A_TotalBodyWater)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.A_Report)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.A_Report)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.D_Weight)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.D_Weight)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.D_Height)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.D_Height)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.D_BMI)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.D_BMI)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.D_FatMass)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.D_FatMass)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.D_FatMassIndex)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.D_FatMassIndex)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.D_FatFreeMass)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.D_FatFreeMass)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.D_FatFreeMassIndex)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.D_FatFreeMassIndex)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.D_TotalBodyWater)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.D_TotalBodyWater)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.D_Report)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.D_Report)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.CreatedDate)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.CreatedDate)
+        </dd>
+
+    </dl>
+</div>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id = Model.ID }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>

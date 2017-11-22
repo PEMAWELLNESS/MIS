@@ -1,0 +1,565 @@
+﻿@{
+    ViewBag.Title = "Baypark";
+}
+<script src="http://maps.googleapis.com/maps/api/js?key=AIzaSyCJnj2nWoM86eU8Bq2G4lSNz3udIkZT4YY&sensor=false">
+</script>
+<link href="~/jquery.simpleTicker/jquery.simpleTicker.css" rel="stylesheet" />
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/2.0.0/jquery.min.js"></script>
+<script src="~/jquery.simpleTicker/jquery.simpleTicker.js"></script>
+<script>
+    $(document).ready(function () {
+
+        GetTodayEvents();
+        GetDobnew();
+        //ConvertDatefromoneddmmyyytommddyyy();
+    });
+    //function ConvertDatefromoneddmmyyytommddyyy(date) {
+    //    var cdate = date.split('/');
+    //    return cdate[1] + "/" + cdate[0] + "/" + cdate[2];
+
+    //}
+
+    function functionDate(par) {
+        if (par == null || par == undefined)
+            return "";
+        var pattern = /Date\(([^)]+)\)/;
+        var results = pattern.exec(par);
+
+        var dt = new Date(parseFloat(results[1]));
+        //  var n = dt.toLocaleDateString();
+
+        var sd = dt.getDate() + "/" + (dt.getMonth() + 1) + "/" + dt.getFullYear();
+        //alert(sd);
+        // var n1 = dt.toLocaleString();
+        //  var s = n1.split(',')
+
+        return sd;
+    }
+    function CheckNull(par) {
+        if (par == null || par == undefined)
+            return "";
+        else
+            return par;
+    }
+
+    function ConvertDatefromoneddmmyyytommddyyy(date) {
+        var cdate = date.split('/');
+        return cdate[1] + "/" + cdate[0] + "/" + cdate[2];
+
+    }
+    function GetTodayEvents() {
+
+        $.ajax({
+            type: "GET",
+            url: "Home/GetEventsOfTheDay",
+            success: function (data) {
+                // var html = "<h3 style='font-size: 16px;font-family: cambria;'>convertdatetime(data[i].MOM_Assigned_Date)</h3><br />";
+                if (data != "No Events") {
+                    for (var i = 0; i < data.length; i++) {
+                        var html = "<h4 style='font-size: 16px;font-family: cambria;'>" + functionDate(data[i].MOM_Assigned_Date) + "</h4><br />";
+                        // var html = "<h4 style='font-size: 16px;font-family: cambria;'>" + data[i].MOM_Assigned_Date+ "</h4><br />";
+                        html += "<h5 style='font-size: 16px;font-family: cambria;color: #080808;'>Key Point :</h5>";
+                        html += "<h5 style='font-size: 16px;font-family: cambria;'>" + data[i].Key_Point + "</h5><br />";
+                        html += "<h5 style='font-size: 16px;font-family: cambria;color: #080808;'>Description :</h5>";
+                        html += "<h5 style='font-size: 16px;font-family: cambria;'>" + data[i].Description + "</h5><br />";
+                        html += "<h5 style='font-size: 16px;font-family: cambria;color: #080808;'>Responsibility :</h5>";
+                        html += "<h5 style='font-size: 16px;font-family: cambria;'>" + data[i].Responsibility + "</h5><br />";
+                        html += "<h5 style='font-size: 16px;font-family: cambria;color: #080808;'>Start Date :</h5>";
+                        html += "<h5 style='font-family: cambria;'>" + functionDate(data[i].Start_Date) + "</h5><br />";
+                        html += "<h5 style='font-size: 16px;font-family: cambria;'>Target_Date :</h5>";
+                        html += "<h5 style='font-family: cambria;'>" + functionDate(data[i].Target_Date) + "</h5><br />";
+                        html += "<h5 style='font-size: 16px;font-family: cambria;color: #080808;'>Remarks :</h5>";
+                        html += "<h5 style='font-size: 16px;'>" + data[i].Remarks + "</h5><br />";
+                        html += "<h5 style='font-size: 16px;font-family: cambria;color: #080808;'>Status :</h5>";
+                        html += "<h5 style='font-size: 16px;'>" + data[i].Status + "</h5><br />";
+                        //html += "<h5 style='font-size: 16px;font-family: cambria;'>MOM Assigned Date :</h5><br />";
+                        //html += "<h5 style='font-family: cambria;'>" +  functionDate(data[i].MOM_Assigned_Date) + "</h5><br />";
+                    }
+
+                    $("#todaymom").html(html);
+                }
+                else {
+                    $("#todaymom").html("No Events");
+                }
+            },
+            error: function () {
+
+            }
+        });
+    }
+
+    function GetDobnew() {
+
+        $.ajax({
+            type: "GET",
+            url: "Home/GetDobnew",
+            success: function (data) {
+                var html;
+                if (data != "No Events") {
+                   
+                    for (var i = 0; i < data.length; i++) {
+                        html += "<li><h5 style='font-size: 16px;font-family: cambria;color: #080808;'>Employee Name : " + data[i].Emp_name + "</h5><br/>"
+                        + "<h5 style='font-size: 16px;font-family: cambria;color: #080808;'>Desigination : " + data[i].Emp_designation + "</h5><br/>"
+                        + "<h5 style='font-size: 16px;font-family: cambria;color: #080808;'>Department : " + data[i].Dept + "</h5><br/>"
+                        + "<h5 style='font-size: 16px;font-family: cambria;'>Date of Birth : " + functionDate(data[i].DateofBirthDate) + "</h5></li>";
+                        $("#todaydobul").append(html);
+                    }
+                    $.simpleTicker($("#todayDOB"), {
+                        'effectType': 'slide'
+                    });
+
+                }
+                else {
+                    $("#todaydobul").html("No Events");
+                }
+            },
+            error: function () {
+
+            }
+        });
+    }
+</script>
+<script>
+    $(document).ready(function () {
+        $("#PASSWORD").keypress(function (event) {
+            if (event.which == 13) {
+                $("#Login").click();
+            }
+        });
+    });
+    function LoginD() {
+        alert("search invoked. Query : " + $("#PASSWORD").val());
+    }
+</script>
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title - A PEMA WELLNESS</title>
+    <link href="~/Content/New/bootstrap.css" rel="stylesheet" />
+    <link href="~/Content/New/bootstrap.min.css" rel="stylesheet" />
+    <link href="~/Content/New/Site.css" rel="stylesheet" />
+
+    <link href="~/Content/New/Style.css" rel="stylesheet" type="text/css" />
+    <link href="~/Content/New/Custom.css" rel="stylesheet" />
+    <link href="~/Content/New/Custom.css" rel="stylesheet" />
+    <link href="~/Content/New/Logpage.css" rel="stylesheet" />
+</head>
+
+<body>
+    <div class="navbar navbar-inverse navbar-fixed-top">
+        <div class="container">
+            <div class="navbar-header">
+
+                @Html.ActionLink("PEMA WELLNESS MANAGEMENT INFORMATION SYSTEM", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
+            </div>
+        </div>
+    </div>
+    <br /><br /><br />
+    <div class="col-sm-3 col-md-3">
+        <h2 class="head1">Pema News</h2>
+        <ul class="list">
+            <li><a href="#">PEMA IT Solutions</a></li>
+            <li><a href="#">PEMA Academy</a></li>
+            <li><a href="#">PEMA Bio-Farming</a></li>
+            <li><a href="#">PEMA Clinics</a></li>
+        </ul>
+
+        <div class="events1" style="border:1px solid #ccc;vertical-align:top;background-image:url(/Images/Birback.gif)">
+
+            <img src="~/Images/animated-birthday-image-0164.gif" style="width:100%;height: 155px;border-radius:25%;" />
+            <div id="todayDOB" style="background:url(/Images/Birback.gif);">
+                <ul id="todaydobul">
+
+                </ul>
+            </div>
+
+            @*<span style="background:url(/Images/Birback.gif);">
+                <p id="todayDOB"></p>
+            </span>*@
+
+
+        </div>
+    </div>
+    <div class="col-sm-6 col-md-6">
+        <div style="text-align:center;font-size:30px">
+            <h1>  SNAPSHOT OF MARCH 1st to 15th REPORTS</h1>
+        </div>
+        <div id="SlideshowImages" style="height:80%;">
+
+            <figure>
+                <img src="~/Content/data1/Gaphs/d3.png" alt="" title="" id="wows1_0" style="height:100%" />
+                <img src="~/Content/data1/Gaphs/h3.png" alt="" title="" id="wows1_1" style="height:100%" />
+                <img src="~/Content/data1/Gaphs/r3.png" alt="" title="" id="wows1_2" style="height:100%" />
+                <img src="~/Content/data1/Gaphs/t1.png" alt="" title="" id="wows1_4" style="height:100%" />
+                <img src="~/Content/data1/Gaphs/T1.png" alt="" title="" id="wows1_4" style="height:100%" />
+
+            </figure>
+        </div>
+    </div>
+    <div class="col-sm-6 col-md-3">
+        <div class="rt_column" style="width:100%;">
+            <div class="rt_clm_content">
+                <div id="login">
+                    <form class="well form-horizontal" method="post" action="~/Home/Login">
+                        @Html.AntiForgeryToken()
+                        @Html.ValidationSummary(true)
+                        <input name="__RequestVerificationToken" type="hidden" value="AIRHApJeP2PcdRXg28uj5HSVuLR7ZsINjL4FiEDEXl9KGZFrI8lGB8lRv3zvvTIp1D8omMepleOVTlCMI21wnidbTcBq0f91aSK5KXTgXqs1">                                                                <div id="login_title">
+                            <h1>Login</h1>
+                        </div>
+                        <div class="editor-field focus">
+                            <input id="User_Name" name="User_Name" placeholder="User ID" type="text" value="">
+                            <span class="field-validation-valid" data-valmsg-for="LOGIN_NAME" data-valmsg-replace="true"></span>
+                        </div>
+                        <div class="editor-field">
+                            <input id="Password" name="Password" placeholder="Password" type="password">
+                            <span class="field-validation-valid" data-valmsg-for="PASSWORD" data-valmsg-replace="true"></span>
+                        </div>
+                        <div id="formid">
+                            <input type="submit" id="Login" value="Log in">
+                        </div>
+                        <div id="div2">
+                            <b></b>
+                        </div>
+                    </form>
+                    @*<form class="well form-horizontal" method="post" action="~/Home/Login">
+                        @Html.AntiForgeryToken()
+                        @Html.ValidationSummary(true)
+                        <div class="wrapper" style="padd">
+                            <div class="login-form" style="border-radius: 10px;">
+                                <div class="form-group">
+                                            <div class="editor-field focus">
+                                                <input id="User_Name" name="User_Name" placeholder="User ID" type="text" value="">
+                                                <span class="field-validation-valid" data-valmsg-for="LOGIN_NAME" data-valmsg-replace="true"></span>
+                                            </div> 
+                                    <div class="editor-field">
+                                        <input id="Password" name="Password" placeholder="Password" type="password">
+                                        <span class="field-validation-valid" data-valmsg-for="PASSWORD" data-valmsg-replace="true"></span>
+                                    </div>
+                                </div>
+                                <div>
+                                    <input type="submit" id="Login" value="Log in">
+                                </div>
+                                <div style="padding-top: 5px;">
+
+
+
+                                </div>
+
+                            </div>
+
+                        </div>
+                    </form>*@
+                    <!-- form -->
+                    <div class="button"></div>
+                    <!-- button -->
+                </div>
+                <!-- login -->
+                <div class="clear"></div>
+                <div class="events">
+                    <h2>MINUTES OF MEETING</h2>
+                    <div id="news_block" style="height:73%!important;">
+                        <div id="news_info">
+                            @*<marquee direction="up" onmouseover="this.stop();" onmouseout="this.start();" scrollamount="2" scrolldelay="10" style="height:252px">*@
+                            @*<ul>
+                                    <li>
+                                        <p id="todaymom"></p>
+                                    </li>
+
+                                </ul>*@
+                            @*</marquee>*@
+
+
+                            @*@foreach (var item in ViewBag.GetUploaddetailsData)
+                                {
+
+                                    <iframe class="doc" src="https://docs.google.com/gview?url=http://119.226.111.114:5666/MyFiles/@item.File_Name&embedded=true"></iframe>
+
+                                }*@
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
+<style>
+    .head1 {
+        width: 94%;
+        background: #018487;
+        color: #ffffff;
+        font-size: 18px;
+        font-weight: 500;
+        text-align: left;
+        padding: 9px 0 9px 15px;
+        margin: 10px 0px;
+        width: 104%;
+        position: relative;
+        border-bottom: 3px solid #FC0;
+    }
+
+    .head2 {
+        width: 94%;
+        background: #018487;
+        color: #ffffff;
+        font-size: 18px;
+        font-weight: 500;
+        text-align: left;
+        padding: 9px 0 9px 15px;
+        margin: 10px 0px;
+        width: 100%;
+        position: relative;
+        border-bottom: 3px solid #FC0;
+    }
+
+    .list {
+        display: inline-block;
+        /*padding: 0px 15px;*/
+        width: 104%;
+        color: #FFF;
+        font-size: 14px;
+        text-align: left;
+        line-height: 44px;
+        outline: medium none;
+        position: relative;
+        text-transform: uppercase;
+        transition: all 0.3s ease 0s;
+        z-index: 1;
+    }
+
+        .list li {
+            display: inline-block;
+            border-radius: 0 30px 30px 0;
+            background: #3cb6b6;
+            margin: 0 0 10px 15px;
+            width: 100%;
+            margin-left: 0px;
+        }
+
+            .list li a {
+                text-decoration: none;
+                display: inline-block;
+                padding: 0px 15px;
+                width: 88%;
+                color: #FFF;
+                font-size: 14px;
+                text-align: left;
+                line-height: 44px;
+                outline: medium none;
+                position: relative;
+                text-transform: uppercase;
+                transition: all 0.3s ease 0s;
+                z-index: 1;
+            }
+
+                .list li a:after {
+                    background: none repeat scroll 0 0 #015557;
+                    border-radius: 0 30px 30px 0;
+                    content: "";
+                    height: 100%;
+                    left: 0;
+                    position: absolute;
+                    top: 0;
+                    transition: all 0.3s ease 0s;
+                    width: 0;
+                    z-index: -1;
+                }
+
+    #login {
+        background: #f9f9f9;
+        border: #c4c6ca solid 1px;
+        margin: 0 auto;
+        position: relative;
+        text-align: center;
+    }
+
+    #login_title h1 {
+        font-size: 18px;
+        color: #666;
+        padding: 6px 0;
+    }
+
+    #login form input[type="text"], #login form input[type="password"] {
+        width: 90%;
+        border-radius: 3px;
+        box-shadow: 0 1px 0 #fff, 0 -2px 5px rgba(0,0,0,0.08) inset;
+        border: #c8c8c8 solid 1px;
+        color: #777;
+        font: 13px Helvetica, Arial, sans-serif;
+        margin: 0 0 10px;
+        padding: 5px 10px 5px 5px;
+    }
+
+    #login form input[type="button"] {
+        width: 100px;
+        border-radius: 17px / 18px 18px 17px 17px;
+        background-color: #cccccc;
+        border: #acacac solid 1px;
+        background-image: linear-gradient(to top, #c3c5c5, #fff);
+        color: #666;
+        cursor: pointer;
+        font: bold 15px Helvetica, Arial, sans-serif;
+        margin: 5px 0 10px 5px;
+        position: relative;
+        line-height: 30px;
+    }
+
+    .rt_column .events h2 {
+        background: #018487;
+        padding: 8px 12px;
+        font-size: 18px;
+        color: #fff;
+        text-align: left;
+        border-bottom: 3px solid #FC0;
+    }
+
+    .rt_column .events1 h2 {
+        background: #018487;
+        padding: 8px 12px;
+        font-size: 18px;
+        color: #fff;
+        text-align: left;
+        border: 1px solid #ccc;
+        width: 104%;
+        height: 40%;
+        background-image: url(/Images/Birback.gif);
+    }
+
+    #news_block {
+        width: 100%;
+        height: 100%;
+    }
+
+
+    #imagedob {
+        width: 100%;
+        height: 252px;
+        text-align: center;
+    }
+
+    #news_info {
+        background: #fff;
+        width: 100%;
+        height: 328px;
+        text-align: center;
+        overflow: auto;
+    }
+
+
+    :host([direction="up"]), :host([direction="down"]) {
+        overflow: initial;
+        overflow-y: hidden;
+        white-space: initial;
+    }
+
+    #news_info ul li {
+        list-style: none;
+        width: auto;
+        border-bottom: 1px dotted #666;
+        padding: 0 8px;
+        margin: 0 0 10px 0;
+    }
+
+    .news_highlets {
+        font-size: 13px;
+        color: #09C;
+        text-decoration: none;
+    }
+
+    #news_info ul li p {
+        color: #666;
+        font-size: 12px;
+        text-align: justify;
+        line-height: 18px;
+        padding-bottom: 10px;
+    }
+
+    .slider_main {
+        width: 97%;
+        margin: 10px auto;
+    }
+
+    .bx-wrapper {
+        position: relative;
+        border: 5px solid #dddbdb;
+    }
+
+    .main_wrap .slider_main .bx-wrapper {
+        margin: 0 auto;
+    }
+
+    main_wrap .slider_main .bx-wrapper .bx-viewport {
+        background: none;
+        border: none;
+        box-shadow: none;
+        left: 0;
+    }
+
+    .mySlides {
+        display: none;
+    }
+    /*add by suri*/
+    footer {
+        width: 100%;
+        background: #018487;
+        padding: 20px 0;
+        font-size: 12px;
+        color: #f8f8f8;
+        height: 50px;
+    }
+
+    .footer-style {
+        margin: 0 auto;
+        text-align: center;
+    }
+</style>
+@*<script>
+    function LoginD() {
+        var LOGIN_NAME = $("#LOGIN_NAME").val();
+        var PASSWORD = $("#PASSWORD").val();
+        if (!$("#LOGIN_NAME").val() || $("#LOGIN_NAME").hasClass("error")) {
+            $("#LOGIN_NAME").addClass("error");
+            $("#LOGIN_NAME").focus();
+
+            return false;
+        }
+        else if (!$("#PASSWORD").val()) {
+            $("#PASSWORD").addClass("error");
+            $("#PASSWORD").focus();
+
+            return false;
+        }
+        var Details =
+            {
+                Userid: LOGIN_NAME,
+                Pwd: PASSWORD
+            }
+        $("#Login").prop("disabled", true);
+        $.ajax({
+            url: "/Home/CheckLoginDeatils",
+            type: "POST",
+            data: JSON.stringify(Details),
+            contentType: "application/json",
+            dataType: 'json',
+            async: false,
+            success: function (data) {
+                if (data.Value == "Success") {
+
+                    window.location.href = "Home/Application"
+                    $("#LOGIN_NAME").val('');
+                    $("#PASSWORD").val('');
+                }
+
+                else {
+                    $("#PASSWORD").addClass("error");
+                    $("#PASSWORD").focus();
+                    alert(data.message);
+                }
+                $("#Login").removeAttr('disabled');
+            },
+        });
+    }
+</script>*@

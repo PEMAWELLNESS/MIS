@@ -1,0 +1,612 @@
+﻿
+@{
+    ViewBag.Title = "Currenttreatment";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<html>
+<head>
+
+    <title></title>
+    <script src="~/Scripts/jquery-1.10.2.min.js"></script>
+    <script src="~/Scripts/CustomJS/jquery.min.js"></script>
+    <script src="~/lib/moment.min.js"></script>
+    <script src="~/lib/fullcalendar.min.js"></script>
+    <link href="~/lib/fullcalendar.min.css" rel="stylesheet" />
+    <link href="~/lib/fullcalendar.print.min.css" rel="stylesheet" media="print" />
+    <style>
+        #myField {
+            width: auto;
+            max-width: inherit !important;
+        }
+
+        body {
+            margin: 40px 10px;
+            padding: 0;
+            font-family: "Lucida Grande",Helvetica,Arial,Verdana,sans-serif;
+            font-size: 14px;
+        }
+
+        #calendar {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+    </style>
+    <style>
+        .guestname {
+            display: none;
+        }
+
+        .room_db {
+            float: left;
+            background: #4b72b8;
+        }
+
+            .room_db sup {
+                font-size: 11px;
+                font-weight: normal;
+            }
+
+            .room_db th {
+                background: #FD6F6F;
+                color: #fff;
+                font-size: 14px;
+                border-bottom: 1px solid #f8f8f8;
+                padding: 5px;
+                text-align: center;
+            }
+
+            .room_db td {
+                padding: 5px;
+                color: #fff;
+                font-size: 14px;
+                text-align: center;
+                border-bottom: 1px solid #f8f8f8;
+                border-right: 1px solid #f8f8f8;
+            }
+
+                .room_db td:hover {
+                    background: #008E6B;
+                }
+
+        .room_colors {
+            /*float: right;*/
+            width: 130px;
+            height: 190px;
+            /* border: 3px solid #CCC;*/
+        }
+
+            .room_colors div {
+                width: 18px;
+                height: 18px;
+                text-align: center;
+                border: 1px solid #CCC;
+                margin-left:5px;
+            }
+
+            .room_colors td {
+                /*width: 155px;*/
+                height: 27px;
+            }
+            /*color 1 means vaccant*/
+            .room_colors .color1 {
+                background: #0099CC;
+            }
+            /*color2 occupied */
+            .room_colors .color2 {
+                background: #00ff1f;
+            }
+            /*color3 Blocked */
+            .room_colors .color3 {
+                background: #FF3366;
+            }
+            /*color4 TBC */
+            .room_colors .color4 {
+                background: #CC9900;
+            }
+            /*color4 TBC */
+            .room_colors .color5 {
+                background: #FFD700;
+            }
+
+            .room_colors .colors1 {
+                background: red;
+            }
+
+            .room_colors .colors2 {
+                background: brown;
+            }
+
+            .room_colors .colors3 {
+                background: red;
+            }
+
+        .navbar-default .navbar-nav > .dropdown > a .caret {
+            border-top-color: white;
+            border-bottom-color: white;
+        }
+    </style>
+    <script>
+        $(document).ready(function () {
+            debugger;
+            // GetDateTime();
+            getguestname();
+            debugger;
+            var table = document.getElementById('tblRoom'),
+            cells = table.getElementsByTagName('td');
+            for (var i = 0, len = cells.length; i < len; i++) {
+                 debugger;
+                //var a = document.getElementById('calendar-control');
+                //a.style.display = 'block';
+                var status;
+                cells[i].onclick = function () {
+                    debugger; 
+                    //alert(this.innerHTML);
+                    data: {
+                        if (this.innerHTML != "") {
+
+                           // a.style.display = 'block';
+                            status = this.innerHTML;
+
+                        }
+
+                        //getcaldata(status);
+                        getguestnameNew(status);
+
+
+                    }
+                }
+            }
+        });
+        function getguestnameNew(roomno) {
+            debugger;
+            $.ajax({
+                type: "POST",
+                url: "/Home/Treatmentguestdetails?roomno=" + roomno,
+                success: function (data) {
+                    debugger;
+                    if (data != "none") {
+                        $("#errmsg").text("");
+                        document.getElementById("myField").value = data;
+                        document.getElementById("guests").value = roomno;
+                        $(".guestname").css("display", "block");
+                        $("#myField").attr('size', $("#myField").val().length);
+                    }
+                    else {
+                        //alert("Room isn't occupied");
+                        $("#errmsg").text("Room isn't occupied");
+                        document.getElementById("myField").value = "";
+                        document.getElementById("guests").value = "";
+                        $(".guestname").css("display", "none");
+                    }
+                },
+                error: function () {
+
+                }
+            });
+        }
+        //function GetDateTime() {
+        //    debugger;
+        //    var a = "ATR1";
+        //    document.getElementById(a).style.backgroundColor = "lightblue";
+        //}
+
+        function getguestname() {
+            debugger;
+            $.ajax({
+                type: "POST",
+                url: "/Home/CurrenttreatmentFromExcel",
+                success: function (data) {
+                    debugger;
+                    if (data == 0) {
+                        alert("Hospitals are not available");
+                    }
+                    else {
+                        var Occupiedcount = 0;
+                        var Vacantcount = 0;
+                        var Funtionalcount = 0;
+                        var Operationalcount = 0;
+                        for (var i = 0; i < data.length; i++) {
+                            var a = data[i].Room_No;
+                            document.getElementById(a).style.backgroundColor = data[i].backgroundColor;
+
+                            var Status = data[i].Status;
+                            if (Status == "Occupied") {
+                                Occupiedcount = Occupiedcount + 1;
+                            }
+                            else if (Status == "Vacant") {
+                                Vacantcount = Vacantcount + 1;
+                            }
+                            else if (Status == "Non-Funtional") {
+                                Funtionalcount = Funtionalcount + 1;
+                            }
+                            else if (Status == "Non-Operational") {
+                                Operationalcount = Operationalcount + 1;
+                            }
+
+                        }
+                        $('#Occupied').text(Occupiedcount);
+                        $('#Vacant').text(Vacantcount);
+                        $('#Non-Funtional').text(Funtionalcount);
+                        $('#Non-Operational').text(Operationalcount);
+                    }
+                },
+                error: function () {
+
+                }
+            });
+        }
+    </script>
+</head>
+<body>
+
+    <div class="form_pema">
+        <h2 style="text-align:center;font:normal 30.73px/40px 'QuicksandBold';">Current Treatment</h2>
+
+        <div style="text-align:center;font:normal 30.73px/40px 'QuicksandBold';">
+            <div id="lbldate"></div><br />
+
+        </div>
+        <div class="form_content">
+            <!--Form Global starts here-->
+            <div id="form_global">
+                <fieldset style="width:100%;font:normal 13px/22px 'QuicksandRegular';margin-top:-55px;">
+                    <table  style="width:100%;" id="tblRoom">
+                        <tr>
+                            <td>
+                                <table style="text-align:center;margin-bottom:240px;width:75px;">
+                                    <tr>
+                                        <td colspan="2" id="ATR1" style="border: 1px solid #f8f8f8;color:black; cursor: pointer; border-color: black">ATR1</td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="2" id="ATR2" style="border: 1px solid #f8f8f8;color:black; cursor: pointer; background-color: yellow; border-color: black">ATR2</td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="2" id="ATR3" style="border: 1px solid #f8f8f8;color:black; cursor: pointer; background-color: #0099CC; border-color: black">ATR3</td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="2" id="ATR4" style="border: 1px solid #f8f8f8;color:black; cursor: pointer; background-color: yellow; border-color: black">ATR4</td>
+                                    </tr>
+                                </table>
+                            </td>
+                            <td>
+                                <table style="text-align:center;margin-bottom:240px;width:75px;">
+                                    <tr>
+                                        <td colspan="2" id="ATR8" style="border: 1px solid #f8f8f8;color:black; cursor: pointer; background-color: yellow; border-color: black">ATR8</td>
+                                    </tr>
+                                    <tr></tr>
+                                    <tr>
+                                        <td colspan="2" id="ATR7" style="border: 1px solid #f8f8f8;color:black; cursor: pointer; background-color: #0099CC; border-color: black">ATR7</td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="2" id="ATR6" style="border: 1px solid #f8f8f8;color:black; cursor: pointer; background-color: #0099CC; border-color: black">ATR6</td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="2" id="ATR5" style="border: 1px solid #f8f8f8;color:black; cursor: pointer; background-color: yellow; border-color: black">ATR5</td>
+                                    </tr>
+                                </table>
+                            </td>
+                            <td>
+                                <table style="margin-bottom: 10px;text-align:center;width:75px;">
+                                    <tr>
+                                        <td colspan="2" id="BTR1" style="border: 1px solid #f8f8f8;color:black; cursor: pointer; background-color: #0099CC; border-color: black">BTR1</td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="2" id="BTR2" style="border: 1px solid #f8f8f8;color:black; cursor: pointer; background-color: #0099CC; border-color: black">BTR2</td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="2" id="BTR3" style="border: 1px solid #f8f8f8;color:black; cursor: pointer; background-color:  RGB(148,139,84); border-color: black">BTR3</td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="2" id="BTR4" style="border: 1px solid #f8f8f8;color:black; cursor: pointer; background-color:  #0099CC; border-color: black">BTR4</td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="2" style="border: 1px solid #f8f8f8;color:black; background-color:  RGB(219,238,243); border-color: black">SHOWER</td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="2" id="BTR5" style="border: 1px solid #f8f8f8;color:black; cursor: pointer; background-color:  #0099CC; border-color: black">BTR5</td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="2" id="BTR6" style="border: 1px solid #f8f8f8;color:black; cursor: pointer; background-color:  RGB(148,139,84); border-color: black">BTR6</td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="2" id="BTR7" style="border: 1px solid #f8f8f8;color:black; cursor: pointer; background-color:  RGB(148,139,84); border-color: black">BTR7</td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="2" id="BTR8" style="border: 1px solid #f8f8f8;color:black; cursor: pointer; background-color:  #0099CC; border-color: black">BTR8</td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="2" id="BTR9" style="border: 1px solid #f8f8f8;color:black; cursor: pointer; background-color:  RGB(148,139,84); border-color: black">BTR9</td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="2" id="BTR10" style="border: 1px solid #f8f8f8;color:black; cursor: pointer; background-color:  #0099CC; border-color: black">BTR10</td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="2" id="BTR11" style="border: 1px solid #f8f8f8;color:black; cursor: pointer; background-color:  #0099CC; border-color: black">BTR11</td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="2" id="BTR12" style="border: 1px solid #f8f8f8;color:black; cursor: pointer; background-color:  #0099CC; border-color: black">BTR12</td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="2" id="BTR13" style="border: 1px solid #f8f8f8;color:black; cursor: pointer; background-color:  RGB(148,139,84); border-color: black">BTR13</td>
+                                    </tr>
+                                </table>
+                            </td>
+                            <td>
+                                <table style="text-align:center;margin-bottom: 30px;width:100%;">
+                                    <tr>
+                                        <td colspan="2" style="border: 1px solid #f8f8f8;color:black;background-color: RGB(252,213,180); border-color: black">WAITING ROOM</td>
+                                        <td colspan="8" style="border: 1px solid #f8f8f8;color:black;background-color: RGB(250,190,144); border-color: black">ATR8&HEALING HUB RECEPTION</td>
+                                        <td colspan="2" style="border: 1px solid #f8f8f8;color:black;background-color: RGB(252,213,180); border-color: black">WAITING ROOM</td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="12">
+                                            <table style="width:100%;margin-top:70px;">
+                                                <tr>
+                                                    <td id="ETR10" style="border: 1px solid #f8f8f8;color:black; cursor: pointer; background-color: RGB(117,146,60); border-color: black">ETR10</td>
+                                                    <td id="ETR9" style="border: 1px solid #f8f8f8;color:black; cursor: pointer; background-color: RGB(117,146,60); border-color: black">ETR9</td>
+                                                    <td id="ETR8" style="border: 1px solid #f8f8f8;color:black; cursor: pointer; background-color: RGB(117,146,60); border-color: black">ETR8</td>
+                                                    <td id="ETR7" style="border: 1px solid #f8f8f8;color:black; cursor: pointer; background-color: RGB(117,146,60); border-color: black">ETR7</td>
+                                                    <td id="ETR6" style="border: 1px solid #f8f8f8;color:black; cursor: pointer; background-color: RGB(117,146,60); border-color: black">ETR6</td>
+                                                    <td id="ITR6" style="border: 1px solid #f8f8f8;color:black; cursor: pointer; background-color: RGB(229,224,236); border-color: black">ITR6</td>
+                                                    <td id="ITR7" style="border: 1px solid #f8f8f8;color:black; cursor: pointer; background-color: RGB(229,224,236); border-color: black">ITR7</td>
+                                                    <td id="ITR8" style="border: 1px solid #f8f8f8;color:black; cursor: pointer; background-color: RGB(229,224,236); border-color: black">ITR8</td>
+                                                    <td id="ITR9" style="border: 1px solid #f8f8f8;color:black; cursor: pointer; background-color: RGB(229,224,236); border-color: black">ITR9</td>
+                                                    <td id="ITR10" style="border: 1px solid #f8f8f8;color:black; cursor: pointer; background-color: RGB(229,224,236); border-color: black">ITR10</td>
+                                                </tr>
+                                            </table>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="12">
+                                            <table style="width:100%;margin-top:3px;">
+                                                <tr>
+                                                    <td id="ETR1" style="border: 1px solid #f8f8f8;color:black; cursor: pointer; background-color: RGB(117,146,60); border-color: black">ETR1</td>
+                                                    <td id="ETR2" style="border: 1px solid #f8f8f8;color:black; cursor: pointer; background-color: RGB(117,146,60); border-color: black">ETR2</td>
+                                                    <td id="ETR3" style="border: 1px solid #f8f8f8;color:black; cursor: pointer; background-color: RGB(117,146,60); border-color: black">ETR3</td>
+                                                    <td id="ETR4" style="border: 1px solid #f8f8f8;color:black; cursor: pointer; background-color: RGB(117,146,60); border-color: black">ETR4</td>
+                                                    <td id="ETR5" style="border: 1px solid #f8f8f8;color:black; cursor: pointer; background-color: RGB(117,146,60); border-color: black">ETR5</td>
+                                                    <td id="ITR5" style="border: 1px solid #f8f8f8;color:black; cursor: pointer; background-color: RGB(229,224,236); border-color: black">ITR5</td>
+                                                    <td id="ITR4" style="border: 1px solid #f8f8f8;color:black; cursor: pointer; background-color: RGB(229,224,236); border-color: black">ITR4</td>
+                                                    <td id="ITR3" style="border: 1px solid #f8f8f8;color:black; cursor: pointer; background-color: RGB(229,224,236); border-color: black">ITR3</td>
+                                                    <td id="ITR2" style="border: 1px solid #f8f8f8;color:black; cursor: pointer; background-color: RGB(229,224,236); border-color: black">ITR2</td>
+                                                    <td id="ITR1" style="border: 1px solid #f8f8f8;color:black; cursor: pointer; background-color: RGB(229,224,236); border-color: black">ITR1</td>
+                                                </tr>
+                                            </table>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="12">
+                                            <table style="width:100%;margin-top:82px;">
+                                                <tr>
+                                                    <td id="DTR8" style="border: 1px solid #f8f8f8;color:black; cursor: pointer; background-color: RGB(49,132,155); border-color: black">DTR8</td>
+                                                    <td style="border: 1px solid #f8f8f8;color:black; background-color: RGB(219,238,243); border-color: black">SHOWER</td>
+                                                    <td id="DTR7" style="border: 1px solid #f8f8f8;color:black; cursor: pointer; background-color: RGB(49,132,155); border-color: black">DTR7</td>
+                                                    <td id="DTR6" style="border: 1px solid #f8f8f8;color:black; cursor: pointer; background-color: RGB(49,132,155); border-color: black">DTR6</td>
+                                                    <td id="HTR6" style="border: 1px solid #f8f8f8;color:black; cursor: pointer; background-color: RGB(230,185,184); border-color: black">HTR6</td>
+                                                    <td id="HTR7" style="border: 1px solid #f8f8f8;color:black; cursor: pointer; background-color: RGB(230,185,184); border-color: black">HTR7</td>
+                                                    <td style="border: 1px solid #f8f8f8;color:black;background-color: RGB(219,238,243); border-color: black">SHOWER</td>
+                                                    <td id="HTR8" style="border: 1px solid #f8f8f8;color:black; cursor: pointer; background-color: RGB(230,185,184); border-color: black">HTR8</td>
+                                                </tr>
+                                            </table>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="12">
+                                            <table style="width:100%;margin-top:3px;">
+                                                <tr>
+                                                    <td style="border: 1px solid #f8f8f8;color:black;background-color: white; border-color: white"></td>
+                                                    <td style="border: 1px solid #f8f8f8;color:black;background-color: white; border-color: white"></td>
+                                                    <td style="border: 1px solid #f8f8f8;color:black;background-color:white; border-color: white"></td>
+                                                    <td id="DTR5" style="width: 10%;border: 1px solid #f8f8f8;color:black; cursor: pointer; background-color: RGB(49,132,155); border-color: black">DTR5</td>
+                                                    <td id="HTR5" style="width: 10%;border: 1px solid #f8f8f8;color:black; cursor: pointer; background-color: RGB(230,185,184); border-color: black">HTR5</td>
+                                                    <td style="border: 1px solid #f8f8f8;color:black;background-color:white; border-color: white"></td>
+                                                    <td style="border: 1px solid #f8f8f8;color:black;background-color:white; border-color: white"></td>
+                                                    <td style="border: 1px solid #f8f8f8;color:black;background-color: white; border-color: white"></td>
+                                                </tr>
+                                            </table>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="12">
+                                            <table style="width:100%;margin-top:3px;">
+                                                <tr>
+                                                    <td id="DTR1" style="border: 1px solid #f8f8f8;color:black; cursor: pointer; background-color: RGB(49,132,155); border-color: black">DTR1</td>
+                                                    <td id="DTR2" style="border: 1px solid #f8f8f8;color:black; cursor: pointer; background-color: RGB(49,132,155); border-color: black">DTR2</td>
+                                                    <td id="DTR3" style="border: 1px solid #f8f8f8;color:black; cursor: pointer; background-color: RGB(49,132,155); border-color: black">DTR3</td>
+                                                    <td id="DTR4" style="border: 1px solid #f8f8f8;color:black; cursor: pointer; background-color: RGB(49,132,155); border-color: black">DTR4</td>
+                                                    <td id="HTR4" style="border: 1px solid #f8f8f8;color:black; cursor: pointer; background-color: RGB(230,185,184); border-color: black">HTR4</td>
+                                                    <td id="HTR3" style="border: 1px solid #f8f8f8;color:black; cursor: pointer; background-color: RGB(230,185,184); border-color: black">HTR3</td>
+                                                    <td id="HTR2" style="border: 1px solid #f8f8f8;color:black; cursor: pointer; background-color: RGB(230,185,184); border-color: black">HTR2</td>
+                                                    <td id="HTR1" style="border: 1px solid #f8f8f8;color:black; cursor: pointer; background-color: RGB(230,185,184); border-color: black">HTR1</td>
+                                                </tr>
+                                            </table>
+                                        </td>
+                                    </tr>
+
+                                </table>
+                            </td>
+                            <td>
+                                <table style="text-align:center;margin-top:206px;width:75px;margin-left:21px">
+                                    <tr>
+                                        <td id="GTR11" colspan="2" style="border: 1px solid #f8f8f8;color:black; cursor: pointer; background-color: RGB(197,190,151); border-color: black">GTR11</td>
+                                    </tr>
+                                    <tr></tr>
+                                    <tr>
+                                        <td id="GTR10" colspan="2" style="border: 1px solid #f8f8f8;color:black; cursor: pointer; background-color: RGB(197,190,151); border-color: black">GTR10</td>
+                                    </tr>
+                                    <tr>
+                                        <td id="GTR9" colspan="2" style="border: 1px solid #f8f8f8;color:black; cursor: pointer; background-color: RGB(197,190,151); border-color: black">GTR9</td>
+                                    </tr>
+                                    <tr>
+                                        <td id="GTR8" colspan="2" style="border: 1px solid #f8f8f8;color:black; cursor: pointer; background-color: RGB(197,190,151); border-color: black">GTR8</td>
+                                    </tr>
+                                </table>
+                            </td>
+                            <td>
+                                <table style="text-align:center;margin-left:-10px;">
+                                    <tr>
+                                        <td>
+                                            <table>
+                                                <tr>
+                                                    <td id="FTR8" colspan="2" style="border: 1px solid #f8f8f8;color:black; cursor: pointer; background-color: RGB(194,214,154); border-color: black;width:75px;">FTR8</td>
+                                                    <td id="FTR7" colspan="2" style="border: 1px solid #f8f8f8;color:black; cursor: pointer; background-color: RGB(194,214,154); border-color: black;width:75px;">FTR7</td>
+                                                    <td id="FTR6" colspan="2" style="border: 1px solid #f8f8f8;color:black; cursor: pointer; background-color: RGB(194,214,154); border-color: black;width:75px;">FTR6</td>
+
+                                                </tr>
+                                            </table>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <table>
+                                                <tr>
+                                                    <td id="FTR9" colspan="1" style="border: 1px solid #f8f8f8;color:black; cursor: pointer; background-color:  RGB(194,214,154); border-color: black;width:75px;">FTR9</td>
+                                                    <td colspan="4" style="border: 1px solid #f8f8f8;color:black;background-color: white; border-color: black;width:75px;"></td>
+                                                    <td id="FTR5" colspan="1" style="border: 1px solid #f8f8f8;color:black; cursor: pointer; background-color:  RGB(194,214,154); border-color: black;width:75px;">FTR5</td>
+
+                                                </tr>
+                                            </table>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <table>
+                                                <tr>
+                                                    <td id="FTR11" colspan="2" style="border: 1px solid #f8f8f8;color:black; cursor: pointer; background-color:  RGB(194,214,154); border-color: black;width:75px;">FTR11</td>
+                                                    <td id="FTR10" colspan="2" style="border: 1px solid #f8f8f8;color:black; cursor: pointer; background-color:  RGB(194,214,154); border-color: black;width:75px;">FTR10</td>
+                                                    <td colspan="2" style="border: 1px solid #f8f8f8;color:black;background-color: white; border-color: black;width:75px;"></td>
+
+                                                </tr>
+                                            </table>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <table>
+                                                <tr>
+                                                    <td colspan="5" style="border: 1px solid #f8f8f8;color:black;background-color:white; border-color: black;width:150px;"></td>
+                                                    <td id="FTR4" colspan="1" style="border: 1px solid #f8f8f8;color:black; cursor: pointer; background-color:  RGB(194,214,154); border-color: black;width:75px;">FTR4</td>
+
+                                                </tr>
+                                            </table>
+                                        </td>
+
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <table style="margin-top:15px;">
+                                                <tr>
+                                                    <td id="FTR1" colspan="2" style="border: 1px solid #f8f8f8;color:black; cursor: pointer; background-color:  RGB(194,214,154); border-color: black;width:75px;">FTR1</td>
+                                                    <td id="FTR2" colspan="2" style="border: 1px solid #f8f8f8;color:black; cursor: pointer; background-color:  RGB(194,214,154); border-color: black;width:75px;">FTR2</td>
+                                                    <td id="FTR3" colspan="2" style="border: 1px solid #f8f8f8;color:black; cursor: pointer; background-color:  RGB(194,214,154); border-color: black;width:75px;">FTR3</td>
+                                                </tr>
+                                            </table>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <table style="margin-top:15px;">
+                                                <tr>
+                                                    <td id="GTR1" colspan="2" style="border: 1px solid #f8f8f8;color:black; cursor: pointer; background-color:  RGB(197,190,151); border-color: black;width:75px;">GTR1</td>
+                                                </tr>
+                                            </table>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <table style="margin-top:15px;">
+                                                <tr>
+                                                    <td id="GTR2" colspan="2" style="border: 1px solid #f8f8f8;color:black; cursor: pointer; background-color: RGB(197,190,151); border-color: black;width:75px;">GTR2</td>
+                                                </tr>
+                                            </table>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <table style="text-align:center;margin-top: 11px;">
+                                                <tr>
+                                                    <td id="GTR3" colspan="2" style="border: 1px solid #f8f8f8;color:black; cursor: pointer; background-color: RGB(197,190,151); border-color: black;width:75px;">GTR3</td>
+                                                </tr>
+                                                <tr></tr>
+                                                <tr>
+                                                    <td id="GTR4" colspan="2" style="border: 1px solid #f8f8f8;color:black; cursor: pointer; background-color: RGB(197,190,151); border-color: black;width:75px;">GTR4</td>
+                                                </tr>
+                                                <tr>
+                                                    <td id="GTR5" colspan="2" style="border: 1px solid #f8f8f8;color:black; cursor: pointer; background-color: RGB(197,190,151); border-color: black;width:75px;">GTR5</td>
+                                                </tr>
+                                                <tr>
+                                                    <td id="GTR6" colspan="2" style="border: 1px solid #f8f8f8;color:black; cursor: pointer; background-color: RGB(197,190,151); border-color: black;width:75px;">GTR6</td>
+                                                </tr>
+                                                <tr>
+                                                    <td id="GTR7" colspan="2" style="border: 1px solid #f8f8f8;color:black; cursor: pointer; background-color: RGB(197,190,151); border-color: black;width:75px;">GTR7</td>
+                                                </tr>
+                                            </table>
+                                        </td>
+
+                                        <td>
+
+                                            <table class="room_colors" style="text-align:center;margin-top: -60px;margin-left:-128px;width:164px;border:1px solid gray;">
+                                                <tr>
+                                                    <td><div class="color1"></div></td>
+                                                    <td>Vacant <label id="Vacant" style="padding-left:70px;"></label> </td>
+
+                                                </tr>
+                                                <tr>
+                                                    <td><div class="color2"></div></td>
+                                                    <td>Occupied <label id="Occupied" style="padding-left:58px;"></label></td>
+                                                </tr>
+                                                <tr>
+                                                    <td><div class="colors1"></div></td>
+                                                    <td>Non-Funtional <label id="Non-Funtional" style="padding-left:32px;"></label></td>
+                                                </tr>
+                                                <tr>
+                                                    <td><div class="colors2"></div></td>
+                                                    <td>Non-Operational <label id="Non-Operational" style="padding-left:15px;"></label></td>
+                                                </tr>
+                                            </table>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </td>
+                        </tr>
+                        
+                    </table>
+                    <table style="width:100%;">
+                        <tr>
+                            <td colspan="6">
+                                <div>
+                                    <div class="form-group">
+                                        <p id="errmsg" style="color:red"></p>
+                                    </div>
+                                    <div class="form-group" style="padding-left:55px;">
+                                        <div class="row guestname">
+                                            <div class="col-md-12" style="font:normal 19.73px/40px 'QuicksandBold'!important">
+                                                <div class="col-md-1"></div>
+                                                <div class="col-md-3">
+                                                    Room No : <input id="guests" type="text" value="" style="width: 75px;text-align:center;font-size:14px;height:30px;" readonly="readonly" />
+                                                </div>
+                                                <div class="col-md-8">
+                                                    Guest Name : <input id="myField" type="text" value="" style="height:30px;text-align:center;" readonly="readonly" />
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                    </table>
+                </fieldset>
+            </div>
+        </div>
+    </div>
+
+    <!--Css Links For Layout -->
+    <link href="~/Newlayout/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="~/Newlayout/vendor/metisMenu/metisMenu.min.css" rel="stylesheet" />
+    <link href="~/Newlayout/dist/css/sb-admin-2.css" rel="stylesheet" />
+    <link href="~/Newlayout/vendor/morrisjs/morris.css" rel="stylesheet" />
+    <link href="~/Newlayout/vendor/font-awesome/css/font-awesome.min.css" rel="stylesheet" />
+    <!-- End -->
+</body>
+</html>

@@ -1,0 +1,136 @@
+﻿
+@{
+    ViewBag.Title = "MISNUTRITION";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<head>
+    <link href="~/Content/bootstrap.css" rel="stylesheet" />
+    <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+    <script src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js"></script>
+    <link href="https://cdn.datatables.net/1.10.16/css/jquery.dataTables.min.css" rel="stylesheet" />
+    <script>
+        $(document).ready(function () {            
+            $.ajax({
+                type: 'GET',
+                url: '/Home/GTC',
+                success: function (result) {
+                    //debugger;
+                    $('#totalrecipes').text(result.substr(0, result.indexOf('&&')));
+                    $('#totalingredients').text(result.substr(result.indexOf('&&')+2,result.length-1));
+                },
+                error: function () {
+
+                }
+            })
+        });
+        function getrecipedetails() {
+            $.ajax({
+                type: 'GET',
+                url: '/Home/GRDETAILS',
+                success: function (result) {
+                    debugger;
+                    $('.ingredientdata').css("visibility", "hidden");
+                    $('.recipedata').css("visibility", "visible");
+                    $('#recipedetailstable').append('<thead><tr><th>RecipeName</th><th>Category</th></tr></thead>');
+                    var table = $('#recipedetailstable').DataTable({
+                        data: result,
+                            columns: [  
+                                { "data": "RecipeName" },
+                                { "data": "Category" }
+                            ],
+                            destroy: "true",
+                    });
+                },
+                error: function (result) {
+
+                }
+            });
+        }
+        function getingredientdetails() {
+            $.ajax({
+                type: 'GET',
+                url: '/Home/GIDETAILS',
+                success: function (result) {
+                    debugger;
+                    $('.recipedata').css("visibility", "hidden");
+                    $('.ingredientdata').css("visibility", "visible");
+                    $('#ingredientdetailstable').append('<thead><tr><th>IngredientName</th><th>Calories</th></tr></thead>');
+                    var table = $('#ingredientdetailstable').DataTable({
+                        data: result,
+                        columns: [
+                            { "data": "IngredientName" },
+                            { "data": "Calories" }
+                        ],
+                        destroy:"true",
+                    });
+                },
+                error: function (result) {
+
+                }
+            })
+        }
+    </script>
+    <style>
+        .form_content {
+            margin-top: 125px;
+        }
+    </style>
+</head>
+<body>
+    <div class="form_content">
+        <div class="form_global">
+            <div class="form-group">
+                <div class="col-md-12">
+                    <div class="row" style="text-align:center;">
+                        <div class="col-md-3"></div>
+                        <div class="col-md-3" onclick="getrecipedetails();">
+                            <div class="panel panel-primary" style="border-color:#FD6F6F;">
+                                <div class="panel-heading" style="background-color:#FD6F6F;">
+                                    <div class="row">
+                                        <div class="col-xs-12" style="cursor: pointer;">
+                                            <div class="huge">
+                                                <span id="totalrecipes"></span>
+                                            </div>
+                                            <div>
+                                                Total Recipes
+                                                <br />
+                                                &nbsp;
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3" onclick="getingredientdetails();">
+                            <div class="panel panel-primary" style="border-color:#0099CC;">
+                                <div class="panel-heading" style="background-color:#0099CC;">
+                                    <div class="row">
+                                        <div class="col-xs-12" style="cursor: pointer;">
+                                            <div class="huge">
+                                                <span id="totalingredients"></span>
+                                            </div>
+                                            <div>
+                                                Total Ingredients
+                                                <br />
+                                                &nbsp;
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3"></div>
+                    </div>
+                    <div class="col-md-12">
+                        <div class="recipedata col-md-6">
+                            <table id="recipedetailstable" class="display" width="100%"></table>
+                        </div>
+                        <div class="ingredientdata col-md-6">
+                            <table id="ingredientdetailstable" class="display" width="100%"></table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>

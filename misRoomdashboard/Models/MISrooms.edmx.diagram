@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="a8ee1663af7b4179b0e62befb351d0e1" Name="Diagram1">
+        <EntityTypeShape EntityType="MisRoomsModel.AttendanceDetail" Width="1.5" PointX="5.25" PointY="8.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="MisRoomsModel.AttendanceStatu" Width="1.5" PointX="3" PointY="12.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="MisRoomsModel.Dinacharya_Treatment" Width="1.5" PointX="7.75" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="MisRoomsModel.DischargeSummary" Width="1.5" PointX="7.75" PointY="4.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="MisRoomsModel.Feast_Details" Width="1.5" PointX="9.75" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="MisRoomsModel.HealerDetail" Width="1.5" PointX="3" PointY="9" IsExpanded="true" />
+        <EntityTypeShape EntityType="MisRoomsModel.Ingredient" Width="1.5" PointX="9.75" PointY="4.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="MisRoomsModel.NC_TBL_APPCONFIG" Width="1.5" PointX="11.75" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="MisRoomsModel.nc_tbl_bill_type_master" Width="1.5" PointX="11.75" PointY="3.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="MisRoomsModel.NC_TBL_Billing_Trans" Width="1.5" PointX="11.75" PointY="6.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="MisRoomsModel.NC_TBL_BOOKED_DATES" Width="1.5" PointX="5.75" PointY="12.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="MisRoomsModel.NC_TBL_CAMPAIGN_MASTER" Width="1.5" PointX="11.75" PointY="12.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="MisRoomsModel.NC_TBL_COUNTRY_MASTER" Width="1.5" PointX="13.75" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="MisRoomsModel.NC_TBL_Gateway_Payment_Details" Width="1.5" PointX="13.75" PointY="3.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="MisRoomsModel.NC_TBL_GATEWAYPAYMENT_MODE_MASTER" Width="1.5" PointX="7.75" PointY="13.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="MisRoomsModel.NC_TBL_Guest_Group_Master" Width="1.5" PointX="13.75" PointY="11.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="MisRoomsModel.NC_TBL_GUEST_ROOM_TRANSACTION" Width="1.5" PointX="13.75" PointY="14.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="MisRoomsModel.NC_TBL_HABIT_DETAILS" Width="1.5" PointX="15.75" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="MisRoomsModel.NC_TBL_HBQuest_master" Width="1.5" PointX="0.75" PointY="15.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="MisRoomsModel.NC_TBL_HEALTH_DETAILS" Width="1.5" PointX="2.75" PointY="15.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="MisRoomsModel.NC_TBL_HLQuest_master" Width="1.5" PointX="15.75" PointY="3.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="MisRoomsModel.NC_TBL_MEMBERSHIPDETAILS_DETAILS" Width="1.5" PointX="15.75" PointY="6.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="MisRoomsModel.NC_TBL_MEMBERSHIPDETAILS_HEADER" Width="1.5" PointX="9.75" PointY="15.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="MisRoomsModel.NC_TBL_MEMBERSHIPDETAILS_MASTER" Width="1.5" PointX="15.75" PointY="10.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="MisRoomsModel.NC_TBL_NATIONALITY_MASTER" Width="1.5" PointX="15.75" PointY="14.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="MisRoomsModel.NC_TBL_NUMBERING_SERIES" Width="1.5" PointX="17.75" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="MisRoomsModel.NC_TBL_PACKAGE_MASTER" Width="1.5" PointX="17.75" PointY="3.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="MisRoomsModel.NC_TBL_PAYMENT_MODE_MASTER" Width="1.5" PointX="17.75" PointY="9.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="MisRoomsModel.NC_TBL_PAYMENT_TRANS" Width="1.5" PointX="17.75" PointY="12.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="MisRoomsModel.NC_TBL_PAYMENT_TYPE_MASTER" Width="1.5" PointX="0.75" PointY="18.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="MisRoomsModel.NC_TBL_PERSONAL_DETAILS" Width="1.5" PointX="2.75" PointY="18.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="MisRoomsModel.NC_TBL_Pre_Booking" Width="1.5" PointX="11.75" PointY="18.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="MisRoomsModel.NC_TBL_ROOM_MASTER" Width="1.5" PointX="13.75" PointY="18.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="MisRoomsModel.NC_TBL_ROOM_Status" Width="1.5" PointX="19.75" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="MisRoomsModel.NC_TBL_Treatment_Master" Width="1.5" PointX="19.75" PointY="4.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="MisRoomsModel.NC_TBL_VITAL_MASTER" Width="1.5" PointX="19.75" PointY="8.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="MisRoomsModel.RecipeCategory" Width="1.5" PointX="19.75" PointY="11.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="MisRoomsModel.RecipeIngredient" Width="1.5" PointX="19.75" PointY="14.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="MisRoomsModel.Recipe" Width="1.5" PointX="19.75" PointY="18.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="MisRoomsModel.TBL_CheckOut_File" Width="1.5" PointX="21.75" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="MisRoomsModel.Treatment_Master" Width="1.5" PointX="3" PointY="1.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="MisRoomsModel.TreatmentRoomGroup" Width="1.5" PointX="0.75" PointY="3.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="MisRoomsModel.TreatmentRoomMaster" Width="1.5" PointX="3" PointY="4.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="MisRoomsModel.WS_Tbl_Registration" Width="1.5" PointX="21.75" PointY="4.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="MisRoomsModel.ADRM_TBL_USER_MASTER" Width="1.5" PointX="4.75" PointY="21.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="MisRoomsModel.TBL_DateofBirths" Width="1.5" PointX="6.75" PointY="21.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="MisRoomsModel.TBL_MINUTES_OF_MEETING" Width="1.5" PointX="8.75" PointY="21.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="MisRoomsModel.Treatment_masterOld" Width="1.5" PointX="21.75" PointY="9.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="MisRoomsModel.TreatmentAvailedOld" Width="1.5" PointX="21.75" PointY="12.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="MisRoomsModel.TreatmentRoomGroupsOld" Width="1.5" PointX="15.75" PointY="21.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="MisRoomsModel.TreatmentRoomMasterOld" Width="1.5" PointX="21.75" PointY="16.75" IsExpanded="true" />
+        <AssociationConnector Association="MisRoomsModel.FK__Attendanc__Atten__0A9D95DB" ManuallyRouted="false" />
+        <AssociationConnector Association="MisRoomsModel.FK__Attendanc__EmpId__0B91BA14" ManuallyRouted="false" />
+        <AssociationConnector Association="MisRoomsModel.FK_Treatment_Master_TreatmentRoomGroups" ManuallyRouted="false" />
+        <AssociationConnector Association="MisRoomsModel.FK__Treatment__Treat__1AD3FDA4" ManuallyRouted="false" />
+        <EntityTypeShape EntityType="MisRoomsModel.TreatmentAvailed" Width="1.5" PointX="5.25" PointY="3.75" />
+        <AssociationConnector Association="MisRoomsModel.FK__Treatment__Heale__1DB06A4F" />
+        <AssociationConnector Association="MisRoomsModel.FK__Treatment__Treat__1F98B2C1" />
+        <AssociationConnector Association="MisRoomsModel.FK__Treatment__RoomI__1EA48E88" />
+        <EntityTypeShape EntityType="MisRoomsModel.TreatmentFeedBack" Width="1.5" PointX="7.5" PointY="26" />
+        <AssociationConnector Association="MisRoomsModel.FK__Treatment__Treat__0E04126B" />
+        <EntityTypeShape EntityType="MisRoomsModel.PEMASSL" Width="1.5" PointX="22.375" PointY="19.75" />
+      </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>

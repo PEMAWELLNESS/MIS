@@ -1,0 +1,333 @@
+﻿@model Rooms.Models.DischargeSummary
+
+@{
+    ViewBag.Title = "Create";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<link href="~/Content/bootstrap.css" rel="stylesheet" />
+<script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+<script src="~/Scripts/moment.js"></script>
+<script src="https://cdn.datatables.net/1.10.15/js/jquery.dataTables.min.js"></script>
+<link href="https://cdn.datatables.net/1.10.15/css/jquery.dataTables.min.css" rel="stylesheet" />
+<script>
+    $(document).ready(function () {
+        $.ajax({
+            type: "POST",
+            //data: postData,
+            url: "/DOCTOR/GGD",
+            //data: "id=",
+            success: function (result) {
+                debugger;
+                var table = $('#guests').DataTable({
+                    data: result,
+                    columns: [
+                        { "data": "PRNO" },
+                        { "data": "Room_No" },
+                        { "data": "Guest_Name" }
+                    ],
+                });
+                var selected = [];
+                $('#guests tbody').on('click', 'tr', function () {
+                    debugger;
+                    var data = table.row(this).data();
+                    $('tr').removeClass('selected');
+                    debugger;
+                    var id = this.id;
+                    var index = $.inArray(id, selected);
+                    if (index === -1) {
+                        selected.push(id);
+                    } else {
+                        selected.splice(index, 1);
+                    }
+                    $(this).toggleClass('selected');
+                    $('.PRNO').val(data.PRNO);
+                    $.ajax({
+                        type: "POST",
+                        data: {PRNO:data.PRNO},
+                        url: "/Doctor/ED",
+                        //data: "id=",
+                        success: function (result) {
+                            
+                            debugger;
+                            if (result.length != "0") {
+                                $('#A_Weight').val(result[0].A_Weight);
+                                $('#A_Height').val(result[0].A_Height);
+                                $('#A_BMI').val(result[0].A_BMI);
+                                $('#A_FatMass').val(result[0].A_FatMass);
+                                $('#A_FatMassIndex').val(result[0].A_FatMassIndex);
+                                $('#A_FatFreeMass').val(result[0].A_FatFreeMass);
+                                $('#A_FatFreeMassIndex').val(result[0].A_FatFreeMassIndex);
+                                $('#A_TotalBodyWater').val(result[0].A_TotalBodyWater);
+                            }
+                            else {
+                                $('#A_Weight').val('');
+                                $('#A_Height').val('');
+                                $('#A_BMI').val('');
+                                $('#A_FatMass').val('');
+                                $('#A_FatMassIndex').val('');
+                                $('#A_FatFreeMass').val('');
+                                $('#A_FatFreeMassIndex').val('');
+                                $('#A_TotalBodyWater').val('');
+                            }
+                        }, error: function (response) {
+                            debugger;
+                        }
+                    });
+                });
+            }
+        });
+    });
+</script>
+@using (Html.BeginForm("Create","Doctor",FormMethod.Post,new { enctype = "multipart/form-data" }))
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-horizontal">
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        
+            <div class="modal-body" style="width:100%;">
+                <table id="guests" class="display" cellspacing="0" width="100%">
+                    <thead>
+                        <tr>
+                            <th>PRNO</th>
+                            <th>Room_No</th>
+                            <th>Guest_Name</th>
+                        </tr>
+                    </thead>
+                </table>
+                </div>
+        <div class="form-horizontal form-group" style="margin-top:75px;">
+            <div class="col-md-12">
+                <div class="col-md-6">
+                    <div><b><u>Admission Summary</u></b></div><br />
+                    <div class="form-group">
+                        @*@Html.LabelFor(model => model.PRNO, htmlAttributes: new { @class = "control-label col-md-2" })*@
+                        <label class="pull-left control-label col-md-3">
+                            PR Number<span style="color:red;">*</span>
+                        </label>
+                        <div class="col-md-3">
+                            @Html.EditorFor(model => model.PRNO, new { htmlAttributes = new { @class = "form-control PRNO", @autocomplete = "off",@required="required" } })
+                            @Html.ValidationMessageFor(model => model.PRNO, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        @*@Html.LabelFor(model => model.A_Weight, htmlAttributes: new { @class = "control-label col-md-2" })*@
+                        <label class="control-label col-md-3">
+                            Weight(kgs)<span style="color:red;">*</span>
+                        </label>
+                        <div class="col-md-3">
+                            @Html.EditorFor(model => model.A_Weight, new { htmlAttributes = new { @class = "form-control", @autocomplete = "off", @required = "required" } })
+                            @Html.ValidationMessageFor(model => model.A_Weight, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        @*@Html.LabelFor(model => model.A_Height, htmlAttributes: new { @class = "control-label col-md-2" })*@
+                        <label class="control-label col-md-3">
+                            Height(cms)<span style="color:red;">*</span>
+                        </label>
+                        <div class="col-md-3">
+                            @Html.EditorFor(model => model.A_Height, new { htmlAttributes = new { @class = "form-control", @autocomplete = "off", @required = "required" } })
+                            @Html.ValidationMessageFor(model => model.A_Height, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        @*@Html.LabelFor(model => model.A_BMI, htmlAttributes: new { @class = "control-label col-md-2" })*@
+                        <label class="control-label col-md-3">
+                            BMI(Kg/m<sup>2</sup>)<span style="color:red;">*</span>
+                        </label>
+                        <div class="col-md-3">
+                            @Html.EditorFor(model => model.A_BMI, new { htmlAttributes = new { @class = "form-control", @autocomplete = "off", @required = "required" } })
+                            @Html.ValidationMessageFor(model => model.A_BMI, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        @*@Html.LabelFor(model => model.A_FatMass, htmlAttributes: new { @class = "control-label col-md-2" })*@
+                        <label class="control-label col-md-3">
+                            Fat Mass(kg)<span style="color:red;">*</span>
+                        </label>
+                        <div class="col-md-3">
+                            @Html.EditorFor(model => model.A_FatMass, new { htmlAttributes = new { @class = "form-control", @autocomplete = "off", @required = "required" } })
+                            @Html.ValidationMessageFor(model => model.A_FatMass, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        @*@Html.LabelFor(model => model.A_FatMassIndex, htmlAttributes: new { @class = "control-label col-md-2" })*@
+                        <label class="control-label col-md-3">
+                            Fat Mass Index(Kg/m<sup>2</sup>)<span style="color:red;">*</span>
+                        </label>
+                        <div class="col-md-3">
+                            @Html.EditorFor(model => model.A_FatMassIndex, new { htmlAttributes = new { @class = "form-control", @autocomplete = "off", @required = "required" } })
+                            @Html.ValidationMessageFor(model => model.A_FatMassIndex, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        @*@Html.LabelFor(model => model.A_FatFreeMass, htmlAttributes: new { @class = "control-label col-md-2" })*@
+                        <label class="control-label col-md-3">
+                            Fat Free Mass(kg)<span style="color:red;">*</span>
+                        </label>
+                        <div class="col-md-3">
+                            @Html.EditorFor(model => model.A_FatFreeMass, new { htmlAttributes = new { @class = "form-control", @autocomplete = "off", @required = "required" } })
+                            @Html.ValidationMessageFor(model => model.A_FatFreeMass, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        @*@Html.LabelFor(model => model.A_FatFreeMassIndex, htmlAttributes: new { @class = "control-label col-md-2" })*@
+                        <label class="control-label col-md-3">
+                            Fat Free Mass Index(Kg/m<sup>2</sup>)<span style="color:red;">*</span>
+                        </label>
+                        <div class="col-md-3">
+                            @Html.EditorFor(model => model.A_FatFreeMassIndex, new { htmlAttributes = new { @class = "form-control", @autocomplete = "off", @required = "required" } })
+                            @Html.ValidationMessageFor(model => model.A_FatFreeMassIndex, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        @*@Html.LabelFor(model => model.A_TotalBodyWater, htmlAttributes: new { @class = "control-label col-md-2" })*@
+                        <label class="control-label col-md-3">
+                            Total Body Water(Ltrs)<span style="color:red;">*</span>
+                        </label>
+                        <div class="col-md-3">
+                            @Html.EditorFor(model => model.A_TotalBodyWater, new { htmlAttributes = new { @class = "form-control", @autocomplete = "off", @required = "required" } })
+                            @Html.ValidationMessageFor(model => model.A_TotalBodyWater, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+
+                    <div class="form-group" style="visibility:hidden">
+                        @*@Html.LabelFor(model => model.A_Report, htmlAttributes: new { @class = "control-label col-md-2" })*@
+                        <label class="control-label col-md-3">
+                            Admission Report
+                        </label>
+                        <div class="col-md-3">
+                            @*@Html.EditorFor(model => model.A_Report, new { htmlAttributes = new { @class = "form-control" } })
+                            @Html.ValidationMessageFor(model => model.A_Report, "", new { @class = "text-danger" })*@
+                            <input type="file" accept=".pdf" name="A_Report" />
+                        </div>
+                    </div>
+
+                </div>
+                <div class="col-md-6">
+                    <div><b><u>Discharge Summary</u></b></div><br />
+                    <div class="form-group">
+                        @*@Html.LabelFor(model => model.PRNO, htmlAttributes: new { @class = "control-label col-md-3" })*@
+                        <label class="control-label col-md-3">
+                            PR Number
+                        </label>
+                        <div class="col-md-4">
+                            @Html.EditorFor(model => model.PRNO, new { htmlAttributes = new { @class = "form-control PRNO", @autocomplete = "off" } })
+                            @Html.ValidationMessageFor(model => model.PRNO, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label col-md-3">
+                            Weight
+                        </label>
+                        @*@Html.LabelFor(model => model.D_Weight, htmlAttributes: new { @class = "control-label col-md-3" })*@
+                        <div class="col-md-4">
+                            @Html.EditorFor(model => model.D_Weight, new { htmlAttributes = new { @class = "form-control", @autocomplete = "off" } })
+                            @Html.ValidationMessageFor(model => model.D_Weight, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        @*@Html.LabelFor(model => model.D_Height, htmlAttributes: new { @class = "control-label col-md-3" })*@
+                        <label class="control-label col-md-3">
+                            Height
+                        </label>
+                        <div class="col-md-4">
+                            @Html.EditorFor(model => model.D_Height, new { htmlAttributes = new { @class = "form-control", @autocomplete = "off" } })
+                            @Html.ValidationMessageFor(model => model.D_Height, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        @*@Html.LabelFor(model => model.D_BMI, htmlAttributes: new { @class = "control-label col-md-3" })*@
+                        <label class="control-label col-md-3">
+                            BMI
+                        </label>
+                        <div class="col-md-4">
+                            @Html.EditorFor(model => model.D_BMI, new { htmlAttributes = new { @class = "form-control", @autocomplete = "off" } })
+                            @Html.ValidationMessageFor(model => model.D_BMI, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        @*@Html.LabelFor(model => model.D_FatMass, htmlAttributes: new { @class = "control-label col-md-3" })*@
+                        <label class="control-label col-md-3">
+                            Fat Mass
+                        </label>
+                        <div class="col-md-4">
+                            @Html.EditorFor(model => model.D_FatMass, new { htmlAttributes = new { @class = "form-control", @autocomplete = "off" } })
+                            @Html.ValidationMessageFor(model => model.D_FatMass, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        @*@Html.LabelFor(model => model.D_FatMassIndex, htmlAttributes: new { @class = "control-label col-md-3" })*@
+                        <label class="control-label col-md-3">
+                            Fat Mass Index
+                        </label>
+                        <div class="col-md-4">
+                            @Html.EditorFor(model => model.D_FatMassIndex, new { htmlAttributes = new { @class = "form-control", @autocomplete = "off" } })
+                            @Html.ValidationMessageFor(model => model.D_FatMassIndex, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        @*@Html.LabelFor(model => model.D_FatFreeMass, htmlAttributes: new { @class = "control-label col-md-3" })*@
+                        <label class="control-label col-md-3">
+                            Fat Free Mass
+                        </label>
+                        <div class="col-md-4">
+                            @Html.EditorFor(model => model.D_FatFreeMass, new { htmlAttributes = new { @class = "form-control", @autocomplete = "off" } })
+                            @Html.ValidationMessageFor(model => model.D_FatFreeMass, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        @*@Html.LabelFor(model => model.D_FatFreeMassIndex, htmlAttributes: new { @class = "control-label col-md-3" })*@
+                        <label class="control-label col-md-3">
+                            Fat Free Mass Index
+                        </label>
+                        <div class="col-md-4">
+                            @Html.EditorFor(model => model.D_FatFreeMassIndex, new { htmlAttributes = new { @class = "form-control", @autocomplete = "off" } })
+                            @Html.ValidationMessageFor(model => model.D_FatFreeMassIndex, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        @*@Html.LabelFor(model => model.D_TotalBodyWater, htmlAttributes: new { @class = "control-label col-md-3" })*@
+                        <label class="control-label col-md-3">
+                            Total Body Water
+                        </label>
+                        <div class="col-md-4">
+                            @Html.EditorFor(model => model.D_TotalBodyWater, new { htmlAttributes = new { @class = "form-control", @autocomplete = "off" } })
+                            @Html.ValidationMessageFor(model => model.D_TotalBodyWater, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+
+                    <div class="form-group" style="visibility:hidden">
+                        @*@Html.LabelFor(model => model.D_Report, htmlAttributes: new { @class = "control-label col-md-3" })*@
+                        <label class="control-label col-md-3">
+                            Discharge Report
+                        </label>
+                        <div class="col-md-4">
+                            @*@Html.EditorFor(model => model.D_Report, new { htmlAttributes = new { @class = "form-control" } })
+                            @Html.ValidationMessageFor(model => model.D_Report, "", new { @class = "text-danger" })*@
+                            <input type="file" accept=".pdf" name="D_Report" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-12">
+        <input type="submit" value="Generate Result" style="margin:0 auto;display:block;" class="btn btn-default" />
+    </div>
+}

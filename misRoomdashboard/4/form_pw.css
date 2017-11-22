@@ -1,0 +1,388 @@
+#form_global {
+    width: auto;
+    height: auto;
+}
+
+    #form_global fieldset {
+        background: #ffffff;
+        padding: 5px 15px;
+        border: 1px solid #eee;
+        border-radius: 2px;
+        -webkit-border-radius: 2px;
+        -moz-border-radius: 2px;
+        margin: 0 0 10px;
+        box-shadow: 0 2px 5px rgba(50, 50, 50, 0.1);
+        -webkit-box-shadow: 0 2px 5px rgba(50, 50, 50, 0.1);
+        -moz-box-shadow: 0 2px 5px rgba(50, 50, 50, 0.1);
+    }
+
+    #form_global legend {
+        background: #ffffff;
+        padding: 7px 10px;
+        font-weight: 400;
+        color: #666666;
+        border: 1px solid #eeeeee;
+        -webkit-border-radius: 2px;
+        -moz-border-radius: 2px;
+        margin-bottom: 0 !important;
+    }
+
+    #form_global label {
+        float: left;
+        line-height: 16px;
+        padding: 0 5px;
+        width: 185px;
+        font-size: 13px;
+        margin: 3px 20px;
+    }
+
+    #form_global input, #form_global textarea, #form_global select {
+        background: #f6fdfd;
+        width: 185px;
+        padding: 3px 5px;
+        color: #666;
+        border: 1px solid #ccc;
+        margin: 3px 0px 3px 0;
+        font-size: 13px;
+        -webkit-border-radius: 2px;
+        -moz-border-radius: 2px;
+        border-radius: 2px;
+        transition: all 0.25s ease-in-out;
+        -webkit-transition: all 0.25s ease-in-out;
+        -moz-transition: all 0.25s ease-in-out;
+        box-shadow: 0 0 5px rgba(81, 203, 238, 0);
+        -webkit-box-shadow: 0 0 5px rgba(81, 203, 238, 0);
+        -moz-box-shadow: 0 0 5px rgba(81, 203, 238, 0);
+        vertical-align: middle;
+    }
+  
+
+        #form_global input:hover, #form_global select:hover, #form_global textarea:hover {
+            border: 1px solid #448ccb;
+        }
+
+    #form_global select {
+        width: 195px;
+        margin: 8px 0;
+    }
+
+        #form_global select .select_small {
+            width: 185px;
+            margin: 8px 0;
+        }
+
+    #form_global textarea {
+        width: 185px;
+        height: 60px;
+    }
+
+    #form_global textarea_add {
+        width: 185px;
+        height: 60px;
+        margin-left: 20px;
+    }
+
+#form_disable input {
+    background: #cccccc;
+    visibility: collapse;
+}
+
+#form_global input:focus, #form_global textarea:focus {
+    background: #ffffff;
+    border: 1px solid #ddd;
+    color: #333333;
+    outline: none;
+    position: relative;
+    z-index: 5;
+    box-shadow: 0 0 5px rgba(81, 203, 238, 1);
+    -webkit-box-shadow: 0 0 5px rgba(81, 203, 238, 1);
+    -moz-box-shadow: 0 0 5px rgba(81, 203, 238, 1);
+    -webkit-transform: scale(1.05);
+    -moz-transform: scale(1.05);
+    transition: all 0.25s ease-in-out;
+    -webkit-transition: all 0.25s ease-in-out;
+    -moz-transition: all 0.25s ease-in-out;
+}
+
+#form_global select:focus {
+    background: #ffffff;
+    border: 1px solid #ddd;
+    color: #333333;
+}
+
+#form_global input.submit {
+    width: auto;
+    min-width: 85px;
+    cursor: pointer;
+    position: relative;
+    border: 1px solid #299e9e;
+    color: #fff;
+    padding: 6px 16px;
+    text-decoration: none;
+    font-size: 14px;
+    background: #3cb6b6;
+    box-shadow: 0 2px 3px rgba(0,0,0,0.25);
+    -moz-box-shadow: 0 1px 3px rgba(0,0,0,0.25);
+    -webkit-box-shadow: 0 1px 3px rgba(0,0,0,0.25);
+}
+
+    #form_global input.submit:hover {
+        background: #2fc4c4 !important;
+        transition: none;
+        -webkit-transition: none;
+        -moz-transition: none;
+    }
+/*Cancel Button*/
+#form_global input.submit_cancel {
+    background: #bdbdbd;
+    width: auto;
+    min-width: 85px;
+    cursor: pointer;
+    position: relative;
+    border: 1px solid #b4b3b3;
+    color: #666666;
+    padding: 6px 16px;
+    text-decoration: none;
+    font-size: 14px;
+    box-shadow: 0 2px 3px rgba(0,0,0,0.25);
+    -moz-box-shadow: 0 1px 3px rgba(0,0,0,0.25);
+    -webkit-box-shadow: 0 1px 3px rgba(0,0,0,0.25);
+    text-shadow: 0 -1px 1px rgba(0,0,0,0.25);
+}
+
+    #form_global input.submit_cancel:hover {
+        background: #d1d1d1 !important;
+        color: #000000;
+        transition: none;
+        -webkit-transition: none;
+        -moz-transition: none;
+    }
+/*END Cancel Button*/
+.place_btn {
+    /*float:none;*/
+    text-align:center;
+    margin: 0px;
+}
+.place_btn2 {
+   
+    text-align:center;
+   
+}
+
+#form_global input.submit:active, #form_global input.submit:focus {
+    top: 1px;
+}
+
+#form_global input[type="submit"][disabled] {
+    background: #888;
+}
+
+#form_global input[type="checkbox"] {
+    width: 20px;
+    margin-top: 11px;
+}
+
+#form_global input[type="radio"] {
+    width: 20px;
+    margin-top: 0px;
+}
+
+#form_global .radio {
+    width: 100%;
+}
+/** Validation Summary CSS Starting*/
+.field-validation-error {
+    color: red;
+    font-size: 0.7em;
+    /*font-weight: bold;*/
+}
+
+.field-validation-valid {
+    display: none;
+}
+
+.input-validation-error {
+    /*border: 1px solid #e80c4d;*/
+          border: 1px solid red;
+            background: #FFCECE !important;
+}
+
+input[type="checkbox"].input-validation-error {
+    border: 0 none;
+}
+
+.validation-summary-errors {
+    color: red;
+    font-weight: bold;
+    font-size: 0.1em;
+}
+
+.validation-summary-valid {
+    display: none;
+}
+
+.message-info {
+    border: 1px solid;
+    clear: both;
+    padding: 10px 20px;
+}
+
+.message-error {
+    clear: both;
+    color: red;
+    font-size: 0.1em;
+    font-weight: bold;
+    margin: 20px 0 10px 0;
+}
+
+.message-success {
+    color: #7ac0da;
+    font-size: 1.3em;
+    font-weight: bold;
+    margin: 20px 0 10px 0;
+}
+
+.error {
+    color: #e80c4d;
+}
+
+/****Ending of Validation summary*/
+
+/***Application Process Steps Starting*/
+
+.img_active label {
+    background: #448ccb;
+    width: 200px;
+}
+
+.imginactive {
+    background-color: #ccc;
+}
+
+.imgactive {
+    background-color: green;
+    padding: 5px;
+}
+/***Ending of Application Process Steps */
+.img_active {
+    width: 250px;
+    padding: 5px;
+}
+
+.img_active_button {
+    width: auto;
+    min-width: 85px;
+    cursor: pointer;
+    position: relative;
+    color: #ffffff;
+    padding: 4px 15px;
+    background: #299e9e;
+    margin-right: 5px;
+    border-radius: 4px;
+}
+
+.img_disble_button {
+    width: auto;
+    min-width: 85px;
+    position: relative;
+    color: #ccc;
+    padding: 4px 15px;
+    margin-right: 5px;
+    border-radius: 4px;
+    background: #666666;
+}
+
+.img_active_button span {
+    font-size: 18px;
+}
+
+/**Dilog Box styles styles here**/
+#container_dlg {
+    width: auto;
+max-height:250px;
+}
+
+
+#dilogbox-tbl {
+    width: auto;
+    background-color: #EFF0F0;
+    font-size: 12px;
+    border-collapse: collapse;
+}
+
+#dilogbox-tbl th {
+    border: 1px solid #E0E0E0;
+    text-align: left;
+    padding: 5px 10px;
+    background-color: #3cb6b6;
+    color: #ffffff;
+    height: 20px;
+}
+
+#dilogbox-tbl td {
+    border: 1px solid #E0E0E0;
+    padding: 4px 10px;
+}
+
+
+#container_dlg input.submit {
+	width: auto;
+	min-width:90px;
+	cursor: pointer;
+	position: relative;
+	border: 1px solid #299e9e;
+	color: #fff;
+	padding: 6px 16px;
+	text-decoration: none;
+	font-size: 14px;
+	background: #3cb6b6;
+	box-shadow: 0 2px 3px rgba(0,0,0,0.25);
+	-moz-box-shadow: 0 1px 3px rgba(0,0,0,0.25);
+	-webkit-box-shadow: 0 1px 3px rgba(0,0,0,0.25);
+}
+#container_dlg input.submit:hover {
+	background: #2fc4c4 !important;
+	transition: none;
+	-webkit-transition: none;
+	-moz-transition: none;
+}
+/*Cancel Button*/
+#container_dlg input.submit_cancel {
+	background: #bdbdbd;
+	width: auto;
+	cursor: pointer;
+	position: relative;
+	border: 1px solid #b4b3b3;
+	color: #ffffff;
+	padding: 6px 16px;
+	text-decoration: none;
+	font-size: 14px;
+	box-shadow: 0 2px 3px rgba(0,0,0,0.25);
+	-moz-box-shadow: 0 1px 3px rgba(0,0,0,0.25);
+	-webkit-box-shadow: 0 1px 3px rgba(0,0,0,0.25);
+	text-shadow: 0 -1px 1px rgba(0,0,0,0.25);
+}
+#container_dlg input.submit_cancel:hover {
+	background: #d1d1d1 !important;
+	color: #ffffff;
+	transition: none;
+	-webkit-transition: none;
+	-moz-transition: none;
+}
+
+      #form_global input[readonly] {
+  background-color: #ccc;
+}
+
+#form_global input.hasDatepicker {
+     background: #f6fdfd;
+}
+
+ /*#form_global span.mandatory{
+    color: red;
+      font-size:14px;
+     
+   }*/
+
+/*END Cancel Button*/
+/**END Dilog Box styles**/

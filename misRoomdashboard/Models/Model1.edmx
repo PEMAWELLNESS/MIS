@@ -1,0 +1,546 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+      <Schema Namespace="MISPEMAModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="ADRM_TBL_USER_MASTER">
+          <Key>
+            <PropertyRef Name="USER_CODE" />
+          </Key>
+          <Property Name="USER_CODE" Type="int" Nullable="false" />
+          <Property Name="EMP_CODE" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="EMP_NAME" Type="varchar" MaxLength="50" />
+          <Property Name="EMP_FNAME" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="EMP_DOB" Type="datetime" Nullable="false" />
+          <Property Name="EMP_GENDER" Type="varchar" MaxLength="1" Nullable="false" />
+          <Property Name="EMP_CONADDRESS" Type="varchar" MaxLength="150" Nullable="false" />
+          <Property Name="EMP_DOJ" Type="datetime" Nullable="false" />
+          <Property Name="EMP_DESIGNATION" Type="varchar" MaxLength="20" Nullable="false" />
+          <Property Name="EMP_PROFILE" Type="varchar" MaxLength="100" Nullable="false" />
+          <Property Name="EMP_QUALIFICATION" Type="varchar" MaxLength="15" Nullable="false" />
+          <Property Name="EMP_JOBSTATUS" Type="varchar" MaxLength="10" Nullable="false" />
+          <Property Name="LOGIN_NAME" Type="varchar" MaxLength="15" />
+          <Property Name="PASSWORD" Type="varchar" MaxLength="15" />
+          <Property Name="HOST_NAME" Type="varchar" MaxLength="15" />
+          <Property Name="ROLE_CODE" Type="numeric" Precision="4" Scale="0" />
+          <Property Name="CREATED" Type="datetime" />
+          <Property Name="CREATED_USER_CODE" Type="numeric" Precision="4" Scale="0" />
+          <Property Name="DELETED" Type="varchar" MaxLength="1" />
+          <Property Name="SUBDIVISION_CODE" Type="varchar" MaxLength="2" />
+          <Property Name="SECTION_CODE" Type="varchar" MaxLength="8" />
+          <Property Name="CONSUMER_GRP" Type="varchar" MaxLength="254" />
+          <Property Name="SUPERVISORCODE" Type="numeric" Precision="8" Scale="0" />
+          <Property Name="EMP_TELNO" Type="varchar" MaxLength="16" />
+          <Property Name="EMP_MOBNO" Type="varchar" MaxLength="15" Nullable="false" />
+          <Property Name="EMP_FAX" Type="varchar" MaxLength="16" />
+          <Property Name="EMP_EMAIL" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="HIERARCHY_NAME" Type="varchar" MaxLength="20" />
+          <Property Name="HIERARCHY_CODE" Type="numeric" Precision="4" Scale="0" />
+          <Property Name="DIVISION_CODE" Type="numeric" Precision="4" Scale="0" />
+          <Property Name="PAY_COUNTER_NO" Type="numeric" Precision="4" Scale="0" />
+          <Property Name="EMP_DEPT" Type="int" Nullable="false" />
+          <Property Name="LOGIN_REQUIRED" Type="varchar" MaxLength="1" />
+          <Property Name="FS_EXECUTIVE" Type="varchar" MaxLength="1" />
+          <Property Name="EMP_HR_CODE" Type="varchar" MaxLength="25" />
+          <Property Name="EMP_MNAME" Type="varchar" MaxLength="50" />
+          <Property Name="EMP_LNAME" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="EMP_FHNAME" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="MANAGER_CODE" Type="int" />
+          <Property Name="EMP_DEPT_SUBCATG" Type="varchar" MaxLength="30" />
+          <Property Name="LOGGED_IN" Type="varchar" MaxLength="1" />
+          <Property Name="MARITALSTATUS" Type="varchar" MaxLength="1" Nullable="false" />
+          <Property Name="JOBCATEGORY" Type="varchar" MaxLength="30" Nullable="false" />
+        </EntityType>
+        <EntityType Name="AttendanceDetails">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="EmpId" Type="int" />
+          <Property Name="AttendanceStatusId" Type="int" />
+          <Property Name="AttendanceTime" Type="datetime" />
+          <Property Name="CreatedOn" Type="datetime" />
+          <Property Name="CreatedBy" Type="varchar" MaxLength="100" />
+          <Property Name="EditedOn" Type="datetime" />
+          <Property Name="EditedBy" Type="varchar" MaxLength="100" />
+        </EntityType>
+        <EntityType Name="AttendanceStatus">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="AttendanceStatus" Type="varchar" MaxLength="100" />
+        </EntityType>
+        <EntityType Name="TBL_DateofBirths">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Emp_name" Type="varchar" MaxLength="500" />
+          <Property Name="Emp_designation" Type="varchar" MaxLength="1000" />
+          <Property Name="Ecno" Type="varchar" MaxLength="500" />
+          <Property Name="Dept" Type="varchar" MaxLength="500" />
+          <Property Name="DateofBirthDate" Type="datetime" />
+        </EntityType>
+        <EntityType Name="TBL_MINUTES_OF_MEETING">
+          <Key>
+            <PropertyRef Name="SlNo" />
+          </Key>
+          <Property Name="SlNo" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Dept_Code" Type="int" />
+          <Property Name="Key_Point" Type="varchar" MaxLength="500" />
+          <Property Name="Description" Type="varchar" MaxLength="1000" />
+          <Property Name="Responsibility" Type="varchar" MaxLength="500" />
+          <Property Name="Start_Date" Type="datetime" />
+          <Property Name="Target_Date" Type="datetime" />
+          <Property Name="Remarks" Type="varchar" MaxLength="1000" />
+          <Property Name="Status" Type="varchar" MaxLength="200" />
+          <Property Name="MOM_Assigned_Date" Type="datetime" />
+        </EntityType>
+        <EntityType Name="TreatmentPlan">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="PRNO" Type="varchar" MaxLength="20" />
+          <Property Name="PlanDetailID" Type="varchar" MaxLength="10" />
+          <Property Name="TreatmentSession" Type="char" MaxLength="2" />
+          <Property Name="ScheduleDate" Type="date" />
+          <Property Name="ScheduleTime" Type="time" Precision="7" />
+          <Property Name="StartTime" Type="time" Precision="7" />
+          <Property Name="EndTime" Type="time" Precision="7" />
+          <Property Name="CreatedBy" Type="varchar" MaxLength="100" />
+          <Property Name="CreatedOn" Type="datetime" />
+          <Property Name="EditedBy" Type="varchar" MaxLength="100" />
+          <Property Name="EditedOn" Type="datetime" />
+        </EntityType>
+        <EntityType Name="TreatmentPlanDetails">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="TreatmentName" Type="varchar" MaxLength="200" />
+          <Property Name="RoomNo" Type="varchar" MaxLength="50" />
+          <Property Name="HealerName" Type="varchar" MaxLength="200" />
+          <Property Name="TPNumber" Type="varchar" MaxLength="10" />
+        </EntityType>
+        <EntityType Name="TreatmentPlanID">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="PlanDetailsID" Type="int" />
+        </EntityType>
+        <EntityType Name="TreatmentRoomMaster">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="RoomName" Type="varchar" MaxLength="20" />
+        </EntityType>
+        <Association Name="FK__Attendanc__Atten__36B12243">
+          <End Role="AttendanceStatus" Type="Self.AttendanceStatus" Multiplicity="0..1" />
+          <End Role="AttendanceDetails" Type="Self.AttendanceDetails" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="AttendanceStatus">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="AttendanceDetails">
+              <PropertyRef Name="AttendanceStatusId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Attendanc__EmpId__37A5467C">
+          <End Role="TBL_DateofBirths" Type="Self.TBL_DateofBirths" Multiplicity="0..1" />
+          <End Role="AttendanceDetails" Type="Self.AttendanceDetails" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="TBL_DateofBirths">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="AttendanceDetails">
+              <PropertyRef Name="EmpId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="MISPEMAModelStoreContainer">
+          <EntitySet Name="ADRM_TBL_USER_MASTER" EntityType="Self.ADRM_TBL_USER_MASTER" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="AttendanceDetails" EntityType="Self.AttendanceDetails" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="AttendanceStatus" EntityType="Self.AttendanceStatus" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="TBL_DateofBirths" EntityType="Self.TBL_DateofBirths" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="TBL_MINUTES_OF_MEETING" EntityType="Self.TBL_MINUTES_OF_MEETING" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="TreatmentPlan" EntityType="Self.TreatmentPlan" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="TreatmentPlanDetails" EntityType="Self.TreatmentPlanDetails" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="TreatmentPlanID" EntityType="Self.TreatmentPlanID" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="TreatmentRoomMaster" EntityType="Self.TreatmentRoomMaster" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK__Attendanc__Atten__36B12243" Association="Self.FK__Attendanc__Atten__36B12243">
+            <End Role="AttendanceStatus" EntitySet="AttendanceStatus" />
+            <End Role="AttendanceDetails" EntitySet="AttendanceDetails" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Attendanc__EmpId__37A5467C" Association="Self.FK__Attendanc__EmpId__37A5467C">
+            <End Role="TBL_DateofBirths" EntitySet="TBL_DateofBirths" />
+            <End Role="AttendanceDetails" EntitySet="AttendanceDetails" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="MISPEMAModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="ADRM_TBL_USER_MASTER">
+          <Key>
+            <PropertyRef Name="USER_CODE" />
+          </Key>
+          <Property Name="USER_CODE" Type="Int32" Nullable="false" />
+          <Property Name="EMP_CODE" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="EMP_NAME" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="EMP_FNAME" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="EMP_DOB" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="EMP_GENDER" Type="String" MaxLength="1" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="EMP_CONADDRESS" Type="String" MaxLength="150" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="EMP_DOJ" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="EMP_DESIGNATION" Type="String" MaxLength="20" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="EMP_PROFILE" Type="String" MaxLength="100" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="EMP_QUALIFICATION" Type="String" MaxLength="15" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="EMP_JOBSTATUS" Type="String" MaxLength="10" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="LOGIN_NAME" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
+          <Property Name="PASSWORD" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
+          <Property Name="HOST_NAME" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
+          <Property Name="ROLE_CODE" Type="Decimal" Precision="4" Scale="0" />
+          <Property Name="CREATED" Type="DateTime" Precision="3" />
+          <Property Name="CREATED_USER_CODE" Type="Decimal" Precision="4" Scale="0" />
+          <Property Name="DELETED" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
+          <Property Name="SUBDIVISION_CODE" Type="String" MaxLength="2" FixedLength="false" Unicode="false" />
+          <Property Name="SECTION_CODE" Type="String" MaxLength="8" FixedLength="false" Unicode="false" />
+          <Property Name="CONSUMER_GRP" Type="String" MaxLength="254" FixedLength="false" Unicode="false" />
+          <Property Name="SUPERVISORCODE" Type="Decimal" Precision="8" Scale="0" />
+          <Property Name="EMP_TELNO" Type="String" MaxLength="16" FixedLength="false" Unicode="false" />
+          <Property Name="EMP_MOBNO" Type="String" MaxLength="15" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="EMP_FAX" Type="String" MaxLength="16" FixedLength="false" Unicode="false" />
+          <Property Name="EMP_EMAIL" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="HIERARCHY_NAME" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="HIERARCHY_CODE" Type="Decimal" Precision="4" Scale="0" />
+          <Property Name="DIVISION_CODE" Type="Decimal" Precision="4" Scale="0" />
+          <Property Name="PAY_COUNTER_NO" Type="Decimal" Precision="4" Scale="0" />
+          <Property Name="EMP_DEPT" Type="Int32" Nullable="false" />
+          <Property Name="LOGIN_REQUIRED" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
+          <Property Name="FS_EXECUTIVE" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
+          <Property Name="EMP_HR_CODE" Type="String" MaxLength="25" FixedLength="false" Unicode="false" />
+          <Property Name="EMP_MNAME" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="EMP_LNAME" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="EMP_FHNAME" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="MANAGER_CODE" Type="Int32" />
+          <Property Name="EMP_DEPT_SUBCATG" Type="String" MaxLength="30" FixedLength="false" Unicode="false" />
+          <Property Name="LOGGED_IN" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
+          <Property Name="MARITALSTATUS" Type="String" MaxLength="1" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="JOBCATEGORY" Type="String" MaxLength="30" FixedLength="false" Unicode="false" Nullable="false" />
+        </EntityType>
+        <EntityType Name="AttendanceDetail">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="EmpId" Type="Int32" />
+          <Property Name="AttendanceStatusId" Type="Int32" />
+          <Property Name="AttendanceTime" Type="DateTime" Precision="3" />
+          <Property Name="CreatedOn" Type="DateTime" Precision="3" />
+          <Property Name="CreatedBy" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="EditedOn" Type="DateTime" Precision="3" />
+          <Property Name="EditedBy" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="AttendanceStatu" Relationship="Self.FK__Attendanc__Atten__36B12243" FromRole="AttendanceDetails" ToRole="AttendanceStatus" />
+          <NavigationProperty Name="TBL_DateofBirths" Relationship="Self.FK__Attendanc__EmpId__37A5467C" FromRole="AttendanceDetails" ToRole="TBL_DateofBirths" />
+        </EntityType>
+        <EntityType Name="AttendanceStatu">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="AttendanceStatus" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="AttendanceDetails" Relationship="Self.FK__Attendanc__Atten__36B12243" FromRole="AttendanceStatus" ToRole="AttendanceDetails" />
+        </EntityType>
+        <EntityType Name="TBL_DateofBirths">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Emp_name" Type="String" MaxLength="500" FixedLength="false" Unicode="false" />
+          <Property Name="Emp_designation" Type="String" MaxLength="1000" FixedLength="false" Unicode="false" />
+          <Property Name="Ecno" Type="String" MaxLength="500" FixedLength="false" Unicode="false" />
+          <Property Name="Dept" Type="String" MaxLength="500" FixedLength="false" Unicode="false" />
+          <Property Name="DateofBirthDate" Type="DateTime" Precision="3" />
+          <NavigationProperty Name="AttendanceDetails" Relationship="Self.FK__Attendanc__EmpId__37A5467C" FromRole="TBL_DateofBirths" ToRole="AttendanceDetails" />
+        </EntityType>
+        <EntityType Name="TBL_MINUTES_OF_MEETING">
+          <Key>
+            <PropertyRef Name="SlNo" />
+          </Key>
+          <Property Name="SlNo" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Dept_Code" Type="Int32" />
+          <Property Name="Key_Point" Type="String" MaxLength="500" FixedLength="false" Unicode="false" />
+          <Property Name="Description" Type="String" MaxLength="1000" FixedLength="false" Unicode="false" />
+          <Property Name="Responsibility" Type="String" MaxLength="500" FixedLength="false" Unicode="false" />
+          <Property Name="Start_Date" Type="DateTime" Precision="3" />
+          <Property Name="Target_Date" Type="DateTime" Precision="3" />
+          <Property Name="Remarks" Type="String" MaxLength="1000" FixedLength="false" Unicode="false" />
+          <Property Name="Status" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
+          <Property Name="MOM_Assigned_Date" Type="DateTime" Precision="3" />
+        </EntityType>
+        <EntityType Name="TreatmentPlan">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="PRNO" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="PlanDetailID" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="TreatmentSession" Type="String" MaxLength="2" FixedLength="true" Unicode="false" />
+          <Property Name="ScheduleDate" Type="DateTime" Precision="0" />
+          <Property Name="ScheduleTime" Type="Time" Precision="7" />
+          <Property Name="StartTime" Type="Time" Precision="7" />
+          <Property Name="EndTime" Type="Time" Precision="7" />
+          <Property Name="CreatedBy" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="CreatedOn" Type="DateTime" Precision="3" />
+          <Property Name="EditedBy" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="EditedOn" Type="DateTime" Precision="3" />
+        </EntityType>
+        <EntityType Name="TreatmentPlanDetail">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="TreatmentName" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
+          <Property Name="RoomNo" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="HealerName" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
+          <Property Name="TPNumber" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+        </EntityType>
+        <EntityType Name="TreatmentPlanID">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="PlanDetailsID" Type="Int32" />
+        </EntityType>
+        <EntityType Name="TreatmentRoomMaster">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="RoomName" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+        </EntityType>
+        <Association Name="FK__Attendanc__Atten__36B12243">
+          <End Role="AttendanceStatus" Type="Self.AttendanceStatu" Multiplicity="0..1" />
+          <End Role="AttendanceDetails" Type="Self.AttendanceDetail" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="AttendanceStatus">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="AttendanceDetails">
+              <PropertyRef Name="AttendanceStatusId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Attendanc__EmpId__37A5467C">
+          <End Role="TBL_DateofBirths" Type="Self.TBL_DateofBirths" Multiplicity="0..1" />
+          <End Role="AttendanceDetails" Type="Self.AttendanceDetail" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="TBL_DateofBirths">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="AttendanceDetails">
+              <PropertyRef Name="EmpId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="MISPEMAEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="ADRM_TBL_USER_MASTER" EntityType="Self.ADRM_TBL_USER_MASTER" />
+          <EntitySet Name="AttendanceDetails" EntityType="Self.AttendanceDetail" />
+          <EntitySet Name="AttendanceStatus" EntityType="Self.AttendanceStatu" />
+          <EntitySet Name="TBL_DateofBirths" EntityType="Self.TBL_DateofBirths" />
+          <EntitySet Name="TBL_MINUTES_OF_MEETING" EntityType="Self.TBL_MINUTES_OF_MEETING" />
+          <EntitySet Name="TreatmentPlans" EntityType="Self.TreatmentPlan" />
+          <EntitySet Name="TreatmentPlanDetails" EntityType="Self.TreatmentPlanDetail" />
+          <EntitySet Name="TreatmentPlanIDs" EntityType="Self.TreatmentPlanID" />
+          <EntitySet Name="TreatmentRoomMasters" EntityType="Self.TreatmentRoomMaster" />
+          <AssociationSet Name="FK__Attendanc__Atten__36B12243" Association="Self.FK__Attendanc__Atten__36B12243">
+            <End Role="AttendanceStatus" EntitySet="AttendanceStatus" />
+            <End Role="AttendanceDetails" EntitySet="AttendanceDetails" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Attendanc__EmpId__37A5467C" Association="Self.FK__Attendanc__EmpId__37A5467C">
+            <End Role="TBL_DateofBirths" EntitySet="TBL_DateofBirths" />
+            <End Role="AttendanceDetails" EntitySet="AttendanceDetails" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="MISPEMAModelStoreContainer" CdmEntityContainer="MISPEMAEntities">
+          <EntitySetMapping Name="ADRM_TBL_USER_MASTER">
+            <EntityTypeMapping TypeName="MISPEMAModel.ADRM_TBL_USER_MASTER">
+              <MappingFragment StoreEntitySet="ADRM_TBL_USER_MASTER">
+                <ScalarProperty Name="USER_CODE" ColumnName="USER_CODE" />
+                <ScalarProperty Name="EMP_CODE" ColumnName="EMP_CODE" />
+                <ScalarProperty Name="EMP_NAME" ColumnName="EMP_NAME" />
+                <ScalarProperty Name="EMP_FNAME" ColumnName="EMP_FNAME" />
+                <ScalarProperty Name="EMP_DOB" ColumnName="EMP_DOB" />
+                <ScalarProperty Name="EMP_GENDER" ColumnName="EMP_GENDER" />
+                <ScalarProperty Name="EMP_CONADDRESS" ColumnName="EMP_CONADDRESS" />
+                <ScalarProperty Name="EMP_DOJ" ColumnName="EMP_DOJ" />
+                <ScalarProperty Name="EMP_DESIGNATION" ColumnName="EMP_DESIGNATION" />
+                <ScalarProperty Name="EMP_PROFILE" ColumnName="EMP_PROFILE" />
+                <ScalarProperty Name="EMP_QUALIFICATION" ColumnName="EMP_QUALIFICATION" />
+                <ScalarProperty Name="EMP_JOBSTATUS" ColumnName="EMP_JOBSTATUS" />
+                <ScalarProperty Name="LOGIN_NAME" ColumnName="LOGIN_NAME" />
+                <ScalarProperty Name="PASSWORD" ColumnName="PASSWORD" />
+                <ScalarProperty Name="HOST_NAME" ColumnName="HOST_NAME" />
+                <ScalarProperty Name="ROLE_CODE" ColumnName="ROLE_CODE" />
+                <ScalarProperty Name="CREATED" ColumnName="CREATED" />
+                <ScalarProperty Name="CREATED_USER_CODE" ColumnName="CREATED_USER_CODE" />
+                <ScalarProperty Name="DELETED" ColumnName="DELETED" />
+                <ScalarProperty Name="SUBDIVISION_CODE" ColumnName="SUBDIVISION_CODE" />
+                <ScalarProperty Name="SECTION_CODE" ColumnName="SECTION_CODE" />
+                <ScalarProperty Name="CONSUMER_GRP" ColumnName="CONSUMER_GRP" />
+                <ScalarProperty Name="SUPERVISORCODE" ColumnName="SUPERVISORCODE" />
+                <ScalarProperty Name="EMP_TELNO" ColumnName="EMP_TELNO" />
+                <ScalarProperty Name="EMP_MOBNO" ColumnName="EMP_MOBNO" />
+                <ScalarProperty Name="EMP_FAX" ColumnName="EMP_FAX" />
+                <ScalarProperty Name="EMP_EMAIL" ColumnName="EMP_EMAIL" />
+                <ScalarProperty Name="HIERARCHY_NAME" ColumnName="HIERARCHY_NAME" />
+                <ScalarProperty Name="HIERARCHY_CODE" ColumnName="HIERARCHY_CODE" />
+                <ScalarProperty Name="DIVISION_CODE" ColumnName="DIVISION_CODE" />
+                <ScalarProperty Name="PAY_COUNTER_NO" ColumnName="PAY_COUNTER_NO" />
+                <ScalarProperty Name="EMP_DEPT" ColumnName="EMP_DEPT" />
+                <ScalarProperty Name="LOGIN_REQUIRED" ColumnName="LOGIN_REQUIRED" />
+                <ScalarProperty Name="FS_EXECUTIVE" ColumnName="FS_EXECUTIVE" />
+                <ScalarProperty Name="EMP_HR_CODE" ColumnName="EMP_HR_CODE" />
+                <ScalarProperty Name="EMP_MNAME" ColumnName="EMP_MNAME" />
+                <ScalarProperty Name="EMP_LNAME" ColumnName="EMP_LNAME" />
+                <ScalarProperty Name="EMP_FHNAME" ColumnName="EMP_FHNAME" />
+                <ScalarProperty Name="MANAGER_CODE" ColumnName="MANAGER_CODE" />
+                <ScalarProperty Name="EMP_DEPT_SUBCATG" ColumnName="EMP_DEPT_SUBCATG" />
+                <ScalarProperty Name="LOGGED_IN" ColumnName="LOGGED_IN" />
+                <ScalarProperty Name="MARITALSTATUS" ColumnName="MARITALSTATUS" />
+                <ScalarProperty Name="JOBCATEGORY" ColumnName="JOBCATEGORY" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="AttendanceDetails">
+            <EntityTypeMapping TypeName="MISPEMAModel.AttendanceDetail">
+              <MappingFragment StoreEntitySet="AttendanceDetails">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="EmpId" ColumnName="EmpId" />
+                <ScalarProperty Name="AttendanceStatusId" ColumnName="AttendanceStatusId" />
+                <ScalarProperty Name="AttendanceTime" ColumnName="AttendanceTime" />
+                <ScalarProperty Name="CreatedOn" ColumnName="CreatedOn" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="EditedOn" ColumnName="EditedOn" />
+                <ScalarProperty Name="EditedBy" ColumnName="EditedBy" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="AttendanceStatus">
+            <EntityTypeMapping TypeName="MISPEMAModel.AttendanceStatu">
+              <MappingFragment StoreEntitySet="AttendanceStatus">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="AttendanceStatus" ColumnName="AttendanceStatus" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="TBL_DateofBirths">
+            <EntityTypeMapping TypeName="MISPEMAModel.TBL_DateofBirths">
+              <MappingFragment StoreEntitySet="TBL_DateofBirths">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="Emp_name" ColumnName="Emp_name" />
+                <ScalarProperty Name="Emp_designation" ColumnName="Emp_designation" />
+                <ScalarProperty Name="Ecno" ColumnName="Ecno" />
+                <ScalarProperty Name="Dept" ColumnName="Dept" />
+                <ScalarProperty Name="DateofBirthDate" ColumnName="DateofBirthDate" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="TBL_MINUTES_OF_MEETING">
+            <EntityTypeMapping TypeName="MISPEMAModel.TBL_MINUTES_OF_MEETING">
+              <MappingFragment StoreEntitySet="TBL_MINUTES_OF_MEETING">
+                <ScalarProperty Name="SlNo" ColumnName="SlNo" />
+                <ScalarProperty Name="Dept_Code" ColumnName="Dept_Code" />
+                <ScalarProperty Name="Key_Point" ColumnName="Key_Point" />
+                <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="Responsibility" ColumnName="Responsibility" />
+                <ScalarProperty Name="Start_Date" ColumnName="Start_Date" />
+                <ScalarProperty Name="Target_Date" ColumnName="Target_Date" />
+                <ScalarProperty Name="Remarks" ColumnName="Remarks" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="MOM_Assigned_Date" ColumnName="MOM_Assigned_Date" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="TreatmentPlans">
+            <EntityTypeMapping TypeName="MISPEMAModel.TreatmentPlan">
+              <MappingFragment StoreEntitySet="TreatmentPlan">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="PRNO" ColumnName="PRNO" />
+                <ScalarProperty Name="PlanDetailID" ColumnName="PlanDetailID" />
+                <ScalarProperty Name="TreatmentSession" ColumnName="TreatmentSession" />
+                <ScalarProperty Name="ScheduleDate" ColumnName="ScheduleDate" />
+                <ScalarProperty Name="ScheduleTime" ColumnName="ScheduleTime" />
+                <ScalarProperty Name="StartTime" ColumnName="StartTime" />
+                <ScalarProperty Name="EndTime" ColumnName="EndTime" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="CreatedOn" ColumnName="CreatedOn" />
+                <ScalarProperty Name="EditedBy" ColumnName="EditedBy" />
+                <ScalarProperty Name="EditedOn" ColumnName="EditedOn" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="TreatmentPlanDetails">
+            <EntityTypeMapping TypeName="MISPEMAModel.TreatmentPlanDetail">
+              <MappingFragment StoreEntitySet="TreatmentPlanDetails">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="TreatmentName" ColumnName="TreatmentName" />
+                <ScalarProperty Name="RoomNo" ColumnName="RoomNo" />
+                <ScalarProperty Name="HealerName" ColumnName="HealerName" />
+                <ScalarProperty Name="TPNumber" ColumnName="TPNumber" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="TreatmentPlanIDs">
+            <EntityTypeMapping TypeName="MISPEMAModel.TreatmentPlanID">
+              <MappingFragment StoreEntitySet="TreatmentPlanID">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="PlanDetailsID" ColumnName="PlanDetailsID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="TreatmentRoomMasters">
+            <EntityTypeMapping TypeName="MISPEMAModel.TreatmentRoomMaster">
+              <MappingFragment StoreEntitySet="TreatmentRoomMaster">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="RoomName" ColumnName="RoomName" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="true" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>

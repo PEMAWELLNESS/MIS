@@ -1,0 +1,135 @@
+/**1366px Desktop size 1366**/
+/**main style starts here**/
+
+body {
+	background: none;
+	font-family: 'Helvetica', Arial, sans-serif;
+}
+.main_wrap {
+	width : 100%;
+}
+.lt_column_guest {
+	width: 50%;
+	float: left;
+	background: #041527;
+}
+.lt_column_in_guest {
+	width:100%;
+	margin:0 auto;
+	height: auto;
+}
+
+.welcome h2 {
+	font-family: 'Harrington';
+	color:#fff;
+	font-size:26px;
+	text-shadow: 2px 2px rgba(2,153,157,.75);
+	text-align:center;
+	margin: 40px 0 100px 0;
+}
+.help-img{
+	/*background: url('images/may_ihelp.png') no-repeat;*/
+    /*background-image:url('images/head_bg.png');*/
+	width: 240px;
+	height: 240px;
+    text-align:center;
+    margin:0 auto;
+    border-radius:50%;
+    -moz-border-radius:50%;
+    -webkit-border-radius:50%;
+    -ms-border-radius:50%;
+    -op-border-radius:50%;
+    border:4px solid #0bd8dd;
+}
+.help-img img{
+	width: 240px;
+	height: 240px;
+    border-radius:50%;
+    -moz-border-radius:50%;
+    -webkit-border-radius:50%;
+    -ms-border-radius:50%;
+    -op-border-radius:50%;
+    text-align:center;        
+}
+.how_text h2 {
+	font-family: 'Harrington';
+	color:#fff;
+	font-size:26px;
+	text-shadow: 2px 2px rgba(2,153,157,.75);
+	text-align:center;
+	margin: 44px 0 17px 0;
+}
+.rt_column_guest {
+	width: 50%;
+	float: right;
+	background: #0bd8dd;
+}
+.rt_column_in_guest {
+	width:100%;
+	margin:0 auto;
+	height: auto;
+}
+.rt_column_guest .title h2{
+	font-family: 'Harrington';
+	color:#fff;
+	font-size:36px;
+	font-weight:500;
+	text-align:center;	
+	text-shadow: 2px 3px rgba(2,153,157,.75);
+	margin: 20px 0 20px 0;
+}
+#package {
+	width:100%;
+	margin: 20px auto;
+	text-align:center;
+}
+#package nav ul {
+	width: 100%;
+	text-align:center;
+	margin:auto;
+}
+#package nav ul li {
+	display:inline-block;
+	padding: 8px;
+	border-radius: 4px;
+}
+#package nav ul li a {
+	display: inline-block;
+	text-align: center;
+	border: 2px solid #fff;
+	padding: 0px 15px;
+	min-width: 170px;
+	color: #fff;
+	font-size: 14px;
+	font-weight: 600;
+	text-shadow: 1px 1px rgba(2,153,157,.75);
+	border-radius: 4px;
+	height: 43px;
+	line-height: 43px;
+	outline: medium none;
+	position: relative;
+	text-transform: uppercase;
+	transition: all 0.3s ease 0s;
+	z-index: 1;
+}
+#package nav a:after {
+	background: none repeat scroll 0 0 #003366;
+	border-radius: 4px;
+	content: "";
+	height: 100%;
+	left: 0;
+	position: absolute;
+	top: 0;
+	transition: all 0.3s ease 0s;
+	width: 0;
+	z-index: -1;
+}
+#package nav a:hover, #package nav a:active {
+	color: #fdfdfd;
+}
+#package nav a:hover:after, #package nav a:active:after {
+	width: 100%;
+}
+#package nav ul li a:hover {
+	background: #fff;
+}

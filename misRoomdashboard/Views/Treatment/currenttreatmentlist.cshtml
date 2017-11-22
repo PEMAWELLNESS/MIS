@@ -1,0 +1,992 @@
+﻿
+@{
+    ViewBag.Title = "currenttreatmentlist";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<html>
+<head>
+    <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <link href="~/Content/bootstrap.css" rel="stylesheet" />
+    <script src="~/Scripts/bootstrap.min.js"></script>
+    <script src="https://code.highcharts.com/highcharts.js"></script>
+    <script src="https://code.highcharts.com/highcharts-more.js"></script>
+    <script src="https://code.highcharts.com/modules/exporting.js"></script>
+    <script src="https://cdn.datatables.net/1.10.15/js/jquery.dataTables.min.js"></script>
+    <link href="https://cdn.datatables.net/1.10.15/css/jquery.dataTables.min.css" rel="stylesheet" />
+    <style>
+        .above0 {
+            background-color: greenyellow;
+            cursor: pointer;
+        }
+
+        .zero {
+            background-color: white !important;
+            cursor: default !important;
+        }
+
+        #container1 {
+            height: 265px !important;
+        }
+
+        #container2 {
+            height: 265px !important;
+        }
+
+        #container3 {
+            height: 265px !important;
+        }
+    </style>
+    <script>
+        $(document).ready(function () {
+            debugger;
+            Loddet();
+            $("#scheduledate").datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", new Date());;
+            guestlist($("#scheduledate").val());
+            LoadData1($("#scheduledate").val());
+            LoadData2($("#scheduledate").val());
+            $(".treatmentmaster").css("display", "none");
+            $(".treatmentmaster1").css("display", "none");
+            $(".Healermaster").css("display", "none");
+            $(".Healermaster1").css("display", "none");
+            $("#scheduledate").change(function () {
+                LoadData1($("#scheduledate").val());
+                LoadData2($("#scheduledate").val());
+                Loddet();
+                guestlist($("#scheduledate").val());
+                $(".treatmentmaster").css("display", "none");
+                $(".treatmentmaster1").css("display", "none");
+                $(".Healermaster").css("display", "none");
+                $(".Healermaster1").css("display", "none");
+
+            });
+            //$('#example tbody').on('click', 'td', function () {
+            //    alert('Clicked on cell in visible column: ' + table.cell(this).index().columnVisible);
+            //});
+
+            $(document).on("click", ".emplist tr", function (e) {
+                //alert("Row: " + (this.rowIndex) + ", Column: " + (e.toElement.cellIndex));
+                debugger;
+                $("#treatmentmodal").modal('show');
+                var $this = $(this);
+                var td = $(this.cells[e.toElement.cellIndex]).text();
+                var s = $this.closest('table').find('th').eq($this.index()).prevObject;
+                var ss = s[e.toElement.cellIndex].innerText;
+                $('#idid').val(td);
+                //var time = ss.substr(0, ss.indexOf("-"));
+                var time;
+                if (ss != 'Count') {
+                    time = ss.substr(0, ss.indexOf("-") - 1);
+                } else {
+                    time = '';
+                }
+
+
+                var roomno = $(this.cells[0]).text();
+                var dated = $("#scheduledate").val();
+                //alert(ss.indexOf("-"));
+                //alert(ss.substr(0, ss.indexOf("-")));
+                //$("#roomno").val(ss);
+                //$("#time").val($(this.cells[0]).text());
+
+                $.ajax({
+                    type: "GET",
+                    data: { Time: time, RoomName: roomno, dated: dated },
+                    url: "/Treatment/Gettodaytreatmentlist",
+                    success: function (data) {
+
+                        var table = $('#guestmaster').DataTable({
+                            data: data,
+                            destroy: true,
+                            columns: [
+                                { "data": "GuestName" },
+                                { "data": "HealerName" },
+                                { "data": "TreatmentName" }
+                                //{
+                                //    "targets": -1,
+                                //    "data": null,
+                                //    "defaultContent": "<button class='button-info'>Click Me!</button>"
+                                //}
+                            ]
+                        });
+
+                        debugger;
+                        $("#guestname").val(data.GuestName);
+                        $("#healername").val(data.EMPNAME);
+                        $("#treatmentname").val(data.TreatName);
+                    },
+                    error: function () {
+
+                    }
+                });
+            });
+            $("#btnHideModal").click(function () {
+                $("#treatmentmodal").modal('hide');
+            });
+        });
+
+        function Loddet() {
+            var locdata = new Array();
+            var TotUtlPer = (0).toFixed(0);
+            debugger;
+            // var tt = TotUtlPer.toFixed(2);
+            locdata.push({
+                name: "Used" + '(' + TotUtlPer + '%)',
+                y: +TotUtlPer,
+                color: '#00ff1f',
+                drilldown: false,
+            });
+            locdata.push({
+                name: "Idle" + '(' + (100 - +TotUtlPer) + '%)',
+                y: (100 - +TotUtlPer),
+                color: '#0099CC',
+                drilldown: false,
+            });
+            BindData3(locdata);
+        }
+        function guestlist(dated) {
+            $('.emplist').empty();
+            debugger;
+
+            var sttt = "Employees with Designation are";
+            var $table = $('<table/>');
+            $table.addClass("table table-bordered tbb");
+            //$('#guest').val(name);
+            //var wallcode = name;
+            //var postData = {
+            //    Guestname: wallcode
+            //}
+            //debugger;
+            $.ajax({
+                type: "POST",
+                data: { dated: dated },
+                url: "/Treatment/Getcurrenttreatmentlist",
+                //data: "id=",
+                success: function (results) {
+                    debugger;
+                    //var results=$(results).toArray().reverse();
+                    var tth = '<th style="text-align:center!important;">RoomName</th>'
+                    if (results.length > 0) {
+                        // iterating through the results array
+                        //for(var i = 0; i < 1; i++) {
+                        // get i-th object in the results array
+                        var columnsIn = results[0];
+                        // loop through every key in the object
+                        for (var key in columnsIn) {
+                            if (!isNaN(key) && (+key < 12 && +key >= 0)) {
+                                debugger;
+                                tth = tth + '<th style="text-align:center!important;">' + key + ' - ' + (+key + 1) + ' AM</th>';
+                            }
+                            else if ((!isNaN(key) && (+key >= 12 && +key <= 23))) {
+                                tth = tth + '<th style="text-align:center!important;">' + key + ' - ' + (+key + 1) + ' PM</th>';
+                            }
+                        }
+                        tth = tth + '<th style="text-align:center!important;">Count</th>'
+                        tth = tth + '<th style="text-align:center!important;">Utilization</th>'
+                        $table.append(tth);
+                        debugger;
+                        for (var i = 0; i < results.length; i++) {
+                            // get i-th object in the results array
+                            var columnsIn = results[i];
+                            var rowdata = '<tr>'
+                            // loop through every key in the object
+                            for (var key in columnsIn) {
+                                if (results[i][key] != null) {
+                                    rowdata = rowdata + '<td class="above0" style="text-align:center!important;">' + results[i][key] + '</td>';
+                                    //alert(key); // here is your column name you are looking for + its value
+                                    //}
+                                }
+                                else {
+                                    rowdata = rowdata + '<td class="zero" style="text-align:center!important;">0</td>';
+                                }
+                            }
+                            $('.zero').prop('onclick', null).off('click');
+                            rowdata = rowdata + '<td></td><td></td></tr>';
+                            $table.append(rowdata);
+                        }
+                        $('.emplist').append($table);
+                        debugger;
+
+                        var table = $(".emplist tbody");
+                        debugger;
+                        // var x = $($table + " > tbody > tr:first > td").length;
+                        var x = $(".tbb").find('tr')[0].cells.length;
+                        //alert(x);
+                        var tbl = $('.tbb');
+                        moveColumn(tbl, (x - 3), 0);
+                        var locdata = new Array();
+                        var totUtl = 0;
+                        table.find('tr').each(function (i) {
+                            debugger;
+                            var productId = 0;
+                            for (var j = 1; j < (x - 2) ; j++) {
+                                var $tds = $(this).find('td');
+                                $tds.eq(0).addClass('zero');
+                                productId = (+productId) + (+$tds.eq(j).text());
+                                //product = (+$tds.eq(1).text()) + (+$tds.eq(2).text()) + (+$tds.eq(3).text());//+ (+$tds.eq(4).text()) + (+$tds.eq(5).text()) + +($tds.eq(6).text()) + (+$tds.eq(7).text()) + (+$tds.eq(8).text()) + (+$tds.eq(9).text()) + (+$tds.eq(10).text()) + (+$tds.eq(11).text()) + (+$tds.eq(12).text()) + (+$tds.eq(13).text()) + (+$tds.eq(14).text()),
+
+                            }
+                            $tds.eq(x - 2).text(productId);
+
+                            var Roomhrs = 0;
+                            for (var k = 1; k < (x - 2) ; k++) {
+                                var $tds = $(this).find('td');
+                                $tds.eq(0).addClass('zero');
+                                if ($tds.eq(k).text() > 0) {
+                                    Roomhrs = (+Roomhrs) + (+1);
+                                }
+                                //product = (+$tds.eq(1).text()) + (+$tds.eq(2).text()) + (+$tds.eq(3).text());//+ (+$tds.eq(4).text()) + (+$tds.eq(5).text()) + +($tds.eq(6).text()) + (+$tds.eq(7).text()) + (+$tds.eq(8).text()) + (+$tds.eq(9).text()) + (+$tds.eq(10).text()) + (+$tds.eq(11).text()) + (+$tds.eq(12).text()) + (+$tds.eq(13).text()) + (+$tds.eq(14).text()),
+
+                            }
+                            totUtl = (+totUtl) + (+Roomhrs);
+                            // $tds.eq(x - 2).text(Roomhrs);
+                            var Roomname = $tds.eq(0).text();
+                            var Utl = ((Roomhrs / 10) * 100);
+                            $tds.eq(x - 1).text(((Roomhrs / 10) * 100) + '%');
+
+
+
+                            // do something with productId, product, Quantity
+                            //alert('Row ' + (i + 1) + ':\nId: ' + productId
+                            //      + '\nProduct: ' + product
+                            //      + '\nQuantity: ' + Quantity);
+                            //alert(product);
+                        });
+                        var TotUtlPer = ((totUtl / 720) * 100).toFixed(0);
+                        debugger;
+                        // var tt = TotUtlPer.toFixed(2);
+                        locdata.push({
+                            name: "Used" + '(' + TotUtlPer + '%)',
+                            y: +TotUtlPer,
+                            color: '#00ff1f',
+                            drilldown: false,
+                        });
+                        locdata.push({
+                            name: "Idle" + '(' + (100 - +TotUtlPer) + '%)',
+                            y: (100 - +TotUtlPer),
+                            color: '#0099CC',
+                            drilldown: false,
+                        });
+                        BindData3(locdata);
+                    }
+
+                    else {
+                        alert("No Treatment Availed.");
+                    }
+
+                }
+            });
+            $('.emplist').show();
+            debugger;
+        }
+        function moveColumn(table, movefrom, moveto) {
+            debugger;
+            var rows = jQuery('tr', table);
+            var cols;
+            debugger;
+            rows.each(function () {
+                cols = jQuery(this).children('th, td');
+                cols.eq(movefrom).detach().insertBefore(cols.eq(moveto));
+            });
+        }
+        function LoadData1(dated) {
+            $.ajax({
+
+                type: "POST",
+                url: "/Treatment/GetroomsoccupiedcountForGraph",
+                //data: "id=",
+                data: { dated: dated },
+                success: function (data) {
+                    debugger;
+                    var ds = data.indexOf(':');
+                    var sd = data.length - 1
+                    //alert((data.substr(data.indexOf(':')+1,+data.length-1)));
+                    var getColor = {
+                        'AB': '#C6F9D2',
+                        'BC': '#CECEFF',
+                        'CL': '#390040',
+                        'CI': '#FFCAFF',
+                        'HB': '#D0CCCD',
+                        'ON': '#FFCC99',
+                        'PM': '#FFCBB9',
+                        'SR': '#EAEC93',
+                        'TS': '#D7FBE6',
+                        'IS': '#FFCACA',
+                        'FREE': '#00FF00'
+                    };
+                    debugger;
+                    var Occupied = data.substr(0, data.indexOf(':'));
+                    var locdata = new Array();
+                    locdata.push({
+                        name: 'Occupied' + '(' + +(data.substr(0, data.indexOf(':'))) + ')',
+                        y: +(data.substr(0, data.indexOf(':'))),
+                        drilldown: false,
+                        color: '#00ff1f'
+                    });
+                    locdata.push({
+                        name: 'Vacant' + '(' + +(data.substr(data.indexOf(':') + 1, data.length - 1)) + ')',
+                        y: +(data.substr(data.indexOf(':') + 1, data.length - 1)),
+                        drilldown: false,
+                        color: '#0099CC'
+                    });
+
+                    BindData1(locdata);
+
+                },
+                error: function () {
+                    // alert("error")
+                }
+            });
+        }
+        function BindData1(locations) {
+            $('#container1').highcharts({
+                chart: {
+                    type: 'pie',
+                    innerSize: '50%',
+                    events: {
+                        drilldown: function (e) {
+                            if (!e.seriesOptions) {
+
+                                var chart = this;
+                                chart.showLoading('Simulating Ajax ...');
+                                var series = Getseries(e.point.name, chart, e.point);
+                                // Show the loading label
+
+                            }
+                        }
+                    }
+                },
+                title: {
+                    text: 'Treatment Room Wise'
+                },
+                xAxis: {
+                    type: 'category'
+                },
+
+                legend: {
+                    enabled: false
+                },
+                //plotOptions: {
+                //    series: {
+                //        dataLabels: {
+                //            enabled: true,
+                //            format: '{point.name}'
+                //        },
+                //        startAngle: -90,
+                //        endAngle: 90,
+                //        center: ['50%', '75%']
+                //    }
+                //},
+                plotOptions: {
+                    pie: {
+                        dataLabels: {
+                            enabled: true,
+                            distance: -50,
+                            style: {
+                                fontWeight: 'bold',
+                                color: 'white'
+                            }
+                        },
+                        startAngle: -90,
+                        endAngle: 90,
+                        center: ['50%', '75%']
+                    }
+                },
+                credits: {
+                    enabled: false
+                },
+                series: [{
+                    cursor: 'pointer',
+                    innerSize: '50%',
+                    point: {
+                        events: {
+                            click: function () {
+                                deptlist1(this.name, $("#scheduledate").val());
+                                $('#gender1').val(this.name);
+                            }
+                        },
+                    },
+                    name: 'Count',
+                    colorByPoint: true,
+                    data: locations
+                }],
+
+                drilldown: {
+                    series: []
+                }
+            });
+        }
+        function deptlist1(name, date) {
+            //debugger;
+            var wallcode = date;
+            var namenew = name;
+            var postData = {
+                dated: wallcode,
+                Name: namenew,
+            }
+            debugger;
+            var Namenew1 = name.substr(0, name.indexOf('('))
+            if (Namenew1 == "Occupied") {
+                $(".treatmentmaster1").css("display", "none");
+                $(".treatmentmaster").css("display", "block");
+                $(".Healermaster").css("display", "none");
+                $(".Healermaster1").css("display", "none");
+                $.ajax({
+                    type: "POST",
+                    data: postData,
+                    url: "/Treatment/TreatmentGraphDet",
+                    //data: "id=",
+                    success: function (result) {
+                        debugger;
+                        var data = new Array();
+                        for (var i = 0; i < result.length; i++) {
+                            data.push({
+                                PRNO: result[i].PRNO,
+                                GuestName: result[i].GuestName,
+                                RoomNo: result[i].RoomNo,
+                                HealerName: result[i].HealerName,
+                                TreatmentName: result[i].TreatmentName,
+                                ScheduleTime: moment(result[i].ScheduleTime).format("HH:mm")
+                            })
+                        }
+
+                        var table = $('#treatmentmaster').DataTable({
+                            data: data,
+                            destroy: true,
+                            "order": [[1, "asc"], [5, "asc"]],
+                            columns: [
+                                { "data": "PRNO" },
+                                { "data": "GuestName" },
+                                { "data": "RoomNo" },
+                                { "data": "HealerName" },
+                                { "data": "TreatmentName" },
+                                { "data": "ScheduleTime" }
+                            ],
+                        });
+                    }
+                });
+            }
+            else {
+                $(".treatmentmaster").css("display", "none");
+                $(".treatmentmaster1").css("display", "block");
+                $(".Healermaster").css("display", "none");
+                $(".Healermaster1").css("display", "none");
+                //$('.treatmentmaster').empty();
+                $.ajax({
+                    type: "POST",
+                    data: postData,
+                    url: "/Treatment/TreatmentGraphDet",
+                    //data: "id=",
+                    success: function (result) {
+                        debugger;
+                        var data1 = new Array();
+                        for (var i = 0; i < result.length; i++) {
+                            data1.push({
+                                RoomNo: result[i].RoomNumber,
+                                Status: "Vacant"
+                            })
+                        }
+
+                        var table1 = $('#treatmentmaster1').DataTable({
+                            data: data1,
+                            destroy: true,
+                            //"order": [[1, "asc"], [5, "asc"]],
+                            columns: [
+                                { "data": "RoomNo" },
+                                { "data": "Status" },
+                            ],
+                        });
+                    }
+                });
+            }
+        }
+        function LoadData2(dated) {
+            $.ajax({
+
+                type: "POST",
+                url: "/Treatment/GetattendhealersGraph",
+                //data: "id=",
+                data: { dated: dated },
+                success: function (data) {
+                    debugger;
+                    var ds = data.indexOf(':');
+                    var sd = data.length - 1
+                    //alert((data.substr(data.indexOf(':')+1,+data.length-1)));
+                    var getColor = {
+                        'AB': '#C6F9D2',
+                        'BC': '#CECEFF',
+                        'CL': '#390040',
+                        'CI': '#FFCAFF',
+                        'HB': '#D0CCCD',
+                        'ON': '#FFCC99',
+                        'PM': '#FFCBB9',
+                        'SR': '#EAEC93',
+                        'TS': '#D7FBE6',
+                        'IS': '#FFCACA',
+                        'FREE': '#00FF00'
+                    };
+                    debugger;
+                    var Occupied = data.substr(0, data.indexOf(':'));
+                    var locdata = new Array();
+                    locdata.push({
+                        name: 'Present' + '(' + +(data.substr(0, data.indexOf(':'))) + ')',
+                        y: +(data.substr(0, data.indexOf(':'))),
+                        drilldown: false,
+                        color: '#00ff1f'
+                    });
+                    locdata.push({
+                        name: 'Absent' + '(' + +(data.substr(data.indexOf(':') + 1, data.length - 1)) + ')',
+                        y: +(data.substr(data.indexOf(':') + 1, data.length - 1)),
+                        drilldown: false,
+                        color: '#0099CC'
+                    });
+
+                    BindData2(locdata);
+
+                },
+                error: function () {
+                    // alert("error")
+                }
+            });
+        }
+        function BindData2(locations) {
+            $('#container2').highcharts({
+                chart: {
+                    type: 'pie',
+                    innerSize: '50%',
+                    events: {
+                        drilldown: function (e) {
+                            if (!e.seriesOptions) {
+
+                                var chart = this;
+                                chart.showLoading('Simulating Ajax ...');
+                                var series = Getseries(e.point.name, chart, e.point);
+                                // Show the loading label
+
+                            }
+                        }
+                    }
+                },
+                title: {
+                    text: 'Healer Wise'
+                },
+                xAxis: {
+                    type: 'category'
+                },
+
+                legend: {
+                    enabled: false
+                },
+                //plotOptions: {
+                //    series: {
+                //        dataLabels: {
+                //            enabled: true,
+                //            format: '{point.name}'
+                //        },
+                //        startAngle: -90,
+                //        endAngle: 90,
+                //        center: ['50%', '75%']
+                //    }
+                //},
+                plotOptions: {
+                    pie: {
+                        dataLabels: {
+                            enabled: true,
+                            distance: -50,
+                            style: {
+                                fontWeight: 'bold',
+                                color: 'white'
+                            }
+                        },
+                        startAngle: -90,
+                        endAngle: 90,
+                        center: ['50%', '75%']
+                    }
+                },
+                credits: {
+                    enabled: false
+                },
+                series: [{
+                    cursor: 'pointer',
+                    innerSize: '50%',
+                    point: {
+                        events: {
+                            click: function () {
+                                Healerslist(this.name, $("#scheduledate").val());
+                                $('#gender1').val(this.name);
+                            }
+                        },
+                    },
+                    name: 'Count',
+                    colorByPoint: true,
+                    data: locations
+                }],
+
+                drilldown: {
+                    series: []
+                }
+            });
+        }
+        function Healerslist(name, date) {
+            debugger;
+            var wallcode = date;
+            var namenew = name;
+            var postData = {
+                dated: wallcode,
+                Name: namenew,
+            }
+            debugger;
+            var Namenew2 = name.substr(0, name.indexOf('('))
+            if (Namenew2 == "Present") {
+                $(".Healermaster1").css("display", "none");
+                $(".Healermaster").css("display", "block");
+                $(".treatmentmaster").css("display", "none");
+                $(".treatmentmaster1").css("display", "none");
+                $.ajax({
+                    type: "POST",
+                    data: postData,
+                    url: "/Treatment/HealersGraphDet",
+                    //data: "id=",
+                    success: function (result) {
+                        debugger;
+                        var data = new Array();
+                        for (var i = 0; i < result.length; i++) {
+                            data.push({
+                                HealerName: result[i].HealerName,
+                                PRNO: result[i].PRNO,
+                                GuestName: result[i].GuestName,
+                                RoomNo: result[i].RoomNo,
+                                TreatmentName: result[i].TreatmentName,
+                                ScheduleTime: moment(result[i].ScheduleTime).format("HH:mm")
+                            })
+                        }
+
+                        var table = $('#Healermaster').DataTable({
+                            data: data,
+                            destroy: true,
+                            "order": [[1, "asc"], [5, "asc"]],
+                            columns: [
+                                { "data": "HealerName" },
+                                { "data": "PRNO" },
+                                { "data": "GuestName" },
+                                { "data": "RoomNo" },
+                                { "data": "TreatmentName" },
+                                { "data": "ScheduleTime" }
+                            ],
+                        });
+                    }
+                });
+            }
+            else {
+                $(".Healermaster").css("display", "none");
+                $(".Healermaster1").css("display", "block");
+                $(".treatmentmaster").css("display", "none");
+                $(".treatmentmaster1").css("display", "none");
+                //$('.treatmentmaster').empty();
+                $.ajax({
+                    type: "POST",
+                    data: postData,
+                    url: "/Treatment/HealersGraphDet",
+                    //data: "id=",
+                    success: function (result) {
+                        debugger;
+                        var data1 = new Array();
+                        for (var i = 0; i < result.length; i++) {
+                            data1.push({
+                                EMPNO: result[i].Id,
+                                EMPNAME: result[i].EMPNAME,
+                                Status: "Absent"
+                            })
+                        }
+
+                        var table1 = $('#Healermaster1').DataTable({
+                            data: data1,
+                            destroy: true,
+                            //"order": [[1, "asc"], [5, "asc"]],
+                            columns: [
+                                  { "data": "EMPNO" },
+                                { "data": "EMPNAME" },
+                                { "data": "Status" },
+                            ],
+                        });
+                    }
+                });
+            }
+        }
+
+        function BindData3(locations) {
+            $('#container3').highcharts({
+                chart: {
+                    type: 'pie',
+                    innerSize: '50%',
+                    events: {
+                        drilldown: function (e) {
+                            if (!e.seriesOptions) {
+
+                                var chart = this;
+                                chart.showLoading('Simulating Ajax ...');
+                                var series = Getseries(e.point.name, chart, e.point);
+                                // Show the loading label
+
+                            }
+                        }
+                    }
+                },
+                title: {
+                    text: 'Rooms Utilization'
+                },
+                xAxis: {
+                    type: 'category'
+                },
+
+                legend: {
+                    enabled: false
+                },
+                //plotOptions: {
+                //    series: {
+                //        dataLabels: {
+                //            enabled: true,
+                //            format: '{point.name}'
+                //        },
+                //        startAngle: -90,
+                //        endAngle: 90,
+                //        center: ['50%', '75%']
+                //    }
+                //},
+                plotOptions: {
+                    pie: {
+                        dataLabels: {
+                            enabled: true,
+                            distance: -50,
+                            style: {
+                                fontWeight: 'bold',
+                                color: 'white'
+                            }
+                        },
+                        startAngle: -90,
+                        endAngle: 90,
+                        center: ['50%', '75%']
+                    }
+                },
+                credits: {
+                    enabled: false
+                },
+                series: [{
+                    cursor: 'pointer',
+                    innerSize: '50%',
+                    point: {
+                        events: {
+                            //click: function () {
+                            //    Healerslist(this.name, $("#scheduledate").val());
+                            //    $('#gender1').val(this.name);
+                            //}
+                        },
+                    },
+                    name: 'Count',
+                    colorByPoint: true,
+                    data: locations
+                }],
+
+                drilldown: {
+                    series: []
+                }
+            });
+        }
+        //function BindData3(locations) {
+        //    $('#container3').highcharts({
+        //        chart: {
+        //            type: 'pie',
+        //            innerSize: '50%',
+        //            events: {
+        //                drilldown: function (e) {
+        //                    if (!e.seriesOptions) {
+
+        //                        var chart = this;
+        //                        chart.showLoading('Simulating Ajax ...');
+        //                        var series = Getseries(e.point.name, chart, e.point);
+        //                        // Show the loading label
+
+        //                    }
+        //                }
+        //            }
+        //        },
+        //        title: {
+        //            text: 'Utilization'
+        //        },
+        //        xAxis: {
+        //            type: 'category'
+        //        },
+
+        //        legend: {
+        //            enabled: false
+        //        },
+        //        //plotOptions: {
+        //        //    series: {
+        //        //        dataLabels: {
+        //        //            enabled: true,
+        //        //            format: '{point.name}%'
+        //        //        },
+        //        //        startAngle: -90,
+        //        //        endAngle: 90,
+        //        //        center: ['50%', '75%']
+        //        //    }
+        //        //},
+        //        plotOptions: {
+        //            pie: {
+        //                dataLabels: {
+        //                    enabled: true,
+        //                    distance: -50,
+        //                    style: {
+        //                        fontWeight: 'bold',
+        //                        color: 'white'
+        //                    }
+        //                },
+        //                startAngle: -90,
+        //                endAngle: 90,
+        //                center: ['50%', '75%']
+        //            }
+        //        },
+        //        credits: {
+        //            enabled: false
+        //        },
+        //        series: [{
+        //            cursor: 'pointer',
+        //            innerSize: '50%',
+        //            point: {
+        //                //events: {
+        //                //    click: function () {
+        //                //        Healerslist(this.name, $("#scheduledate").val());
+        //                //        $('#gender1').val(this.name);
+        //                //    }
+        //                //},
+        //            },
+        //            name: 'Count',
+        //            colorByPoint: true,
+        //            data: locations
+        //        }],
+
+        //        drilldown: {
+        //            series: []
+        //        }
+        //    });
+        //}
+
+    </script>
+
+</head>
+<body>
+    <div>
+
+        <div class="content-holder">
+            @*<center style="color:red;font-size:30px;">
+                    Day Wise Treatments
+                </center><br />*@
+            <center style="color:red;font-size:25px;"><label style="color:#333;font-size:20px;">Date:<input type="text" id="scheduledate" style="width: 272px;"></label></center>
+            <div class="form-group">
+                <div class="row" style="height:230px!important">
+                    <div class="col-md-12">
+                        <div div class="col-md-4" id="container1"></div>
+                        <div div class="col-md-4" id="container2"></div>
+                        <div div class="col-md-4" id="container3"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-body treatmentmaster" style="width:90%;margin-left:78px;">
+                @*Date: <input type="text" id="scheduledate">*@
+                <table id="treatmentmaster" class="display" cellspacing="0" width="100%">
+                    <thead>
+                        <tr>
+                            <th>PRNO</th>
+                            <th>GuestName</th>
+                            <th>RoomNo</th>
+                            <th>HealerName</th>
+                            <th>TreatmentName</th>
+                            <th>ScheduleTime</th>
+                        </tr>
+                    </thead>
+                </table>
+            </div>
+            <div class="modal-body treatmentmaster1" style="width:90%;margin-left:78px;">
+                <table id="treatmentmaster1" class="display" cellspacing="0" width="100%">
+                    <thead>
+                        <tr>
+                            <th>RoomNo</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                </table>
+            </div>
+
+            <div class="modal-body Healermaster" style="width:90%;margin-left:78px;">
+                @*Date: <input type="text" id="scheduledate">*@
+                <table id="Healermaster" class="display" cellspacing="0" width="100%">
+                    <thead>
+                        <tr>
+                            <th>HealerName</th>
+                            <th>PRNO</th>
+                            <th>GuestName</th>
+                            <th>RoomNo</th>
+                            <th>TreatmentName</th>
+                            <th>ScheduleTime</th>
+                        </tr>
+                    </thead>
+                </table>
+            </div>
+            <div class="modal-body Healermaster1" style="width:90%;margin-left:78px;">
+                <table id="Healermaster1" class="display" cellspacing="0" width="100%">
+                    <thead>
+                        <tr>
+                            <th>Emp No</th>
+                            <th>Healer Name</th>
+                            <th>Attendance</th>
+                        </tr>
+                    </thead>
+                </table>
+            </div>
+            <input type="hidden" id="idid" />
+            @*<a href="#" class="expand-content-link">Treatments:<input type="text" id="guest" name="guest" style="border:none;" readonly="readonly" /></a>*@
+            <div class="hidden-content" id="container"></div>
+            <br />
+            <div class="emplist" id="emplist" style="text-align:center;">
+            </div>
+
+        </div>
+    </div>
+
+    <div class="modal fade" tabindex="-1" id="treatmentmodal"
+         data-keyboard="false" data-backdrop="static">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">
+                        ×
+                    </button>
+                    <center><h2 class="modal-title" style="color:blue;">Guest List</h2></center>
+                </div>
+                <div class="modal-body">
+                    <table id="guestmaster" class="display" cellspacing="0" width="100%">
+                        <thead>
+                            <tr>
+                                <th>GuestName</th>
+                                <th>HealerName</th>
+                                <th>TreatmentName</th>
+                            </tr>
+                        </thead>
+                        <tfoot>
+                            <tr>
+                                <th>GuestName</th>
+                                <th>HealerName</th>
+                                <th>TreatmentName</th>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+                <div class="modal-footer">
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

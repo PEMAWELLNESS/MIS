@@ -1,0 +1,81 @@
+﻿@model Rooms.Models.AttendanceDetail
+
+@{
+    ViewBag.Title = "Delete";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Delete</h2>
+
+<h3>Are you sure you want to delete this?</h3>
+<div>
+    <h4>AttendanceDetail</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.AttendanceDate)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.AttendanceDate)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.CreatedBy)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.CreatedBy)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.CreatedOn)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.CreatedOn)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.EditedBy)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.EditedBy)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.EditedOn)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.EditedOn)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.AttendanceStatu.AttendStatus)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.AttendanceStatu.AttendStatus)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.EmployeesList.EmpCode)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.EmployeesList.EmpCode)
+        </dd>
+
+    </dl>
+
+    @using (Html.BeginForm()) {
+        @Html.AntiForgeryToken()
+
+        <div class="form-actions no-color">
+            <input type="submit" value="Delete" class="btn btn-default" /> |
+            @Html.ActionLink("Back to List", "Index")
+        </div>
+    }
+</div>

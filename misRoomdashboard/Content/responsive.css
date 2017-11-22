@@ -1,0 +1,340 @@
+/** for mobile resolution 320/767px **/
+@media only screen and (min-width:320px) and (max-width:767px) {
+.main_wrap {
+	width : 100%;
+}
+.lt_column {
+	background: #041527;
+	width: 100%;
+	margin: auto;
+}
+.lt_column_in {
+	width: 100%;
+	margin: 0 auto;
+	height: auto;
+}
+.lt_column_in h2 {
+	font-size: 18px;
+	color: #fff;
+	text-align: center;
+	font-weight: 400;
+	text-shadow: 1px 1px rgba(2,153,157,.75);
+	padding:5px 12px;
+	margin: 15px 0 10px 0;
+}
+.help-img {
+	background: url('images/may_ihelp.png') no-repeat;
+	width: 240px;
+	height: 240px;
+	text-align: center;
+}
+.how_text h2 {
+	color: #fff;
+	font-size: 18px;
+	text-align: center;
+	font-weight: 400;
+	text-shadow: 1px 1px rgba(2,153,157,.75);
+	padding: 5px;
+	margin: 15px 0;
+}
+.rt_column {
+	width: 100%;
+	margin: 0 auto;
+	background: #0bd8dd;
+}
+.rt_column_in {
+	width: 98%;
+	height: auto;
+	margin: 0 auto;
+}
+.rt_column .title h2 {
+	font-size: 32px;
+	font-weight: 400;
+	margin: 15px auto;
+	text-shadow: 1px 1px rgba(2,153,157,.75);
+}
+#package {
+	width: 100%;
+	float: none;
+}
+#package nav ul {
+	width: 100%;
+	text-align: center;
+	margin: 0;
+	padding: 0;
+}
+#package nav ul li {
+	float: none;
+	padding: 4px;
+	border-radius: 4px;
+}
+#package nav ul li a {
+	display: inline-block;
+	text-align: center;
+	border: 2px solid #fff;
+	padding: 0px 15px;
+	min-width: 170px;
+	color: #fff;
+	font-size: 14px;
+	font-weight: 500;
+	border-radius: 4px;
+	height: 40px;
+	line-height: 40px;
+	outline: medium none;
+	position: relative;
+	text-transform: uppercase;
+	transition: all 0.3s ease 0s;
+	z-index: 1;
+}
+#package nav a:after {
+	background: none repeat scroll 0 0 #003366;
+	border-radius: 5px;
+	content: "";
+	height: 100%;
+	left: 0;
+	position: absolute;
+	top: 0;
+	transition: all 0.3s ease 0s;
+	width: 0;
+	z-index: -1;
+}
+#package nav a:hover, #package a:active {
+	color: #fdfdfd;
+}
+#package nav a:hover:after, #package a:active:after {
+	width: 100%;
+}
+#package ul li a:hover {
+	background: #fff;
+}
+}
+
+
+
+/**laptop and tablet device 768px/1023px **/
+@media only screen and (min-width:768px) and (max-width:1023px) {
+.main_wrap {
+	width : 100%;
+}
+.lt_column {
+	width: 50%;
+	float: left;
+	background: #041527;
+	margin:0;
+	padding:0;
+}
+.lt_column_in {
+	width: 100%;
+	margin: 0 auto;	
+	height:	auto;
+	min-height: 768px;
+}
+.welcome h2 {
+	font-family: 'Harrington';
+	color: #fff;
+	font-size: 26px;
+	text-shadow: 2px 2px rgba(2,153,157,.75);
+	text-align: center;
+	margin: 30px 0 80px 0px;
+}
+.help-img {
+	background: url('images/may_ihelp.png') no-repeat;
+	width: 240px;
+	height: 240px;
+	margin: auto;
+}
+.how_text h2 {
+	font-family: 'Harrington';
+	color: #fff;
+	font-size: 26px;
+	text-shadow: 2px 2px rgba(2,153,157,.75);
+	text-align: center;
+	margin-top: 85px;
+}
+.rt_column {
+	width: 50%;
+	float: right;
+	background: #0bd8dd;
+}
+.rt_column_in {
+	width: 100%;
+	margin: 0 auto;
+	height:auto;
+	min-height: 768px;	
+}
+.rt_column .title h2 {
+	font-family: 'Harrington';
+	color: #fff;
+	font-size: 32px;
+	font-weight: 500;
+	text-align: center;
+	text-shadow: 2px 3px rgba(2,153,157,.75);
+	margin: 30px auto;
+}
+#package {
+	width:100%;
+	margin:30px auto;
+	display: block;
+}
+#package nav ul {
+	width: 100%;
+	text-align:center;
+}
+#package nav ul li {
+	display:inline-block;
+	padding: 4px;
+	border-radius: 4px;
+}
+#package nav ul li a {
+	display: inline-block;
+	text-align: center;
+	border: 2px solid #fff;
+	padding: 0px 5px;
+	min-width: 150px;
+	color: #fff;
+	font-size: 13px;
+	font-weight: 600;
+	text-shadow: 1px 1px rgba(2,153,157,.75);
+	border-radius: 4px;
+	height: 40px;
+	line-height: 40px;
+	outline: medium none;
+	position: relative;
+	text-transform: uppercase;
+	transition: all 0.3s ease 0s;
+	z-index: 1;
+}
+#package nav a:after {
+	background: none repeat scroll 0 0 #003366;
+	border-radius: 4px;
+	content: "";
+	height: 100%;
+	left: 0;
+	position: absolute;
+	top: 0;
+	transition: all 0.3s ease 0s;
+	width: 0;
+	z-index: -1;
+}
+#package nav a:hover, #package nav a:active {
+	color: #fdfdfd;
+}
+#package nav a:hover:after, #package nav a:active:after {
+	width: 100%;
+}
+#package ul li a:hover {
+	background: #fff;
+}
+}
+ @media only screen and (min-width:877px) and (max-width:1023px) {
+.main_wrap {
+	width : 100%;
+}
+.lt_column {
+	width: 50%;
+	float: left;
+	background: #041527;
+	margin:0;
+	padding:0;
+}
+.lt_column_in {
+	width: 100%;
+	margin: 0 auto;	
+	height:	auto;
+}
+.welcome h2 {
+	font-family: 'Harrington';
+	color: #fff;
+	font-size: 26px;
+	text-shadow: 2px 2px rgba(2,153,157,.75);
+	text-align: center;
+	margin: 30px 0 80px 0px;
+}
+.help-img {
+	background: url('images/may_ihelp.png') no-repeat;
+	width: 240px;
+	height: 240px;
+	margin: auto;
+}
+.how_text h2 {
+	font-family: 'Harrington';
+	color: #fff;
+	font-size: 26px;
+	text-shadow: 2px 2px rgba(2,153,157,.75);
+	text-align: center;
+	margin-top: 85px;
+}
+.rt_column {
+	width: 50%;
+	float: right;
+	background: #0bd8dd;
+}
+.rt_column_in {
+	width: 100%;
+	margin: 0 auto;
+	height:auto;
+}
+.rt_column .title h2 {
+	font-family: 'Harrington';
+	color: #fff;
+	font-size: 32px;
+	font-weight: 500;
+	text-align: center;
+	text-shadow: 2px 3px rgba(2,153,157,.75);
+	margin: 30px auto;
+}
+#package {
+	width:100%;
+	margin:30px auto;
+	display: block;
+}
+#package nav ul {
+	width: 100%;
+	text-align:center;
+}
+#package nav ul li {
+	display:inline-block;
+	padding: 4px;
+	border-radius: 4px;
+}
+#package nav ul li a {
+	display: inline-block;
+	text-align: center;
+	border: 2px solid #fff;
+	padding: 0px 5px;
+	min-width: 150px;
+	color: #fff;
+	font-size: 13px;
+	font-weight: 600;
+	text-shadow: 1px 1px rgba(2,153,157,.75);
+	border-radius: 4px;
+	height: 40px;
+	line-height: 40px;
+	outline: medium none;
+	position: relative;
+	text-transform: uppercase;
+	transition: all 0.3s ease 0s;
+	z-index: 1;
+}
+#package nav a:after {
+	background: none repeat scroll 0 0 #003366;
+	border-radius: 4px;
+	content: "";
+	height: 100%;
+	left: 0;
+	position: absolute;
+	top: 0;
+	transition: all 0.3s ease 0s;
+	width: 0;
+	z-index: -1;
+}
+#package nav a:hover, #package nav a:active {
+	color: #fdfdfd;
+}
+#package nav a:hover:after, #package nav a:active:after {
+	width: 100%;
+}
+#package ul li a:hover {
+	background: #fff;
+}
+}

@@ -1,0 +1,148 @@
+﻿@model IEnumerable<Rooms.Models.DischargeSummary>
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Index</h2>
+
+<p>
+    @Html.ActionLink("Create New", "Create")
+</p>
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.PRNO)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.A_Weight)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.A_Height)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.A_BMI)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.A_FatMass)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.A_FatMassIndex)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.A_FatFreeMass)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.A_FatFreeMassIndex)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.A_TotalBodyWater)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.A_Report)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.D_Weight)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.D_Height)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.D_BMI)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.D_FatMass)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.D_FatMassIndex)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.D_FatFreeMass)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.D_FatFreeMassIndex)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.D_TotalBodyWater)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.D_Report)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.CreatedDate)
+        </th>
+        <th></th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.PRNO)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.A_Weight)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.A_Height)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.A_BMI)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.A_FatMass)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.A_FatMassIndex)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.A_FatFreeMass)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.A_FatFreeMassIndex)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.A_TotalBodyWater)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.A_Report)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.D_Weight)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.D_Height)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.D_BMI)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.D_FatMass)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.D_FatMassIndex)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.D_FatFreeMass)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.D_FatFreeMassIndex)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.D_TotalBodyWater)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.D_Report)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.CreatedDate)
+        </td>
+        <td>
+            @Html.ActionLink("Edit", "Edit", new { id=item.ID }) |
+            @Html.ActionLink("Details", "Details", new { id=item.ID }) |
+            @Html.ActionLink("Delete", "Delete", new { id=item.ID })
+        </td>
+    </tr>
+}
+
+</table>

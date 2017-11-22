@@ -1,0 +1,56 @@
+﻿
+@{
+    ViewBag.Title = "DischargeResult";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<head>
+    <link href="~/Content/bootstrap.css" rel="stylesheet" />
+    <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+    <script src="~/Scripts/moment.js"></script>
+    <link rel="stylesheet" href="~/Content/TimePicker/include/ui-1.10.0/ui-lightness/jquery-ui-1.10.0.custom.min.css" type="text/css" />
+    <link rel="stylesheet" href="~/Content/TimePicker/jquery.ui.timepicker.css?v=0.3.3" type="text/css" />
+    <script type="text/javascript" src="~/Content/TimePicker/include/ui-1.10.0/jquery.ui.core.min.js"></script>
+    <script type="text/javascript" src="~/Content/TimePicker/include/ui-1.10.0/jquery.ui.widget.min.js"></script>
+    <script type="text/javascript" src="~/Content/TimePicker/include/ui-1.10.0/jquery.ui.tabs.min.js"></script>
+    <script type="text/javascript" src="~/Content/TimePicker/include/ui-1.10.0/jquery.ui.position.min.js"></script>
+    <script type="text/javascript" src="~/Content/TimePicker/jquery.ui.timepicker.js?v=0.3.3"></script>
+    <style>
+        #LoadingImage {
+            display: none;
+            margin: -48px 0px 0px 0px;
+            padding: 170px 10px 10px 10px;
+            position: absolute;
+            left: 0%;
+            top: 225px;
+            width: 100%;
+            height: 100%;
+            text-align: center;
+            background: white url(Content/loader.gif) no-repeat center center !important;
+            border: 0px solid #000;
+            z-index: 1;
+        }
+
+        .ui-state-default, .ui-widget-content .ui-state-default, .ui-widget-header .ui-state-default {
+            width: 31px !important;
+            text-align: center !important;
+        }
+
+        .ui-timepicker-table {
+            font-size: 10px !important;
+        }
+
+        .form-horizontal .form-group {
+            font-size: 15px;
+        }
+
+        .form-horizontal .control-label {
+            text-align: left !important;
+        }
+    </style>
+</head>
+<body>
+    <div id="LoadingImage"><img src="@Url.Content("~/Content/loader.gif")" alt="Loading..." />  </div>
+    @using (Html.BeginForm())
+    {
+    }
+</body>
