@@ -7,22 +7,19 @@
 <html>
 <head>
     <title></title>
-    @*<link href="~/Content/bootstrap.css" rel="stylesheet" />
-        <script src="~/Scripts/jquery-1.10.2.min.js"></script>
-        <script src="~/Scripts/CustomJS/jquery.min.js"></script>
-        <link href="~/Content/bootstrap.css" rel="stylesheet" />
-        <script src="~/lib/moment.min.js"></script>
-        <script src="~/lib/fullcalendar.min.js"></script>
-        <link href="~/lib/fullcalendar.min.css" rel="stylesheet" />
-        <link href="~/lib/fullcalendar.print.min.css" rel="stylesheet" media="print" />*@
     <link href="~/Content/bootstrap.css" rel="stylesheet" />
     <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
-    @*<link href="~/Content/form_pw.css" rel="stylesheet" />
-        <link href="~/Content/style_pw.css" rel="stylesheet" />*@
     <script src="~/lib/moment.min.js"></script>
+    <script src="https://cdn.datatables.net/1.10.15/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/1.4.2/js/dataTables.buttons.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/1.4.2/js/buttons.flash.min.js"></script>
     <script src="~/lib/fullcalendar.min.js"></script>
     <link href="~/lib/fullcalendar.min.css" rel="stylesheet" />
     <link href="~/lib/fullcalendar.print.min.css" rel="stylesheet" media="print" />
+    <script src="https://cdn.datatables.net/buttons/1.4.2/js/buttons.html5.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/1.4.2/js/buttons.print.min.js"></script>
+    <link href="https://cdn.datatables.net/1.10.15/css/jquery.dataTables.min.css" rel="stylesheet" />
+    <link href="https://cdn.datatables.net/buttons/1.4.2/css/buttons.dataTables.min.css" rel="stylesheet" />
     <style>
         .table1 {
             display: none;
@@ -85,22 +82,80 @@
 
         });
         function GetDetails() {
+            debugger;
+            var url = '@Url.Action("GDD", "HR")';
             $.ajax({
-                type: "POST",
-                url: "/HR/GDD",
+                url: url,
+                type: 'POST',
                 success: function (result) {
                     debugger;
-                    var $table = $('<table/>');
-                    $table.addClass("table table-bordered table-hover table-striped tbb");
-                    $table.append(' <th style="text-align:center!important;">Department</th>');
+                    var data = new Array();
                     for (var i = 0; i < result.length; i++) {
-                        $table.append('<tr><td>' + result[i].Department + '</td>');
-                        $('.guestlist').append($table);
+                        debugger;
+                        data.push({
+                            //Employee_Code: result[i].Employee_Code,
+                            //Employee_Name: result[i].Employee_Name,
+                            Department: result[i].Department,
+                            //RoomNo: result[i].Room_No,
+                            //CheckInDate: moment(result[i].Date_From).format("DD/MM/YYYY")
+                            //ScheduleTime: moment(result[i].ScheduleTime).format("HH:mm")
+                        })
                     }
-                    $('.guestlist').show();
+                    var table = $('#customers').DataTable({
+                        dom: 'Bfrtip',
+                        buttons: [
+                           'excel', 'pdf'
+                        ],
+                        data: data,
+                        order: [[0, "desc"]],
+                        columns: [
+                            { "data": "Department" }
+                        ]
+                    });
+                    var selected = [];
+                    debugger;
+                    $('#guestcount').text(table.data().count());
+                    $('#customers tbody').on('click', 'tr', function () {
+                        $('tr').removeClass('selected');
+                        debugger;
+                        var id = this.id;
+                        var index = $.inArray(id, selected);
+                        if (index === -1) {
+                            selected.push(id);
+                        } else {
+                            selected.splice(index, 1);
+                        }
+                        $(this).toggleClass('selected');
+                        var dataArr = [];
+
+                        $.each($("#customers tr.selected"), function () {
+                            debugger;
+                            $('#EmpCode').val($(this).find('td').eq(0).text());
+                            var td1 = $(this).find('td').eq(0).text();
+                            $("#GuestName1").val($(this).find('td').eq(0).text());
+                            EMPDET(td1);
+                        });
+                    });
                 }
             });
         }
+        //function GetDetails() {
+        //    $.ajax({
+        //        type: "POST",
+        //        url: "/HR/GDD",
+        //        success: function (result) {
+        //            debugger;
+        //            var $table = $('<table/>');
+        //            $table.addClass("table table-bordered table-hover table-striped tbb");
+        //            $table.append(' <th style="text-align:center!important;">Department</th>');
+        //            for (var i = 0; i < result.length; i++) {
+        //                $table.append('<tr><td>' + result[i].Department + '</td>');
+        //                $('.guestlist').append($table);
+        //            }
+        //            $('.guestlist').show();
+        //        }
+        //    });
+        //}
         function EMPDET(EMP_Code) {
             debugger;
             var namenew = EMP_Code;
@@ -329,13 +384,20 @@
 <body>
     <div class="form_pema">
         <div class="row">
-            <div class="col-md-6 form_pema">
-                <h4 style="font-size:25px;color:red;text-align:center;">Employees List : @DateTime.Now.AddMonths(-1).ToString("MMMM")</h4>
-                <div class="guestlist" style="margin-top:28px;height:443px;overflow: scroll;"></div>
+            <div class="col-md-3 form_pema">
+                <h4 style="font-size:25px;color:red;text-align:center;">Departments: @DateTime.Now.AddMonths(-1).ToString("MMMM")</h4>
+                @*<div class="guestlist" style="margin-top:28px;height:443px;overflow: scroll;"></div>*@
+                <table id="customers" class="display" cellspacing="0" width="100%">
+                    <thead>
+                        <tr>
+                            <th>Department</th>
+                        </tr>
+                    </thead>
+                </table>
             </div>
-            <div class="col-md-6 form_pema" style="margin-top:10px;">
+            <div class="col-md-9 form_pema" style="margin-top:10px;">
                 <input type="hidden" id="EmpCode" />
-                <div style="font-size:25px;color:red;text-align:center;"><h4 style="font-size:25px;margin-top:-5px;">Attendance Details :<input style="border: none;" type="text" id="GuestName1" name="GuestName1" readonly /></h4></div>
+                <div style="font-size:25px;color:red;text-align:center;"><h4 style="font-size:25px;margin-top:-5px;">Departments Employee Details :<input style="border: none;" type="text" id="GuestName1" name="GuestName1" readonly /></h4></div>
                 <hr />
                 <div class="row">
                     @*<div class="col-md-4">
