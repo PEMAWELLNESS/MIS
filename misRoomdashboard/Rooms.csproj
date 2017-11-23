@@ -1069,6 +1069,7 @@
     <Content Include="Views\HR\Dashboard.cshtml" />
     <Content Include="Views\HR\LeaveManagement.cshtml" />
     <Content Include="Views\HR\PayRole.cshtml" />
+    <Content Include="Views\HR\DepartmentWise.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

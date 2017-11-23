@@ -68,10 +68,13 @@
             $('#totalAbsent').text("0")
             $(document).on("click", ".guestlist tr", function (e) {
                 debugger;
+                $('.guestlist tr td').css({
+                    'background-color': '#fff'
+                });
                 var td = this.cells[0];
-                //$(this.cells).css({
-                //    'background-color': 'grey'
-                //});
+                $(this.cells).css({
+                    'background-color': 'grey'
+                });
 
                 var td1 = $(this.cells[0]).text();
                 $('#EmpCode').val(td1);
