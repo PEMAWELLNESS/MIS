@@ -330,7 +330,7 @@
                             Employee_Name: result[i].Employee_Name,
                             Department: result[i].Department,
                             AttendanceDate: moment(result[i].AttendanceDate).format("DD/MM/YYYY"),
-                            LateBy: result[i].LateBy,
+                            Duration: result[i].Duration,
                             drilldown: false
                         });
                     }
@@ -340,7 +340,7 @@
                     $table.addClass("table table-bordered table-hover table-striped tbb1");
                     $table.append(' <th style="text-align:center!important;">Employee Code</th><th style="text-align:center!important;">Employee Name</th><th style="text-align:center!important;">Department</th><th style="text-align:center!important;">Attendance Date</th><th style="text-align:center!important;">LateBy</th>');
                     for (var i = 0; i < locdata.length; i++) {
-                        $table.append('<tr><td>' + locdata[i].Employee_Code + '</td><td>' + locdata[i].Employee_Name + '</td><td>' + locdata[i].Department + '</td><td>' + locdata[i].AttendanceDate + '</td><td>' + locdata[i].LateBy + '</td></tr>');
+                        $table.append('<tr><td>' + locdata[i].Employee_Code + '</td><td>' + locdata[i].Employee_Name + '</td><td>' + locdata[i].Department + '</td><td>' + locdata[i].AttendanceDate + '</td><td>' + locdata[i].Duration + '</td></tr>');
                         $('#emplist').append($table);
 
                     }
@@ -371,7 +371,7 @@
                             Employee_Name: result[i].Employee_Name,
                             Department: result[i].Department,
                             AttendanceDate: moment(result[i].AttendanceDate).format("DD/MM/YYYY"),
-                            Early_by: result[i].Early_by,
+                            Duration: result[i].Duration,
                             drilldown: false
                         });
                     }
@@ -381,7 +381,7 @@
                     $table.addClass("table table-bordered table-hover table-striped tbb1");
                     $table.append(' <th style="text-align:center!important;">Employee Code</th><th style="text-align:center!important;">Employee Name</th><th style="text-align:center!important;">Department</th><th style="text-align:center!important;">Attendance Date</th><th style="text-align:center!important;">Earlyby</th>');
                     for (var i = 0; i < locdata.length; i++) {
-                        $table.append('<tr><td>' + locdata[i].Employee_Code + '</td><td>' + locdata[i].Employee_Name + '</td><td>' + locdata[i].Department + '</td><td>' + locdata[i].AttendanceDate + '</td><td>' + locdata[i].Early_by + '</td></tr>');
+                        $table.append('<tr><td>' + locdata[i].Employee_Code + '</td><td>' + locdata[i].Employee_Name + '</td><td>' + locdata[i].Department + '</td><td>' + locdata[i].AttendanceDate + '</td><td>' + locdata[i].Duration + '</td></tr>');
                         $('#emplist').append($table);
 
                     }
