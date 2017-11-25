@@ -1010,6 +1010,7 @@
     <Content Include="Scripts\vssver.scc" />
     <Content Include="Scripts\webcam.jquery.json" />
     <None Include="Scripts\_references.js" />
+    <Content Include="Views\Home\Roomdashboard.cshtml" />
     <Content Include="Web.config">
       <SubType>Designer</SubType>
     </Content>

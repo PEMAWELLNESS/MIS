@@ -39,6 +39,10 @@ namespace Rooms.Controllers
                           }).ToList();
             return Json(result, JsonRequestBehavior.AllowGet);
         }
+        public ActionResult Roomdashboard()
+        {
+                return View();
+        }
         public ActionResult CurrenttreatmentFromExcel()
         {
             string pathToExcelFile = targetpathNew;
@@ -127,7 +131,7 @@ namespace Rooms.Controllers
                 {
                     //Session["user_id"] = obj.user_id.ToString();
                     // Session["EMP_NAME"] = obj.first_name.ToString();
-                    return RedirectToAction("Application");
+                    return RedirectToAction("Roomdashboard");
                 }
             }
             else
@@ -1436,6 +1440,78 @@ namespace Rooms.Controllers
             flexible.TotalRecipes = totalrecipes;
             flexible.TotalIngredients = totalingredients;
             return Content(totalrecipes.ToString() + "&&" + totalingredients.ToString());
+        }
+
+        public ActionResult RoomStatusDetails()
+        {
+            DateTime dt = DateTime.Today;
+            var Guestdetails = (from a in pema.NC_TBL_ROOM_Status
+                                where a.Date_To == null
+                                group a by new { a.Room_No, a.Status } into d
+                                select new { Room_No = d.Key.Room_No, Status = d.Key.Status, Count = d.Count() });
+            return Json(Guestdetails, JsonRequestBehavior.AllowGet);
+        }
+        public ActionResult getvacantcount()
+        {
+            DateTime dt = DateTime.Today;
+            var model = (from a in pema.NC_TBL_ROOM_Status.Where(a => a.Status == "Vacant" && a.Date_To == null) select a).Count();
+            return Content(model.ToString());
+        }
+        public ActionResult getsinglecount()
+        {
+            DateTime dt = DateTime.Today;
+            var model = (from a in pema.NC_TBL_ROOM_Status
+                         where (a.Date_To == null && a.Status == "occupied")
+                         group a by new { a.Room_No } into d
+                         select new { Room_No = d.Key.Room_No, Count = d.Count() }).ToList();
+            var count = (from b in model.Where(b => b.Count == 1) select b).Count();
+            return Content(count.ToString());
+        }
+        public ActionResult getdoublecount()
+        {
+            DateTime dt = DateTime.Today;
+            var model = (from a in pema.NC_TBL_ROOM_Status
+                         where (a.Date_To == null && a.Status == "occupied")
+                         group a by new { a.Room_No } into d
+                         select new { Room_No = d.Key.Room_No, Count = d.Count() }).ToList();
+            var count = (from b in model.Where(b => b.Count == 2) select b).Count();
+            return Content(count.ToString());
+        }
+        public ActionResult getmaintenancecount()
+        {
+            DateTime dt = DateTime.Today;
+            var model = (from a in pema.NC_TBL_ROOM_Status.Where(a => a.Status == "Maintenance" && a.Date_To == null) select a).Count();
+            return Content(model.ToString());
+        }
+        public ActionResult Getroomcleaningcount()
+        {
+            DateTime dt = DateTime.Today;
+            var model = (from a in pema.NC_TBL_ROOM_Status
+                         where (a.Date_To == null && a.Status == "Room Cleaning")
+                         group a by new { a.Room_No } into d
+                         select new { Room_No = d.Key.Room_No, Count = d.Count() }).ToList();
+            var count = (from b in model.Where(b => b.Count == 1) select b).Count();
+            return Content(count.ToString());
+        }
+        public ActionResult totalroomsoccupied()
+        {
+            var list = pema.NC_TBL_ROOM_Status.Where(a => a.Date_To == null && a.Status == "Occupied").GroupBy(a => a.Room_No).Count();
+            return Content(list.ToString());
+        }
+        public ActionResult totalguests()
+        {
+            var list = pema.NC_TBL_ROOM_Status.Where(a => a.Date_To == null && a.Status == "Occupied").Count();
+            return Content(list.ToString());
+        }
+        public ActionResult totalmaleguests()
+        {
+            var list = pema.NC_TBL_ROOM_Status.Where(a => a.Date_To == null && a.Status == "Occupied" && a.Gender == "Male").Count();
+            return Content(list.ToString());
+        }
+        public ActionResult totalfemaleguests()
+        {
+            var list = pema.NC_TBL_ROOM_Status.Where(a => a.Date_To == null && a.Status == "Occupied" && a.Gender == "Female").Count();
+            return Content(list.ToString());
         }
     }
 }
