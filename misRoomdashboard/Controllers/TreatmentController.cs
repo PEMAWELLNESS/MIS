@@ -245,57 +245,57 @@ namespace Rooms.Controllers
         //                 select new { a, b }).Count();
         //    return Content(model.ToString());
         //}
-        //public ActionResult TotalGuests()
-        //{
-        //    var model = (from a in pema.NC_TBL_ROOM_Status where a.Date_To == null&&a.Status=="Occupied" select a).Count();
-        //    return Content(model.ToString());
-        //}
         public ActionResult TotalGuests()
         {
-            string pathToExcelFile = targetpath;
-            //DateTime dtmonth = Convert.ToDateTime(dtmnt);
-            var connectionString = "";
-            if (targetpath.EndsWith(".xls"))
-            {
-                connectionString = string.Format("Provider=Microsoft.Jet.OLEDB.4.0; data source={0}; Extended Properties=Excel 8.0;", pathToExcelFile);
-            }
-            else if (targetpath.EndsWith(".xlsx"))
-            {
-                connectionString = string.Format("Provider=Microsoft.ACE.OLEDB.12.0;Data Source={0};Extended Properties=\"Excel 12.0 Xml;HDR=YES;IMEX=1\";", pathToExcelFile);
-            }
-            var adapter1 = new OleDbDataAdapter("SELECT * FROM [Sheet1$]", connectionString);
-            var dt = new DataSet();
-            adapter1.Fill(dt, "ExcelTable");
-            DataTable dtable1 = dt.Tables["ExcelTable"];
-            DataTable dummy = new DataTable();
-            var excelFile1 = new ExcelQueryFactory(pathToExcelFile);
-            var artistAlbums1 = from a in dtable1.AsEnumerable() select a;
-            List<ApplicationValue> data = new List<ApplicationValue>();
-            int count = 0;
-            int count1 = 0;
-            int count2 = 0;
-            int totalcount = 0;
-            foreach (var a in artistAlbums1)
-            {
-                string Status = Convert.ToString(a["Status"]);
-                // DateTime dt1 = Convert.ToDateTime(a["Date"]);
-
-                if (Status == "Inhouse")
-                {
-                    count = count + 1;
-                }
-                if (Status == "Single")
-                {
-                    count1 = count1 + 1;
-                }
-                if (Status == "Double")
-                {
-                    count2 = count2 + 1;
-                }
-                totalcount = count + count1 + (count2 * 2);
-            }
-            return Content(totalcount.ToString());
+            var list = pema.NC_TBL_ROOM_Status.Where(a => a.Date_To == null && a.Status == "Occupied").Count();
+            return Content(list.ToString());
         }
+        //public ActionResult TotalGuests()
+        //{
+        //    string pathToExcelFile = targetpath;
+        //    //DateTime dtmonth = Convert.ToDateTime(dtmnt);
+        //    var connectionString = "";
+        //    if (targetpath.EndsWith(".xls"))
+        //    {
+        //        connectionString = string.Format("Provider=Microsoft.Jet.OLEDB.4.0; data source={0}; Extended Properties=Excel 8.0;", pathToExcelFile);
+        //    }
+        //    else if (targetpath.EndsWith(".xlsx"))
+        //    {
+        //        connectionString = string.Format("Provider=Microsoft.ACE.OLEDB.12.0;Data Source={0};Extended Properties=\"Excel 12.0 Xml;HDR=YES;IMEX=1\";", pathToExcelFile);
+        //    }
+        //    var adapter1 = new OleDbDataAdapter("SELECT * FROM [Sheet1$]", connectionString);
+        //    var dt = new DataSet();
+        //    adapter1.Fill(dt, "ExcelTable");
+        //    DataTable dtable1 = dt.Tables["ExcelTable"];
+        //    DataTable dummy = new DataTable();
+        //    var excelFile1 = new ExcelQueryFactory(pathToExcelFile);
+        //    var artistAlbums1 = from a in dtable1.AsEnumerable() select a;
+        //    List<ApplicationValue> data = new List<ApplicationValue>();
+        //    int count = 0;
+        //    int count1 = 0;
+        //    int count2 = 0;
+        //    int totalcount = 0;
+        //    foreach (var a in artistAlbums1)
+        //    {
+        //        string Status = Convert.ToString(a["Status"]);
+        //        // DateTime dt1 = Convert.ToDateTime(a["Date"]);
+
+        //        if (Status == "Inhouse")
+        //        {
+        //            count = count + 1;
+        //        }
+        //        if (Status == "Single")
+        //        {
+        //            count1 = count1 + 1;
+        //        }
+        //        if (Status == "Double")
+        //        {
+        //            count2 = count2 + 1;
+        //        }
+        //        totalcount = count + count1 + (count2 * 2);
+        //    }
+        //    return Content(totalcount.ToString());
+        //}
         public ActionResult Gettreatmentscount()
         {
             var model = (from a in pema.Treatment_Master select a).Count();
