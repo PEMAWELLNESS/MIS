@@ -354,6 +354,9 @@
       <DependentUpon>MISrooms.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\RoomTariffView.cs" />
+    <Compile Include="Models\ShiftMaster.cs">
+      <DependentUpon>MISrooms.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\TBL_CheckOut_File.cs">
       <DependentUpon>MISrooms.tt</DependentUpon>
     </Compile>

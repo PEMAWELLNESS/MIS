@@ -64,13 +64,13 @@ namespace Rooms.Controllers
             var newlist = (from a in GUESTDETAILS select a).OrderBy(a => a.Department).ToList();
             return Json(newlist, JsonRequestBehavior.AllowGet);
         }
-        public JsonResult EmpAttdenanceDet(double EMP_Code)
+        public JsonResult EmpAttdenanceDet(double EMP_Code,int mnt)
         {
-            var EmpPresent = (from a in pema.PEMASSLs.Where(a => a.Employee_Code == EMP_Code && a.StatusCode == "P" && a.AttendanceDate.Value.Month == DateTime.Today.Month-1) select a).Count();
-            var EmpAbsent = (from a in pema.PEMASSLs.Where(a => a.Employee_Code == EMP_Code && a.StatusCode == "A" && a.AttendanceDate.Value.Month == DateTime.Today.Month-1) select a).Count();
-            var SinglePunch = (from a in pema.PEMASSLs.Where(a => a.Employee_Code == EMP_Code && a.InTime==a.C_OutTime && a.PunchRecords != null && a.PunchRecords !="" && a.AttendanceDate.Value.Month == DateTime.Today.Month-1) select a).Count();
-            var EmpLate = (from a in pema.PEMASSLs.Where(a => a.Employee_Code == EMP_Code && a.Duration>540 && a.AttendanceDate.Value.Month == DateTime.Today.Month-1) select a).Count();
-            var EmpEarly = (from a in pema.PEMASSLs.Where(a => a.Employee_Code == EMP_Code && a.Duration < 540 && a.Duration != 0 && a.AttendanceDate.Value.Month == DateTime.Today.Month-1) select a).Count();
+            var EmpPresent = (from a in pema.PEMASSLs.Where(a => a.Employee_Code == EMP_Code && a.StatusCode == "P" && a.AttendanceDate.Value.Month == mnt) select a).Count();
+            var EmpAbsent = (from a in pema.PEMASSLs.Where(a => a.Employee_Code == EMP_Code && a.StatusCode == "A" && a.AttendanceDate.Value.Month == mnt) select a).Count();
+            var SinglePunch = (from a in pema.PEMASSLs.Where(a => a.Employee_Code == EMP_Code && a.InTime==a.C_OutTime && a.PunchRecords != null && a.PunchRecords !="" && a.AttendanceDate.Value.Month == mnt) select a).Count();
+            var EmpLate = (from a in pema.PEMASSLs.Where(a => a.Employee_Code == EMP_Code && a.Duration>540 && a.AttendanceDate.Value.Month == mnt) select a).Count();
+            var EmpEarly = (from a in pema.PEMASSLs.Where(a => a.Employee_Code == EMP_Code && a.Duration < 540 && a.Duration != 0 && a.AttendanceDate.Value.Month == mnt) select a).Count();
             dynamic det = new ExpandoObject();
             det.Present = EmpPresent;
             det.Absent = EmpAbsent;
@@ -81,30 +81,36 @@ namespace Rooms.Controllers
             //var jsonobject = JsonConvert.SerializeObject(dictionary);
             return Json(dictionary, JsonRequestBehavior.AllowGet);
         }
-        public JsonResult EmpPresentDet(double EmpCode)
+        public JsonResult EmpPresentDet(double EmpCode, int mnt)
         {
-            var EmpPresent = (from a in pema.PEMASSLs.Where(a => a.Employee_Code == EmpCode && a.StatusCode == "P" && a.AttendanceDate.Value.Month == DateTime.Today.Month-1).OrderBy(a=>a.AttendanceDate) select a).ToList();
+            var EmpPresent = (from a in pema.PEMASSLs.Where(a => a.Employee_Code == EmpCode && a.StatusCode == "P" && a.AttendanceDate.Value.Month == mnt).OrderBy(a=>a.AttendanceDate) select a).ToList();
 
             return Json(EmpPresent, JsonRequestBehavior.AllowGet);
         }
-        public JsonResult EmpAbsentDet(double EmpCode)
+        public JsonResult EmpTotalMntDet(double EmpCode, int mnt)
         {
-            var EmpAbsent = (from a in pema.PEMASSLs.Where(a => a.Employee_Code == EmpCode && a.StatusCode == "A" && a.AttendanceDate.Value.Month == DateTime.Today.Month-1).OrderBy(a => a.AttendanceDate) select a).ToList();
+            var EmpPresent = (from a in pema.PEMASSLs.Where(a => a.Employee_Code == EmpCode && a.AttendanceDate.Value.Month == mnt).OrderBy(a => a.AttendanceDate) select a).ToList();
+
+            return Json(EmpPresent, JsonRequestBehavior.AllowGet);
+        }
+        public JsonResult EmpAbsentDet(double EmpCode, int mnt)
+        {
+            var EmpAbsent = (from a in pema.PEMASSLs.Where(a => a.Employee_Code == EmpCode && a.StatusCode == "A" && a.AttendanceDate.Value.Month == mnt).OrderBy(a => a.AttendanceDate) select a).ToList();
             return Json(EmpAbsent, JsonRequestBehavior.AllowGet);
         }
-        public JsonResult SinglePunch(double EmpCode)
+        public JsonResult SinglePunch(double EmpCode, int mnt)
         {
-            var SinglePunch = (from a in pema.PEMASSLs.Where(a => a.Employee_Code == EmpCode && a.InTime == a.C_OutTime && a.PunchRecords!=null && a.PunchRecords != "" && a.AttendanceDate.Value.Month == DateTime.Today.Month-1).OrderBy(a => a.AttendanceDate) select a).ToList();
+            var SinglePunch = (from a in pema.PEMASSLs.Where(a => a.Employee_Code == EmpCode && a.InTime == a.C_OutTime && a.PunchRecords!=null && a.PunchRecords != "" && a.AttendanceDate.Value.Month == mnt).OrderBy(a => a.AttendanceDate) select a).ToList();
             return Json(SinglePunch, JsonRequestBehavior.AllowGet);
         }
-        public JsonResult EmpLate(double EmpCode)
+        public JsonResult EmpLate(double EmpCode, int mnt)
         {
-            var EmpLate = (from a in pema.PEMASSLs.Where(a => a.Employee_Code == EmpCode && a.Duration > 540 && a.AttendanceDate.Value.Month == DateTime.Today.Month-1).OrderBy(a => a.AttendanceDate) select a).ToList();
+            var EmpLate = (from a in pema.PEMASSLs.Where(a => a.Employee_Code == EmpCode && a.Duration > 540 && a.AttendanceDate.Value.Month == mnt).OrderBy(a => a.AttendanceDate) select a).ToList();
             return Json(EmpLate, JsonRequestBehavior.AllowGet);
         }
-        public JsonResult EmpEarly(double EmpCode)
+        public JsonResult EmpEarly(double EmpCode, int mnt)
         {
-            var EmpEarly = (from a in pema.PEMASSLs.Where(a => a.Employee_Code == EmpCode && a.Duration < 540 && a.Duration!=0 && a.AttendanceDate.Value.Month == DateTime.Today.Month-1).OrderBy(a => a.AttendanceDate) select a).ToList();
+            var EmpEarly = (from a in pema.PEMASSLs.Where(a => a.Employee_Code == EmpCode && a.Duration < 540 && a.Duration!=0 && a.AttendanceDate.Value.Month == mnt).OrderBy(a => a.AttendanceDate) select a).ToList();
             return Json(EmpEarly, JsonRequestBehavior.AllowGet);
         }
 
@@ -119,6 +125,12 @@ namespace Rooms.Controllers
             var EmpPresent = (from a in pema.PEMASSLs.Where(a => a.Department == EmpCode ).GroupBy(a => a.Employee_Code) select a).ToList();
 
             return Json(EmpPresent, JsonRequestBehavior.AllowGet);
+        }
+        [ActionName("GETMNT")]
+        public ActionResult GETMNT()
+        {
+            var manageDate = pema.PEMASSLs.Max(da => da.AttendanceDate);
+            return Json(manageDate, JsonRequestBehavior.AllowGet);
         }
     }
 }

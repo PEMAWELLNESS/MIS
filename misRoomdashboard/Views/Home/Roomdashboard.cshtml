@@ -123,8 +123,8 @@
                             }
                             if (result[i].Count == '2') {
                                 $('#' + result[i].Room_No).addClass('Double');
-                                $('#' + result[i].Room_No).css("cursor", "auto");
-                                $('#' + result[i].Room_No).prop('onclick', null).off('click');
+                                //$('#' + result[i].Room_No).css("cursor", "auto");
+                                //$('#' + result[i].Room_No).prop('onclick', null).off('click');
                             }
                         }
                         else if (result[i].Status == "Vacant") {
@@ -244,6 +244,57 @@
                 }
             });
         }
+        $(document).ready(function () {
+            $("td").click(function () {     //function_td
+                if (this.id != "") {
+                    var data = this.id;
+                    myfunctionitem(data);
+                }
+            });
+        });
+        function myfunctionitem(data) {
+            debugger;
+            if (data != "") {
+                var url = '@Url.Action("GetGuestdetails", "Home")';
+
+                var postData = {
+                    roomno: data
+                };
+                $.ajax({
+                    url: url,
+                    type: 'GET',
+                    data: postData,
+                    success: function (result) {
+                        debugger;
+                        $('.data-contact-person').remove();
+                        if (result != "none") {
+                            for (var i = 0; i < result.length; i++) {
+                                var rowCount = $('.data-contact-person').length + 1;
+                                var contactdiv = "";
+                                contactdiv = '<div class="form-group data-contact-person">'
+                    + '<div class="col-md-2"></div>'
+                    + '<div class="col-md-2">'
+                    + '<input type="text" id="guestid" required name="guestid' + rowCount + '" value="' + result[i].a.PRNO + '" readonly="readonly" style="width:100%" />'
+                    + '</div>'
+                    + '<div class="col-md-2">'
+                    + '<input type="text" id="guestname" required name="guestname' + rowCount + '" value="' + result[i].a.Guest_Name + '" readonly="readonly" style="width:100%" />'
+                    + '</div>'
+                    + '<div class="col-md-2">'
+                    + '<input type="text" id="roomno" required name="roomno' + rowCount + '" value="' + result[i].a.Room_No + '" readonly="readonly" style="width:100%" />'
+                    + '</div>'
+                    + '<div class="col-md-2">'
+                    + '<input type="text" id="roomno" required name="CheckinDate' + rowCount + '" value="' + moment(result[i].a.Date_From).format("DD/MM/YYYY") + '" readonly="readonly" style="width:100%" />'
+                    + '</div>'
+                    + '<div class="col-md-12">'
+                    + '</div>'
+                    + '</div>';
+                                $('#List').append(contactdiv);
+                            }
+                        }
+                    }
+                });
+            }
+        };
     </script>
     <script>
         $(document).ready(function () {
@@ -530,6 +581,8 @@
                 </td>
             </tr>
         </table>
+        <div id="List">
+        </div>
     </fieldset>
     <link href="~/Newlayout/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
     <link href="~/Newlayout/vendor/metisMenu/metisMenu.min.css" rel="stylesheet" />

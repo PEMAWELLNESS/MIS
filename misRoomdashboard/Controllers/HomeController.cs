@@ -39,6 +39,14 @@ namespace Rooms.Controllers
                           }).ToList();
             return Json(result, JsonRequestBehavior.AllowGet);
         }
+        public ActionResult GetGuestdetails(int roomno)
+        {
+            DateTime dt = DateTime.Today;
+            var Guestdetails = (from a in pema.NC_TBL_ROOM_Status
+                                where (a.Room_No == roomno && a.Status == "Occupied" && a.Date_To == null)
+                                select new { a }).ToList();
+            return Json(Guestdetails, JsonRequestBehavior.AllowGet);
+        }
         public ActionResult Roomdashboard()
         {
                 return View();

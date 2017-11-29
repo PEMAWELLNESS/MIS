@@ -34,10 +34,14 @@ namespace Rooms.Models
         public Nullable<double> LateBy { get; set; }
         public Nullable<double> Early_by { get; set; }
         public Nullable<double> Overtime { get; set; }
-        public bool Is_On_Leave { get; set; }
+        public string Is_On_Leave { get; set; }
         public string LeaveType { get; set; }
-        public bool Is_On_OutDoor_Entries { get; set; }
+        public string Is_On_OutDoor_Entries { get; set; }
         public Nullable<double> OutDoor_Duration { get; set; }
         public string ShiftName { get; set; }
+        public Nullable<System.DateTime> Created_dt { get; set; }
+        public string Created_by { get; set; }
+        public Nullable<System.DateTime> Modified_dt { get; set; }
+        public string Modified_by { get; set; }
     }
 }

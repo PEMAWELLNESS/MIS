@@ -66,6 +66,7 @@
         <AssociationConnector Association="MisRoomsModel.FK__Treatment__RoomI__1EA48E88" />
         <EntityTypeShape EntityType="MisRoomsModel.TreatmentFeedBack" Width="1.5" PointX="7.5" PointY="26" />
         <AssociationConnector Association="MisRoomsModel.FK__Treatment__Treat__0E04126B" />
+        <EntityTypeShape EntityType="MisRoomsModel.ShiftMaster" Width="1.5" PointX="11.375" PointY="23.75" />
         <EntityTypeShape EntityType="MisRoomsModel.PEMASSL" Width="1.5" PointX="22.375" PointY="19.75" />
       </Diagram>
     </edmx:Diagrams>

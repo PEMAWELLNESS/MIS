@@ -7,7 +7,7 @@
 <html>
 <head>
     <title></title>
-  
+
     <link href="~/Content/bootstrap.css" rel="stylesheet" />
     <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
     <script src="~/lib/moment.min.js"></script>
@@ -60,8 +60,10 @@
     </style>
     <script>
         $(document).ready(function () {
+          
+            GetMnt();
             GetDetails();
-            $('#TotalDays').text(@DateTime.DaysInMonth(DateTime.Today.Year,DateTime.Today.Month-1))
+
             $('#totalPresent').text("0")
             $('#totalAbsent').text("0")
             //$(document).on("click", ".guestlist tr", function (e) {
@@ -82,6 +84,22 @@
             //});
 
         });
+        function GetMnt() {
+            debugger;
+            var url = '@Url.Action("GETMNT", "HR")';
+            $.ajax({
+                url: url,
+                type: 'POST',
+                success: function (result) {
+                    debugger;
+                    $(".tbb1").remove();
+                    $("#gMonth").val(moment(result).format("MM"));
+                    $("#MNT").val(moment(result).format("MM"));
+                    $("#YEAR").val(moment(result).format("YYYY"));
+                    $('#TotalDays').text(moment($("#YEAR").val() +'-'+ $("#MNT").val(), "YYYY-MM").daysInMonth());
+                }
+            });
+        }
         function GetDetails() {
             debugger;
             var url = '@Url.Action("GED", "HR")';
@@ -136,11 +154,19 @@
                             $('#EmpCode').val($(this).find('td').eq(0).text());
                             var td1 = $(this).find('td').eq(0).text();
                             $("#GuestName1").val($(this).find('td').eq(1).text());
+                            $("#GuestName2").val($(this).find('td').eq(1).text());
                             EMPDET(td1);
+                            EMPDET1(td1);
                         });
                     });
                 }
             });
+        }
+        function show_month() {
+            debugger;
+            $(".tbb1").remove();
+            $("#MNT").val($("#gMonth").val());
+            $('#TotalDays').text(moment($("#YEAR").val() + '-' + $("#gMonth").val(), "YYYY-MM").daysInMonth());
         }
         //function GetDetails() {
         //    $.ajax({
@@ -163,7 +189,8 @@
             debugger;
             var namenew = EMP_Code;
             var postData = {
-                EMP_Code: namenew
+                EMP_Code: namenew,
+                mnt: $("#MNT").val()
             }
             debugger;
             $.ajax({
@@ -173,7 +200,6 @@
                 //data: "id=",
                 success: function (result) {
                     debugger;
-
                     $('#totalPresent').text(result[0].Value);
                     $('#totalAbsent').text(result[1].Value);
                     $('#SinglePunch').text(result[2].Value);
@@ -182,13 +208,57 @@
                 }
             });
         }
+        function EMPDET1(EMP_Code) {
+            debugger;
+            $('#emplist').empty();
+            $("#GuestName3").val("Month Attendance Details :");
+            var namenew = EMP_Code;
+            var postData = {
+                EmpCode: namenew,
+                mnt: $("#MNT").val()
+            }
+            //debugger;
+            $.ajax({
+                type: "GET",
+                data: postData,
+                url: "/HR/EmpTotalMntDet",
+                //data: "id=",
+                success: function (result) {
+                    debugger;
+                    var locdata = new Array();
+                    for (var i = 0; i < result.length; i++) {
+                        locdata.push({
+                            //Employee_Code: result[i].Employee_Code,
+                            //Employee_Name: result[i].Employee_Name,
+                            //Department: result[i].Department,
+                            AttendanceDate: moment(result[i].AttendanceDate).format("DD/MM/YYYY"),
+                            InTime: moment(result[i].InTime).format("HH:mm"),
+                            OutTime: moment(result[i].C_OutTime).format("HH:mm"),
+                            drilldown: false
+                        });
+                    }
+                    var sttt = "Employees with Designation are";
+                    $(".tbb1").remove();
+                    var $table = $('<table/>');
+                    $table.addClass("table table-bordered table-hover table-striped tbb1");
+                    $table.append('<th style="text-align:center!important;">Attendance Date</th><th style="text-align:center!important;">In Time</th><th style="text-align:center!important;">Out Time</th>');
+                    for (var i = 0; i < locdata.length; i++) {
+                        $table.append('<tr><td>' + locdata[i].AttendanceDate + '</td><td>' + locdata[i].InTime + '</td><td>' + locdata[i].OutTime + '</td></tr>');
+                        $('#emplist').append($table);
+
+                    }
+                    $('#emplist').show();
+                }
+            });
+        }
         function PresentDays() {
             debugger;
             $('#emplist').empty();
-
+            $("#GuestName3").val("Present Days Details :");
             var wallcode = $('#EmpCode').val();
             var postData = {
-                EmpCode: wallcode
+                EmpCode: wallcode,
+                mnt: $("#MNT").val()
             }
             //debugger;
             $.ajax({
@@ -201,9 +271,9 @@
                     var locdata = new Array();
                     for (var i = 0; i < result.length; i++) {
                         locdata.push({
-                            Employee_Code: result[i].Employee_Code,
-                            Employee_Name: result[i].Employee_Name,
-                            Department: result[i].Department,
+                            //Employee_Code: result[i].Employee_Code,
+                            //Employee_Name: result[i].Employee_Name,
+                            //Department: result[i].Department,
                             AttendanceDate: moment(result[i].AttendanceDate).format("DD/MM/YYYY"),
                             InTime: moment(result[i].InTime).format("HH:mm"),
                             OutTime: moment(result[i].C_OutTime).format("HH:mm"),
@@ -214,9 +284,9 @@
                     $(".tbb1").remove();
                     var $table = $('<table/>');
                     $table.addClass("table table-bordered table-hover table-striped tbb1");
-                    $table.append(' <th style="text-align:center!important;">Employee Code</th><th style="text-align:center!important;">Employee Name</th><th style="text-align:center!important;">Department</th><th style="text-align:center!important;">Attendance Date</th><th style="text-align:center!important;">In Time</th><th style="text-align:center!important;">Out Time</th>');
+                    $table.append('<th style="text-align:center!important;">Attendance Date</th><th style="text-align:center!important;">In Time</th><th style="text-align:center!important;">Out Time</th>');
                     for (var i = 0; i < locdata.length; i++) {
-                        $table.append('<tr><td>' + locdata[i].Employee_Code + '</td><td>' + locdata[i].Employee_Name + '</td><td>' + locdata[i].Department + '</td><td>' + locdata[i].AttendanceDate + '</td><td>' + locdata[i].InTime + '</td><td>' + locdata[i].OutTime + '</td></tr>');
+                        $table.append('<tr><td>' + locdata[i].AttendanceDate + '</td><td>' + locdata[i].InTime + '</td><td>' + locdata[i].OutTime + '</td></tr>');
                         $('#emplist').append($table);
 
                     }
@@ -227,10 +297,11 @@
         function AbsentDays() {
             debugger;
             $('#emplist').empty();
-
+            $("#GuestName3").val("Absent days Details :");
             var wallcode = $('#EmpCode').val();
             var postData = {
-                EmpCode: wallcode
+                EmpCode: wallcode,
+                mnt: $("#MNT").val()
             }
             //debugger;
             $.ajax({
@@ -268,10 +339,11 @@
         function SinglePunch() {
             debugger;
             $('#emplist').empty();
-
+            $("#GuestName3").val("Single Punch Details :");
             var wallcode = $('#EmpCode').val();
             var postData = {
-                EmpCode: wallcode
+                EmpCode: wallcode,
+                mnt: $("#MNT").val()
             }
             //debugger;
             $.ajax({
@@ -284,9 +356,9 @@
                     var locdata = new Array();
                     for (var i = 0; i < result.length; i++) {
                         locdata.push({
-                            Employee_Code: result[i].Employee_Code,
-                            Employee_Name: result[i].Employee_Name,
-                            Department: result[i].Department,
+                            //Employee_Code: result[i].Employee_Code,
+                            //Employee_Name: result[i].Employee_Name,
+                            //Department: result[i].Department,
                             AttendanceDate: moment(result[i].AttendanceDate).format("DD/MM/YYYY"),
                             InTime: moment(result[i].InTime).format("HH:mm"),
                             OutTime: moment(result[i].C_OutTime).format("HH:mm"),
@@ -297,9 +369,9 @@
                     $(".tbb1").remove();
                     var $table = $('<table/>');
                     $table.addClass("table table-bordered table-hover table-striped tbb1");
-                    $table.append(' <th style="text-align:center!important;">Employee Code</th><th style="text-align:center!important;">Employee Name</th><th style="text-align:center!important;">Department</th><th style="text-align:center!important;">Attendance Date</th><th style="text-align:center!important;">In Time</th><th style="text-align:center!important;">Out Time</th>');
+                    $table.append('<th style="text-align:center!important;">Attendance Date</th><th style="text-align:center!important;">In Time</th><th style="text-align:center!important;">Out Time</th>');
                     for (var i = 0; i < locdata.length; i++) {
-                        $table.append('<tr><td>' + locdata[i].Employee_Code + '</td><td>' + locdata[i].Employee_Name + '</td><td>' + locdata[i].Department + '</td><td>' + locdata[i].AttendanceDate + '</td><td>' + locdata[i].InTime + '</td><td>' + locdata[i].OutTime + '</td></tr>');
+                        $table.append('<tr><td>' + locdata[i].AttendanceDate + '</td><td>' + locdata[i].InTime + '</td><td>' + locdata[i].OutTime + '</td></tr>');
                         $('#emplist').append($table);
 
                     }
@@ -310,10 +382,11 @@
         function Late() {
             debugger;
             $('#emplist').empty();
-
+            $("#GuestName3").val("Extra Working Details :");
             var wallcode = $('#EmpCode').val();
             var postData = {
-                EmpCode: wallcode
+                EmpCode: wallcode,
+                mnt: $("#MNT").val()
             }
             //debugger;
             $.ajax({
@@ -326,11 +399,12 @@
                     var locdata = new Array();
                     for (var i = 0; i < result.length; i++) {
                         locdata.push({
-                            Employee_Code: result[i].Employee_Code,
-                            Employee_Name: result[i].Employee_Name,
-                            Department: result[i].Department,
+                            //Employee_Code: result[i].Employee_Code,
+                            //Employee_Name: result[i].Employee_Name,
+                            //Department: result[i].Department,
                             AttendanceDate: moment(result[i].AttendanceDate).format("DD/MM/YYYY"),
-                            Duration: result[i].Duration,
+                            InTime: moment(result[i].InTime).format("HH:mm"),
+                            OutTime: moment(result[i].C_OutTime).format("HH:mm"),
                             drilldown: false
                         });
                     }
@@ -338,11 +412,10 @@
                     $(".tbb1").remove();
                     var $table = $('<table/>');
                     $table.addClass("table table-bordered table-hover table-striped tbb1");
-                    $table.append(' <th style="text-align:center!important;">Employee Code</th><th style="text-align:center!important;">Employee Name</th><th style="text-align:center!important;">Department</th><th style="text-align:center!important;">Attendance Date</th><th style="text-align:center!important;">LateBy</th>');
+                    $table.append('<th style="text-align:center!important;">Attendance Date</th><th style="text-align:center!important;">In Time</th><th style="text-align:center!important;">Out Time</th>');
                     for (var i = 0; i < locdata.length; i++) {
-                        $table.append('<tr><td>' + locdata[i].Employee_Code + '</td><td>' + locdata[i].Employee_Name + '</td><td>' + locdata[i].Department + '</td><td>' + locdata[i].AttendanceDate + '</td><td>' + locdata[i].Duration + '</td></tr>');
+                        $table.append('<tr><td>' + locdata[i].AttendanceDate + '</td><td>' + locdata[i].InTime + '</td><td>' + locdata[i].OutTime + '</td></tr>');
                         $('#emplist').append($table);
-
                     }
                     $('#emplist').show();
                 }
@@ -351,10 +424,11 @@
         function Early() {
             debugger;
             $('#emplist').empty();
-
+            $("#GuestName3").val("Early Going Details :");
             var wallcode = $('#EmpCode').val();
             var postData = {
-                EmpCode: wallcode
+                EmpCode: wallcode,
+                mnt: $("#MNT").val()
             }
             //debugger;
             $.ajax({
@@ -367,11 +441,12 @@
                     var locdata = new Array();
                     for (var i = 0; i < result.length; i++) {
                         locdata.push({
-                            Employee_Code: result[i].Employee_Code,
-                            Employee_Name: result[i].Employee_Name,
-                            Department: result[i].Department,
+                            //Employee_Code: result[i].Employee_Code,
+                            //Employee_Name: result[i].Employee_Name,
+                            //Department: result[i].Department,
                             AttendanceDate: moment(result[i].AttendanceDate).format("DD/MM/YYYY"),
-                            Duration: result[i].Duration,
+                            InTime: moment(result[i].InTime).format("HH:mm"),
+                            OutTime: moment(result[i].C_OutTime).format("HH:mm"),
                             drilldown: false
                         });
                     }
@@ -379,9 +454,9 @@
                     $(".tbb1").remove();
                     var $table = $('<table/>');
                     $table.addClass("table table-bordered table-hover table-striped tbb1");
-                    $table.append(' <th style="text-align:center!important;">Employee Code</th><th style="text-align:center!important;">Employee Name</th><th style="text-align:center!important;">Department</th><th style="text-align:center!important;">Attendance Date</th><th style="text-align:center!important;">Earlyby</th>');
+                    $table.append('<th style="text-align:center!important;">Attendance Date</th><th style="text-align:center!important;">In Time</th><th style="text-align:center!important;">Out Time</th>');
                     for (var i = 0; i < locdata.length; i++) {
-                        $table.append('<tr><td>' + locdata[i].Employee_Code + '</td><td>' + locdata[i].Employee_Name + '</td><td>' + locdata[i].Department + '</td><td>' + locdata[i].AttendanceDate + '</td><td>' + locdata[i].Duration + '</td></tr>');
+                        $table.append('<tr><td>' + locdata[i].AttendanceDate + '</td><td>' + locdata[i].InTime + '</td><td>' + locdata[i].OutTime + '</td></tr>');
                         $('#emplist').append($table);
 
                     }
@@ -395,9 +470,24 @@
     <div class="form_pema">
         <div class="row">
             <div class="col-md-6 form_pema">
-                <h4 style="font-size:25px;color:red;text-align:center;">Employees List : @DateTime.Now.AddMonths(-1).ToString("MMMM")</h4>
+                <h4 style="font-size:25px;color:red;text-align:center;">
+                    Employees List :<select id="gMonth" style="width: 194px;" onchange="show_month()">
+                        <option value='01'>Janaury</option>
+                        <option value='02'>February</option>
+                        <option value='03'>March</option>
+                        <option value='04'>April</option>
+                        <option value='05'>May</option>
+                        <option value='06'>June</option>
+                        <option value='07'>July</option>
+                        <option value='08'>August</option>
+                        <option value='09'>September</option>
+                        <option value='10'>October</option>
+                        <option value='11'>November</option>
+                        <option value='12'>December</option>
+                    </select>
+                </h4>
                 @*<div class="guestlist" style="margin-top:28px;height:443px;overflow: scroll;"></div>*@
-                <table id="customers" class="display" cellspacing="0" width="100%">
+                <table id="customers" class="display" style="cursor: pointer" cellspacing="0" width="100%">
                     <thead>
                         <tr>
                             <th>Employee Code</th>
@@ -409,6 +499,9 @@
             </div>
             <div class="col-md-6 form_pema" style="margin-top:10px;">
                 <input type="hidden" id="EmpCode" />
+                <input type="hidden" id="MNT" />
+                <input type="hidden" id="YEAR" />
+
                 <div style="font-size:25px;color:red;text-align:center;"><h4 style="font-size:25px;margin-top:-5px;">Attendance Details :<input style="border: none;" type="text" id="GuestName1" name="GuestName1" readonly /></h4></div>
                 <hr />
                 <div class="row">
@@ -555,6 +648,7 @@
             </div>
 
         </div>
+        <h4 style="font-size:25px;"><input style="border: none;width:21%" type="text" id="GuestName3" name="GuestName3" readonly /><input style="border: none;" type="text" id="GuestName2" name="GuestName2" readonly /></h4>
         <div class="emplist" id="emplist" style="text-align:center;height:443px;overflow: scroll;">
         </div>
     </div>

@@ -26,5 +26,6 @@ namespace Rooms.Models
         public Nullable<System.DateTime> Created_dt { get; set; }
         public string Modified_by { get; set; }
         public Nullable<System.DateTime> Modified_dt { get; set; }
+        public string Room_Category { get; set; }
     }
 }

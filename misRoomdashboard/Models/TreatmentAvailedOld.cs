@@ -24,5 +24,13 @@ namespace Rooms.Models
         public Nullable<System.TimeSpan> StartTime { get; set; }
         public Nullable<System.TimeSpan> EndTime { get; set; }
         public string GuestName { get; set; }
+        public string Treatment_Status { get; set; }
+        public Nullable<System.TimeSpan> ActualStartTime { get; set; }
+        public Nullable<System.TimeSpan> ActualEndTime { get; set; }
+        public string Reason { get; set; }
+        public string Created_by { get; set; }
+        public Nullable<System.DateTime> Created_dt { get; set; }
+        public string Modified_by { get; set; }
+        public Nullable<System.DateTime> MOdified_dt { get; set; }
     }
 }
